@@ -2329,12 +2329,11 @@ window.runQRGen = () => {
     const box = document.getElementById('qr-box');
     const down = document.getElementById('qr-down');
     
+    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(val)}&color=${color}&bgcolor=${bgcolor}`;
     img.onload = () => { 
         box.classList.remove('hidden');
         down.href = img.src;
-        down.setAttribute('download', `qr_${Date.now()}.png`);
     };
-    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(val)}&color=${color}&bgcolor=${bgcolor}`;
 };
 
 window.runNotesSave = () => {
