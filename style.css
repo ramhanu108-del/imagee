@@ -1,0 +1,174 @@
+/* 
+ * SmartTools Hub v5.0 - Premium Stylesheet
+ * Handcrafted Pure CSS for Pixel-Perfect UI
+ */
+
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-bg-dark: rgba(17, 24, 39, 0.75);
+  --accent-blue: #2563eb;
+  --accent-blue-hover: #1d4ed8;
+}
+
+/* Glassmorphism Logic */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.dark .glass {
+  background: var(--glass-bg-dark);
+}
+
+/* Modern Smoothing & Base */
+*, ::after, ::before {
+  box-sizing: border-box;
+  transition: color 200ms ease, background-color 200ms ease, border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+/* Custom Scrollbar Premium UI */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #374151;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #d1d5db;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #4b5563;
+}
+
+/* Interactive Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideInUp 0.4s ease-out;
+}
+
+/* Premium Range Inputs */
+input[type=range] {
+  -webkit-appearance: none;
+  background-color: #f3f4f6;
+  height: 8px;
+  border-radius: 9999px;
+  cursor: pointer;
+}
+
+.dark input[type=range] {
+  background-color: #1f2937;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background-color: var(--accent-blue);
+  border-radius: 9999px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4);
+  border: 2px solid white;
+}
+
+.dark input[type=range]::-webkit-slider-thumb {
+    border-color: #111827;
+}
+
+/* Result Box Aesthetics */
+.tool-result {
+  padding: 1.5rem;
+  background-color: #eff6ff;
+  border: 2px solid #dbeafe;
+  border-radius: 1.5rem;
+}
+
+.dark .tool-result {
+  background-color: rgba(30, 58, 138, 0.2);
+  border-color: rgba(30, 58, 138, 0.3);
+}
+
+/* Modal Dynamics */
+#modal-container {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+}
+
+#modal-container.scale-95 {
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -46%) scale(0.95);
+}
+
+#modal-container.scale-100 {
+    pointer-events: auto;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Form Consistency */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Shadow Variations */
+.shadow-premium {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+}
+
+.dark .shadow-premium {
+    box-shadow: none;
+}
+
+/* Alignment Fixes */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.h-18 {
+    height: 4.5rem;
+}

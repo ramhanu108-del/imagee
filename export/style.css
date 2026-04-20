@@ -1,0 +1,43 @@
+/* Swiss Knife Custom Styles */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+.tool-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.tool-card:hover {
+    transform: translateY(-5px);
+    border-color: #2563eb;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+#toolModal.active { display: flex; }
+
+.tool-input {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 2px solid #f1f5f9;
+    background: #f8fafc;
+    outline: none;
+    transition: all 0.2s;
+}
+.dark .tool-input {
+    background: #111827;
+    border-color: #1f2937;
+    color: white;
+}
+.tool-input:focus { border-color: #2563eb; }
+
+.tool-btn {
+    width: 100%;
+    background: #2563eb;
+    color: white;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    transition: all 0.2s;
+}
+.tool-btn:hover { background: #1d4ed8; }
+.tool-btn:active { transform: scale(0.98); }
