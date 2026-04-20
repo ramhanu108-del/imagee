@@ -90,29 +90,53 @@ html.dark {
 /* Premium Range Inputs */
 input[type=range] {
   -webkit-appearance: none;
-  background-color: #f3f4f6;
-  height: 8px;
+  background-color: #e5e7eb;
+  height: 6px;
   border-radius: 9999px;
   cursor: pointer;
+  outline: none;
 }
 
 .dark input[type=range] {
-  background-color: #1f2937;
+  background-color: #374151;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   background-color: var(--accent-blue);
   border-radius: 9999px;
   cursor: pointer;
   box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4);
   border: 2px solid white;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type=range]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background-color: var(--accent-blue);
+  border-radius: 9999px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4);
+  border: 2px solid white;
+  border: none; /* Firefox specific fix */
+  border: 2px solid white;
 }
 
 .dark input[type=range]::-webkit-slider-thumb {
     border-color: #111827;
+}
+
+.dark input[type=range]::-moz-range-thumb {
+    border-color: #111827;
+}
+
+input[type=range]:active::-webkit-slider-thumb {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
 }
 
 /* Result Box Aesthetics */

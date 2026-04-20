@@ -157,6 +157,96 @@ const TOOL_SEO_CONTENT = {
             "Input estimated timelines and developer requirements.",
             "Review the detailed cost breakdown for your project."
         ]
+    },
+    'tax-calculator': {
+        about: "Navigate the complexities of annual tax liability with our Income Tax Estimator. Designed for multiple jurisdictions with a focus on simple, accurate projections, this tool helps you understand your tax bracket and effective rate based on your gross revenue. Whether you are optimizing your finances for the new fiscal year or just curious about your deductions, our calculator provides a clear visual of your contributions and net take-home pay.",
+        steps: [
+            "Enter your total annual revenue before deductions.",
+            "Select your preferred tax regime or filing status.",
+            "Input applicable investment deductions or exemptions.",
+            "Review your calculated liability and effective percentage."
+        ]
+    },
+    'credit-card-interest': {
+        about: "Uncover the true cost of debt with our Credit Card Interest and Payoff Calculator. Many users are unaware of how daily interest accrual impacts their long-term balance. This tool uses standard amortization arithmetic to show you exactly how much interest you will pay over time and how long it will take to reach a zero balance based on your current payments. Visualizing this data is the first step toward financial freedom and interest-saving strategies.",
+        steps: [
+            "Input your current unpaid credit card balance.",
+            "Enter the annual percentage rate (APR) from your statement.",
+            "Input your planned monthly payment amount.",
+            "Analyze the total interest cost and time to reach your target."
+        ]
+    },
+    'insurance-estimator': {
+        about: "Choosing the right protection for your family and health is a vital decision. Our Insurance Premium Estimator provides heuristic quotes for term life, health, and accident covers based on global actuarial averages. By factoring in your age, coverage requirements, and lifestyle choices like tobacco use, our tool helps you baseline your expected costs before speaking with an agent. Understanding your premium requirements helps in securing the best possible rates.",
+        steps: [
+            "Select the type of insurance plan you are exploring.",
+            "Enter your current age to adjust for actuarial risk.",
+            "Input the desired coverage amount (sum assured).",
+            "Review your estimated monthly premium commitment."
+        ]
+    },
+    'freelancer-earning': {
+        about: "Transitioning from a salary to freelance work requires a solid understanding of your earning potential. Our Freelancer Income Projector helps you convert your hourly rates and billable hours into realistic monthly and annual revenue targets. Accounting for average billability and regional holidays, this tool provides a clear target for business growth and lifestyle budgeting. It's an essential utility for independent consultants and creative entrepreneurs.",
+        steps: [
+            "Input your high-value hourly or project base rate.",
+            "Enter the number of billable hours you plan to work weekly.",
+            "Check the projected monthly revenue for budget planning.",
+            "Analyze the annual income forecast to set financial goals."
+        ]
+    },
+    'domain-estimator': {
+        about: "In the digital real-estate market, your domain name is your most valuable asset. Our Domain Value Estimator uses heuristic analysis to baseline the market worth of your URL based on length, TLD prestige (like .com, .io, .ai), and keyword density. While the actual sale price depends on market demand, our tool provides a data-driven starting point for negotiations and portfolio management. Identifying high-value keywords helps you understand the hidden potential of your URLs.",
+        steps: [
+            "Enter the full domain name you wish to evaluate.",
+            "The engine will analyze character count and TLD rarity.",
+            "Keyword relevance is checked against historical sales data.",
+            "Review the estimated valuation and technical breakdown."
+        ]
+    },
+    'crypto-profit': {
+        about: "Tracking volatile asset performance requires high-speed calculations. Our Crypto Profit and ROI Tracker allows you to quickly calculate net gains or losses on your digital asset trades. Simply input your entry capital, buy price, and sell price to see your percentage return and final balance. This tool is perfect for both day-traders and long-term HODLers looking to baseline their portfolio performance without using complex spreadsheets.",
+        steps: [
+            "Input your initial investment capital in your base currency.",
+            "Enter the asset price at the time of your purchase.",
+            "Input the current market price or target exit price.",
+            "Analyze your net profit/loss and total percentage ROI."
+        ]
+    },
+    'roi-calculator': {
+        about: "Efficiency is the key to successful performance marketing. Our Ads ROI and ROAS (Return on Ad Spend) Calculator helps you determine the profitability of your marketing campaigns. By analyzing total spend against generated revenue, our tool provides an efficiency factor that helps you identify winning strategies and cut waste. It's a critical utility for media buyers, small business owners, and digital marketers focused on metric-driven growth.",
+        steps: [
+            "Enter your total budget spent on the marketing campaign.",
+            "Input the total gross revenue generated from those ads.",
+            "Review the calculated ROI and ROAS metrics.",
+            "Use the visual efficiency bar to baseline campaign performance."
+        ]
+    },
+    'username-generator': {
+        about: "Identity on social media starts with a memorable handle. Our Instagram/TikTok Username Generator creates unique, stylish, and 'OG' handles based on your personal keyword combined with modern style presets. Whether you need a professional HQ handle or a high-hype street vibe, our engine generates multiple variants that avoid the 'User123' feeling. Finding the perfect identity helps in building a cohesive personal brand across digital platforms.",
+        steps: [
+            "Enter a core keyword related to your brand or name.",
+            "Select a style preset (Modern, Hype, OG, or Professional).",
+            "Choose a separator style to suit your platform's aesthetic.",
+            "Click 'Forge' and select your favorite available-style handle."
+        ]
+    },
+    'caption-generator': {
+        about: "Stop wasting hours staring at a blinking cursor. Our AI-Vibe Caption Generator creates engaging social media scripts tailored to your post's topic and desired aesthetic. From minimal aesthetic vibes for Pinterest-style content to high-hype bold captions for reel viral loops, our templates cover every creative scenario. We even include hashtag blueprints and emoji load levels to ensure your post is optimized for engagement and discovery.",
+        steps: [
+            "Describe the topic or scene of your social media post.",
+            "Select the desired aesthetic vibe and emoji load level.",
+            "Choose your hashtag strategy based on post goals.",
+            "Copy your favorite script and watch your engagement grow."
+        ]
+    },
+    'bio-generator': {
+        about: "Your social media bio is your digital first impression. Our Aesthetic Bio Generator transforms your simple description into a creatively formatted, professional, and eye-catching user profile. Using stylish typography and logical structure, we help you communicate your identity and call-to-action effectively. Whether you are an influencer, a developer, or a brand, our utility ensures your 'Link in Bio' starts with a strong introduction.",
+        steps: [
+            "Input a brief description of who you are and what you do.",
+            "Our engine will apply multiple creative formatting templates.",
+            "Review the generated bios for tone and aesthetic appeal.",
+            "Copy the one that best represents your digital identity."
+        ]
     }
 };
 
@@ -547,50 +637,84 @@ function injectToolFunctionalHTML(id) {
         case 'emi-calculator':
             c.innerHTML = `
                 <div class="space-y-10">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="space-y-3">
-                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Loan Amount (${cur})</label>
-                            <input type="number" id="emi-p" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" placeholder="500000">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <div class="space-y-3">
+                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Loan Amount (${cur})</label>
+                                <input type="number" id="emi-p" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" placeholder="500000">
+                            </div>
+                            <div class="space-y-3">
+                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Annual Rate (%)</label>
+                                <input type="number" id="emi-r" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" placeholder="10.5">
+                            </div>
                         </div>
-                        <div class="space-y-3">
-                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Annual Rate (%)</label>
-                            <input type="number" id="emi-r" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" placeholder="10.5">
-                        </div>
-                        <div class="space-y-3">
-                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Tenure (Years)</label>
-                            <input type="number" id="emi-n" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" placeholder="5">
+                        <div class="space-y-6">
+                            <div class="space-y-3">
+                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Tenure (Years)</label>
+                                <input type="number" id="emi-n" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" placeholder="5">
+                            </div>
+                            <div class="space-y-3">
+                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Interest Customization</label>
+                                <select id="emi-freq" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none">
+                                    <option value="12">Compounded Monthly (Standard)</option>
+                                    <option value="4">Compounded Quarterly</option>
+                                    <option value="1">Compounded Annually</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <button onclick="runEMICalc()" class="w-full py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-3xl font-black shadow-xl shadow-blue-600/20 active:scale-[0.98] transition-all uppercase tracking-widest text-sm">Calculate EMI</button>
-                    <div id="emi-box" class="hidden animate-fade-in tool-result text-center">
-                        <span class="text-xs font-black text-blue-600 uppercase tracking-[0.2em] mb-4 block">Monthly Equated Installment</span>
-                        <div class="text-5xl font-black text-gray-900 dark:text-white" id="emi-out"></div>
+                    <button onclick="runEMICalc()" class="w-full py-6 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] font-black shadow-2xl shadow-blue-600/30 active:scale-[0.98] transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2">
+                        <i data-lucide="calculator" class="w-4 h-4"></i> Generate Amortization Summary
+                    </button>
+                    <div id="emi-box" class="hidden animate-fade-in tool-result text-center py-10 bg-blue-600/5 border-2 border-blue-600/20 rounded-[2.5rem]">
+                        <span class="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] mb-4 block">Scheduled Monthly Installment</span>
+                        <div class="text-6xl font-black text-gray-900 dark:text-white" id="emi-out"></div>
                     </div>
                 </div>
             `;
+            lucide.createIcons();
             break;
 
         case 'word-counter':
             c.innerHTML = `
                 <div class="space-y-8">
-                    <textarea id="wc-in" oninput="runWordCount()" class="w-full h-64 p-8 bg-gray-50 dark:bg-gray-900 border rounded-[2rem] dark:border-gray-700 outline-none focus:ring-4 focus:ring-blue-500/10 font-medium leading-relaxed custom-scrollbar" placeholder="Type or paste your content here..."></textarea>
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Text Analytics Workshop</label>
+                        <div class="flex gap-2">
+                             <button onclick="processWCText('upper')" class="px-3 py-1 bg-gray-50 dark:bg-gray-800 rounded-lg text-[10px] font-black hover:bg-blue-50 transition-colors uppercase">UPPER</button>
+                             <button onclick="processWCText('lower')" class="px-3 py-1 bg-gray-50 dark:bg-gray-800 rounded-lg text-[10px] font-black hover:bg-blue-50 transition-colors uppercase">lower</button>
+                             <button onclick="processWCText('clean')" class="px-3 py-1 bg-gray-50 dark:bg-gray-800 rounded-lg text-[10px] font-black hover:bg-blue-50 transition-colors uppercase">Cleanup</button>
+                        </div>
+                    </div>
+                    <textarea id="wc-in" oninput="runWordCount()" class="w-full h-64 p-8 bg-gray-50 dark:bg-gray-900 border-2 border-transparent focus:border-blue-500/20 rounded-[2.5rem] dark:border-gray-700 outline-none focus:ring-4 focus:ring-blue-500/5 font-medium leading-relaxed custom-scrollbar placeholder:text-gray-300" placeholder="Type or paste your content here..."></textarea>
+                    
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl border dark:border-gray-700 text-center">
-                            <div class="text-3xl font-black mb-1" id="wc-w">0</div>
+                        <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-[1.5rem] border dark:border-gray-700 text-center relative overflow-hidden group">
+                            <div class="text-3xl font-black mb-1 group-hover:scale-110 transition-transform" id="wc-w">0</div>
                             <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Words</div>
                         </div>
-                        <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl border dark:border-gray-700 text-center">
-                            <div class="text-3xl font-black mb-1" id="wc-c">0</div>
+                        <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-[1.5rem] border dark:border-gray-700 text-center relative overflow-hidden group">
+                            <div class="text-3xl font-black mb-1 group-hover:scale-110 transition-transform" id="wc-c">0</div>
                             <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Chars</div>
                         </div>
-                        <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl border dark:border-gray-700 text-center">
-                             <div class="text-3xl font-black mb-1" id="wc-s">0</div>
+                        <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-[1.5rem] border dark:border-gray-700 text-center relative overflow-hidden group">
+                             <div class="text-3xl font-black mb-1 group-hover:scale-110 transition-transform" id="wc-s">0</div>
                              <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Sentences</div>
                         </div>
-                        <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl border dark:border-gray-700 text-center">
-                             <div class="text-3xl font-black mb-1" id="wc-r">0m</div>
+                        <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-[1.5rem] border dark:border-gray-700 text-center relative overflow-hidden group">
+                             <div class="text-3xl font-black mb-1 group-hover:scale-110 transition-transform" id="wc-r">0m</div>
                              <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Reading</div>
                         </div>
+                    </div>
+
+                    <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-[2rem] flex items-center justify-between">
+                         <div class="flex flex-col">
+                            <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest">Target Progress</span>
+                            <span class="text-xs font-bold text-gray-600 dark:text-gray-400">Aiming for 500 words</span>
+                         </div>
+                         <div class="w-1/2 bg-white dark:bg-gray-800 h-2 rounded-full overflow-hidden">
+                            <div id="wc-prog" class="w-0 h-full bg-blue-600 transition-all duration-500"></div>
+                         </div>
                     </div>
                 </div>
             `;
@@ -599,62 +723,163 @@ function injectToolFunctionalHTML(id) {
         case 'password-generator':
             c.innerHTML = `
                 <div class="space-y-10">
-                    <div class="flex flex-col gap-6">
-                         <div class="flex items-center justify-between">
-                             <span class="text-sm font-black text-gray-400 uppercase tracking-widest">Length: <span id="pg-len-v">16</span></span>
-                         </div>
-                         <input type="range" id="pg-len" min="8" max="64" value="16" oninput="document.getElementById('pg-len-v').innerText=this.value" class="w-full">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-8">
+                            <div class="flex flex-col gap-6">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Passphrase Length</label>
+                                    <span id="pg-len-v" class="px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 rounded-lg text-xs font-black">16</span>
+                                </div>
+                                <input type="range" id="pg-len" min="8" max="64" value="16" oninput="document.getElementById('pg-len-v').innerText=this.value; runPassGen()" class="w-full">
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <label class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl cursor-pointer hover:bg-gray-100 transition-colors">
+                                    <input type="checkbox" id="pg-up" checked onchange="runPassGen()" class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-xs font-bold text-gray-600 dark:text-gray-300">ABC</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl cursor-pointer hover:bg-gray-100 transition-colors">
+                                    <input type="checkbox" id="pg-num" checked onchange="runPassGen()" class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-xs font-bold text-gray-600 dark:text-gray-300">123</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl cursor-pointer hover:bg-gray-100 transition-colors">
+                                    <input type="checkbox" id="pg-sym" checked onchange="runPassGen()" class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-xs font-bold text-gray-600 dark:text-gray-300">@#$</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl cursor-pointer hover:bg-gray-100 transition-colors">
+                                    <input type="checkbox" id="pg-low" checked onchange="runPassGen()" class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-xs font-bold text-gray-600 dark:text-gray-300">abc</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col justify-center gap-6">
+                            <div class="p-8 bg-gray-50 dark:bg-gray-900 rounded-[2.5rem] border-2 border-dashed border-gray-200 dark:border-gray-700 text-center break-all font-mono text-2xl font-black select-all group relative min-h-[140px] flex items-center justify-center overflow-hidden" id="pg-out">
+                                 <div class="animate-pulse text-gray-300 italic">Generating Secure Key...</div>
+                                 <div class="absolute inset-0 bg-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-[2.4rem] flex items-center justify-center pointer-events-none text-[10px] text-blue-600 font-black tracking-[0.2em]">CLICK TO COPY ALL</div>
+                            </div>
+                            <button onclick="runPassGen()" class="w-full py-5 bg-gray-900 dark:bg-white dark:text-gray-900 text-white rounded-3xl font-black shadow-2xl active:scale-[0.98] transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2">
+                                <i data-lucide="refresh-cw" class="w-4 h-4"></i> Generate New Key
+                            </button>
+                        </div>
                     </div>
-                    <div class="p-8 bg-gray-50 dark:bg-gray-900 rounded-[2rem] border-2 border-dashed border-gray-200 dark:border-gray-700 text-center break-all font-mono text-xl font-bold select-all group relative" id="pg-out">
-                         Loading...
-                         <div class="absolute inset-0 bg-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-[1.8rem] flex items-center justify-center pointer-events-none text-xs text-blue-600 font-black">CLICK TO SELECT ALL</div>
-                    </div>
-                    <button onclick="runPassGen()" class="w-full py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-3xl font-black shadow-xl shadow-blue-600/20 transition-all uppercase tracking-widest text-sm">Regenerate Key</button>
                 </div>
             `;
             runPassGen();
+            lucide.createIcons();
             break;
 
         case 'age-calculator':
             c.innerHTML = `
-                <div class="space-y-8">
-                    <div class="space-y-3">
-                        <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Select Date of Birth</label>
-                        <input type="date" id="age-in" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10">
+                <div class="space-y-10">
+                    <div class="flex flex-col md:flex-row gap-8 items-center bg-gray-50 dark:bg-gray-900 p-8 rounded-[2.5rem] border dark:border-gray-800">
+                        <div class="space-y-4 flex-grow w-full">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Chronological Origin</label>
+                            <input type="date" id="age-in" class="w-full p-6 bg-white dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl font-black outline-none focus:ring-4 focus:ring-blue-500/5 transition-all">
+                        </div>
+                        <button onclick="runAgeCalc()" class="w-full md:w-auto h-20 px-10 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black shadow-2xl shadow-blue-600/30 flex items-center justify-center transition-all group">
+                            <i data-lucide="zap" class="w-6 h-6 group-hover:scale-125 transition-transform"></i>
+                        </button>
                     </div>
-                    <button onclick="runAgeCalc()" class="w-full py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-3xl font-black shadow-xl shadow-blue-600/20 transition-all uppercase tracking-widest">Analyze Lifetime</button>
-                    <div id="age-box" class="hidden animate-fade-in tool-result grid grid-cols-3 gap-4">
-                        <div class="text-center"><div class="text-3xl font-black" id="age-y">0</div><div class="text-[10px] font-bold text-gray-400">Years</div></div>
-                        <div class="text-center"><div class="text-3xl font-black" id="age-m">0</div><div class="text-[10px] font-bold text-gray-400">Months</div></div>
-                        <div class="text-center"><div class="text-3xl font-black" id="age-d">0</div><div class="text-[10px] font-bold text-gray-400">Days</div></div>
+
+                    <div id="age-box" class="hidden animate-fade-in space-y-10">
+                        <div class="grid grid-cols-3 gap-6">
+                            <div class="p-8 bg-blue-600 text-white rounded-[2.5rem] text-center shadow-2xl shadow-blue-600/20">
+                                <div class="text-4xl font-black mb-2" id="age-y">0</div>
+                                <div class="text-[10px] font-black uppercase tracking-widest opacity-60">Years</div>
+                            </div>
+                            <div class="p-8 bg-gray-50 dark:bg-gray-900 rounded-[2.5rem] text-center border dark:border-gray-800">
+                                <div class="text-4xl font-black mb-2 text-gray-900 dark:text-white" id="age-m">0</div>
+                                <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Months</div>
+                            </div>
+                            <div class="p-8 bg-gray-50 dark:bg-gray-900 rounded-[2.5rem] text-center border dark:border-gray-800">
+                                <div class="text-4xl font-black mb-2 text-gray-900 dark:text-white" id="age-d">0</div>
+                                <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Days</div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <div class="p-6 bg-indigo-50 dark:bg-indigo-900/10 rounded-3xl border-2 border-indigo-100 dark:border-indigo-900/20 flex flex-col items-center">
+                                <span class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-2 text-center">Next Orbit (Birthday)</span>
+                                <div id="age-next" class="text-xl font-black text-gray-900 dark:text-white text-center">-- Days Remaining</div>
+                             </div>
+                             <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-3xl border dark:border-gray-800 flex justify-around items-center">
+                                <div class="text-center">
+                                    <div class="text-lg font-black text-gray-900 dark:text-white" id="age-weeks">0</div>
+                                    <div class="text-[8px] font-black text-gray-400 uppercase tracking-widest">Total Weeks</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-lg font-black text-gray-900 dark:text-white" id="age-hours">0</div>
+                                    <div class="text-[8px] font-black text-gray-400 uppercase tracking-widest">Total Hours</div>
+                                </div>
+                             </div>
+                        </div>
                     </div>
                 </div>
             `;
+            lucide.createIcons();
             break;
 
         case 'qr-code-generator':
             c.innerHTML = `
                 <div class="space-y-8">
-                    <input type="text" id="qr-in" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10" placeholder="Enter URL or Text...">
-                    <button onclick="runQRGen()" class="w-full py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-3xl font-black shadow-xl shadow-blue-600/20 transition-all uppercase tracking-widest">Generate QR Code</button>
-                    <div id="qr-box" class="hidden animate-fade-in flex flex-col items-center gap-6">
-                        <img id="qr-img" class="w-48 h-48 rounded-2xl shadow-xl bg-white p-2">
-                        <a id="qr-down" download="qr.png" class="text-blue-600 font-bold hover:underline">Download Image</a>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <div class="space-y-3">
+                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Global Payload</label>
+                                <input type="text" id="qr-in" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" placeholder="URL, Text or Phone...">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Dots Color</label>
+                                    <input type="color" id="qr-color" value="#000000" class="w-full h-12 p-1 bg-white dark:bg-gray-800 rounded-xl cursor-pointer">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">BG Color</label>
+                                    <input type="color" id="qr-bg" value="#ffffff" class="w-full h-12 p-1 bg-white dark:bg-gray-800 rounded-xl cursor-pointer">
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                                    <span class="text-gray-400">Resolution</span>
+                                    <span id="qr-size-v" class="text-blue-600">300px</span>
+                                </div>
+                                <input type="range" id="qr-size" min="100" max="1000" step="50" value="300" oninput="document.getElementById('qr-size-v').innerText=this.value+'px'" class="w-full">
+                            </div>
+                        </div>
+                        <div id="qr-box" class="hidden animate-fade-in flex flex-col items-center justify-center gap-6 p-6 bg-gray-50 dark:bg-gray-900 rounded-[2.5rem] border-2 border-dashed border-gray-200 dark:border-gray-700">
+                            <img id="qr-img" class="w-48 h-48 rounded-2xl shadow-2xl bg-white p-2 transition-transform hover:scale-105 duration-500">
+                            <a id="qr-down" download="custom-qr.png" class="px-8 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl text-[10px] font-black shadow-lg uppercase tracking-widest flex items-center gap-2 border dark:border-gray-700">
+                                <i data-lucide="download" class="w-3 h-3"></i> Save Source
+                            </a>
+                        </div>
                     </div>
+                    <button onclick="runQRGen()" class="w-full py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] font-black shadow-2xl shadow-blue-600/30 active:scale-[0.98] transition-all uppercase tracking-widest text-xs">Build Custom QR Matrix</button>
                 </div>
             `;
+            lucide.createIcons();
             break;
 
         case 'notes-app':
             c.innerHTML = `
                 <div class="space-y-6">
-                    <textarea id="notes-in" oninput="runNotesSave()" class="w-full h-80 p-8 bg-gray-50 dark:bg-gray-900 border rounded-[2rem] dark:border-gray-700 outline-none focus:ring-4 focus:ring-blue-500/10 font-medium leading-relaxed custom-scrollbar" placeholder="Start writing notes... auto-saves.">${state.notes}</textarea>
-                    <div class="flex justify-between items-center text-xs font-bold text-gray-400">
-                        <span>Synced with Local Storage</span>
-                        <button onclick="clearNotes()" class="text-red-500 hover:underline">Clear Everything</button>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                             <i data-lucide="file-pen" class="w-3 h-3"></i> Private Workspace
+                        </label>
+                        <div class="flex gap-4">
+                             <button onclick="exportNotes()" class="text-[10px] font-black text-blue-600 hover:underline uppercase tracking-widest">Export TXT</button>
+                             <button onclick="copyNotes()" class="text-[10px] font-black text-blue-600 hover:underline uppercase tracking-widest">Copy Content</button>
+                        </div>
+                    </div>
+                    <textarea id="notes-in" oninput="runNotesSave()" class="w-full h-80 p-10 bg-gray-50 dark:bg-gray-900 border-2 border-transparent focus:border-blue-500/10 rounded-[2.5rem] dark:border-gray-700 outline-none focus:ring-4 focus:ring-blue-500/5 font-medium leading-relaxed custom-scrollbar shadow-inner" placeholder="Encryption active... start your manifestation.">${state.notes}</textarea>
+                    <div class="flex justify-between items-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        <span class="flex items-center gap-2 text-green-500"><i data-lucide="cloud-check" class="w-3 h-3"></i> Syncing to Local DB</span>
+                        <button onclick="clearNotes()" class="text-red-500 hover:underline">Destroy Fragment</button>
                     </div>
                 </div>
             `;
+            lucide.createIcons();
             break;
 
         case 'todo-list':
@@ -705,36 +930,403 @@ function injectToolFunctionalHTML(id) {
 
         case 'sip-calculator':
             c.innerHTML = `
-                <div class="space-y-8">
+                <div class="space-y-10">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="space-y-2"><label class="text-[10px] font-black text-gray-400 uppercase">Monthly SIP (${cur})</label><input type="number" id="sip-m" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700" value="5000"></div>
-                        <div class="space-y-2"><label class="text-[10px] font-black text-gray-400 uppercase">Return Rate (%)</label><input type="number" id="sip-r" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700" value="12"></div>
-                        <div class="space-y-2"><label class="text-[10px] font-black text-gray-400 uppercase">Years</label><input type="number" id="sip-n" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700" value="10"></div>
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Monthly Commitment (${cur})</label>
+                            <input type="number" id="sip-m" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" value="5000">
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Expected Yield (%)</label>
+                            <input type="number" id="sip-r" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" value="12">
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Timeline (Years)</label>
+                            <input type="number" id="sip-n" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" value="10">
+                        </div>
                     </div>
-                    <button onclick="runSIPCalc()" class="w-full py-5 bg-blue-600 text-white rounded-3xl font-black uppercase tracking-widest text-sm shadow-xl">Estimate Growth</button>
-                    <div id="sip-box" class="hidden animate-fade-in tool-result text-center"><span class="text-xs font-black text-blue-600 block mb-2 uppercase">Maturity Value</span><div class="text-4xl font-black" id="sip-out"></div></div>
+
+                    <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-[2rem] border dark:border-gray-800 space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex flex-col">
+                                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Annual Step-Up (%)</span>
+                                <span class="text-[8px] font-bold text-blue-500 uppercase tracking-tighter">Increase investment yearly</span>
+                            </div>
+                            <span id="sip-step-v" class="text-xs font-black text-blue-600">0%</span>
+                        </div>
+                        <input type="range" id="sip-step" min="0" max="25" value="0" step="1" oninput="document.getElementById('sip-step-v').innerText = this.value + '%'" class="w-full">
+                    </div>
+
+                    <button onclick="runSIPCalc()" class="w-full py-6 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] font-black shadow-2xl shadow-blue-600/30 flex items-center justify-center gap-3 transition-all uppercase tracking-widest text-[10px]">
+                        <i data-lucide="trending-up" class="w-4 h-4"></i> Forecast Financial Trajectory
+                    </button>
+
+                    <div id="sip-box" class="hidden animate-fade-in space-y-8">
+                         <div class="text-center py-10 bg-blue-600/5 rounded-[2.5rem] border-2 border-dashed border-blue-600/20">
+                            <span class="text-[10px] font-black text-blue-600 uppercase tracking-[0.4em] mb-4 block">Maturity Expectation</span>
+                            <div class="text-6xl font-black text-gray-900 dark:text-white" id="sip-out"></div>
+                         </div>
+                         
+                         <div class="grid grid-cols-2 gap-4">
+                            <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl flex flex-col items-center">
+                                <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Assets Invested</span>
+                                <span class="text-lg font-black text-gray-900 dark:text-white" id="sip-invested">0</span>
+                            </div>
+                            <div class="p-6 bg-green-50 dark:bg-green-900/10 rounded-2xl flex flex-col items-center">
+                                <span class="text-[8px] font-black text-green-600 uppercase tracking-widest mb-1">Compound Wealth Gained</span>
+                                <span class="text-lg font-black text-green-600" id="sip-gained">0</span>
+                            </div>
+                         </div>
+                    </div>
                 </div>
             `;
+            lucide.createIcons();
             break;
 
         case 'tax-calculator':
             c.innerHTML = `
-                <div class="space-y-8">
-                    <div class="space-y-2"><label class="text-xs font-black text-gray-400 uppercase tracking-widest">Annual Salary (${cur})</label><input type="number" id="tax-in" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold" placeholder="1000000"></div>
-                    <button onclick="runTaxCalc()" class="w-full py-5 bg-blue-600 text-white rounded-3xl font-black uppercase shadow-xl">Calculate Tax Liability</button>
-                    <div id="tax-box" class="hidden animate-fade-in tool-result text-center"><span class="text-xs font-black text-blue-600 block mb-2 uppercase">Estimated Annual Tax</span><div class="text-4xl font-black" id="tax-out"></div></div>
+                <div class="space-y-10">
+                    <div class="flex flex-col md:flex-row gap-6 bg-gray-50 dark:bg-gray-900 p-8 rounded-[2.5rem] border dark:border-gray-800">
+                        <div class="space-y-3 flex-grow">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                <i data-lucide="receipt-indian-rupee" class="w-3 h-3 text-blue-600"></i> Annual Revenue (${cur})
+                            </label>
+                            <input type="number" id="tax-in" class="w-full p-6 bg-white dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl font-black text-3xl outline-none focus:ring-4 focus:ring-blue-500/5 transition-all" placeholder="1000000">
+                        </div>
+                        <div class="space-y-3 min-w-[200px]">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest text-center block">Tax Regime</label>
+                            <div class="flex bg-white dark:bg-gray-800 p-2 rounded-2xl border dark:border-gray-700">
+                                <button onclick="setTaxRegime('new')" id="tax-reg-new" class="flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-blue-600 text-white shadow-lg">New</button>
+                                <button onclick="setTaxRegime('old')" id="tax-reg-old" class="flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all text-gray-400 hover:text-gray-900 dark:hover:text-white">Old</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="runTaxCalc()" class="w-full py-6 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] font-black shadow-2xl shadow-blue-600/30 flex items-center justify-center gap-3 transition-all uppercase tracking-widest text-[10px]">
+                        <i data-lucide="calculator" class="w-4 h-4"></i> Execute Tax Evaluation
+                    </button>
+
+                    <div id="tax-box" class="hidden animate-fade-in space-y-8">
+                         <div class="text-center py-10 bg-red-600/5 rounded-[2.5rem] border-2 border-dashed border-red-600/20">
+                            <span class="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] mb-4 block">Calculated Liability</span>
+                            <div class="text-6xl font-black text-gray-900 dark:text-white" id="tax-out"></div>
+                         </div>
+                         <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-3xl text-center">
+                            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Effective Tax Rate</span>
+                            <div class="text-2xl font-black text-blue-600 mt-1" id="tax-rate">0%</div>
+                         </div>
+                    </div>
                 </div>
             `;
+            lucide.createIcons();
             break;
-        
-        case 'username-generator':
-             c.innerHTML = `
+
+        case 'credit-card-interest':
+            c.innerHTML = `
+                <div class="space-y-10">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Unpaid Balance (${cur})</label>
+                            <input type="number" id="cc-p" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none shadow-sm transition-all" value="2500">
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Card APR (%)</label>
+                            <input type="number" id="cc-r" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none shadow-sm transition-all" value="19.99">
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Monthly Payment (${cur})</label>
+                            <input type="number" id="cc-m" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none shadow-sm transition-all" value="100">
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Balance Target (${cur})</label>
+                            <input type="number" id="cc-t" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none shadow-sm transition-all" value="0">
+                        </div>
+                    </div>
+                    <button onclick="runCCCalc()" class="w-full py-6 bg-red-600 text-white rounded-[2rem] font-black shadow-2xl shadow-red-600/30 flex items-center justify-center gap-3 transition-all uppercase tracking-widest text-[10px]">
+                        <i data-lucide="skull" class="w-4 h-4"></i> Analyze Debt Impact
+                    </button>
+                    <div id="cc-box" class="hidden animate-fade-in space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                             <div class="p-6 bg-red-50 dark:bg-red-900/10 rounded-2xl border dark:border-red-900/20 text-center">
+                                <span class="text-[8px] font-black text-red-600 uppercase tracking-widest block mb-1">Total Interest</span>
+                                <span id="cc-total-i" class="text-xl font-black text-red-600">0</span>
+                             </div>
+                             <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl text-center">
+                                <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">Months to Clear</span>
+                                <span id="cc-months" class="text-xl font-black text-gray-900 dark:text-white">0</span>
+                             </div>
+                             <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-2xl text-center">
+                                <span class="text-[8px] font-black text-blue-600 uppercase tracking-widest block mb-1">Daily Accrual</span>
+                                <span id="cc-daily" class="text-xl font-black text-blue-600">0</span>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+            break;
+
+        case 'website-cost':
+            c.innerHTML = `
+                <div class="space-y-10">
+                    <div class="space-y-6">
+                        <label class="text-xs font-black text-gray-400 uppercase tracking-widest block mb-4">Project Components</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="web-opts">
+                            <label class="p-5 border-2 border-gray-100 dark:border-gray-800 rounded-2xl cursor-pointer hover:border-blue-500/30 transition-all flex items-center gap-4 group">
+                                <input type="checkbox" data-val="150" onchange="runWebCost()" class="w-5 h-5 accent-blue-600">
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-black">Basic SEO</span>
+                                    <span class="text-[8px] text-gray-400 uppercase tracking-widest font-bold">Metadata & Optimization</span>
+                                </div>
+                            </label>
+                            <label class="p-5 border-2 border-gray-100 dark:border-gray-800 rounded-2xl cursor-pointer hover:border-blue-500/30 transition-all flex items-center gap-4 group">
+                                <input type="checkbox" data-val="400" onchange="runWebCost()" class="w-5 h-5 accent-blue-600">
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-black">E-Commerce</span>
+                                    <span class="text-[8px] text-gray-400 uppercase tracking-widest font-bold">Shop & Payments</span>
+                                </div>
+                            </label>
+                            <label class="p-5 border-2 border-gray-100 dark:border-gray-800 rounded-2xl cursor-pointer hover:border-blue-500/30 transition-all flex items-center gap-4 group">
+                                <input type="checkbox" data-val="250" onchange="runWebCost()" class="w-5 h-5 accent-blue-600">
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-black">Admin CMS</span>
+                                    <span class="text-[8px] text-gray-400 uppercase tracking-widest font-bold">Content Management</span>
+                                </div>
+                            </label>
+                            <label class="p-5 border-2 border-gray-100 dark:border-gray-800 rounded-2xl cursor-pointer hover:border-blue-500/30 transition-all flex items-center gap-4 group">
+                                <input type="checkbox" data-val="300" onchange="runWebCost()" class="w-5 h-5 accent-blue-600">
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-black">User Auth</span>
+                                    <span class="text-[8px] text-gray-400 uppercase tracking-widest font-bold">Logins & Database</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="p-10 bg-gray-900 text-white rounded-[2.5rem] text-center shadow-2xl relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                        <span class="text-[10px] font-black text-gray-500 uppercase tracking-[0.4em] mb-4 block">Estimated Market Quote</span>
+                        <div class="text-6xl font-black mb-2" id="web-total">${cur}0</div>
+                        <p class="text-[10px] font-black text-blue-400 uppercase tracking-widest">Base Rate: ${cur}500 Applied</p>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+            break;
+
+        case 'freelancer-earning':
+            c.innerHTML = `
+                <div class="space-y-10">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Hourly Rate (${cur})</label>
+                            <input type="number" id="fr-rate" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none" value="45" oninput="runFreelanceCalc()">
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Weekly Hours</label>
+                            <input type="number" id="fr-hours" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none" value="35" oninput="runFreelanceCalc()">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                         <div class="p-8 bg-blue-50 dark:bg-blue-900/10 rounded-[2.5rem] border dark:border-blue-900/20 text-center">
+                            <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest block mb-4">Monthly Income</span>
+                            <div id="fr-month" class="text-4xl font-black text-blue-600">${cur}0</div>
+                         </div>
+                         <div class="p-8 bg-gray-900 text-white rounded-[2.5rem] text-center shadow-xl">
+                            <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest block mb-4 text-blue-400">Annual Projection</span>
+                            <div id="fr-year" class="text-4xl font-black">${cur}0</div>
+                         </div>
+                    </div>
+                </div>
+            `;
+            runFreelanceCalc();
+            lucide.createIcons();
+            break;
+
+        case 'domain-estimator':
+            c.innerHTML = `
                 <div class="space-y-8">
-                     <input type="text" id="un-in" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold" placeholder="Your name/keyword...">
-                     <button onclick="runUserGen()" class="w-full py-5 bg-blue-600 text-white rounded-3xl font-black uppercase shadow-xl">Generate Handles</button>
-                     <div id="un-grid" class="grid grid-cols-2 gap-3"></div>
+                    <div class="space-y-4">
+                        <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Enter Domain Identity</label>
+                        <div class="flex gap-4">
+                            <input type="text" id="dom-in" class="flex-grow p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-black outline-none focus:ring-4 focus:ring-blue-500/10 transition-all uppercase placeholder:normal-case" placeholder="example.com">
+                            <button onclick="runDomEst()" class="px-8 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all">Evaluate</button>
+                        </div>
+                    </div>
+                    <div id="dom-box" class="hidden animate-fade-in space-y-6">
+                        <div class="p-10 bg-gray-50 dark:bg-gray-900 rounded-[2.5rem] border dark:border-gray-800 text-center">
+                             <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-4 block">Estimated Market Value</span>
+                             <div id="dom-val" class="text-5xl font-black text-blue-600 mb-6"></div>
+                             <div class="grid grid-cols-2 gap-4">
+                                <div class="px-4 py-2 bg-white dark:bg-gray-800 rounded-xl text-[10px] font-black uppercase tracking-widest border dark:border-gray-700" id="dom-len">Length: 0</div>
+                                <div class="px-4 py-2 bg-white dark:bg-gray-800 rounded-xl text-[10px] font-black uppercase tracking-widest border dark:border-gray-700" id="dom-tld">TLD: Premium</div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+            break;
+
+        case 'crypto-profit':
+             c.innerHTML = `
+                <div class="space-y-10">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center block">Capital In</label>
+                            <input type="number" id="cry-in" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" value="1000" oninput="runCryCalc()">
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center block">Entry Price</label>
+                            <input type="number" id="cry-buy" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" value="45000" oninput="runCryCalc()">
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center block">Exit Price</label>
+                            <input type="number" id="cry-sell" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" value="52000" oninput="runCryCalc()">
+                        </div>
+                    </div>
+                    <div id="cry-res" class="p-10 bg-gray-900 text-white rounded-[2.5rem] text-center shadow-2xl space-y-6">
+                        <div>
+                             <span class="text-[8px] font-black text-gray-500 uppercase tracking-[0.4em] mb-2 block text-blue-400">Net Return</span>
+                             <div id="cry-profit" class="text-5xl font-black">$0</div>
+                        </div>
+                        <div class="flex justify-center gap-10">
+                             <div class="text-center">
+                                <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest block mb-1">Percentage</span>
+                                <span id="cry-perc" class="text-lg font-black text-green-400">+0%</span>
+                             </div>
+                             <div class="text-center">
+                                <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest block mb-1">Total Balance</span>
+                                <span id="cry-bal" class="text-lg font-black">$0</span>
+                             </div>
+                        </div>
+                    </div>
                 </div>
              `;
+             runCryCalc();
+             lucide.createIcons();
+             break;
+
+        case 'roi-calculator':
+             c.innerHTML = `
+                <div class="space-y-10">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Ad Spend (${cur})</label>
+                            <input type="number" id="roi-s" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none transition-all" value="5000" oninput="runROICalc()">
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Total Revenue (${cur})</label>
+                            <input type="number" id="roi-r" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none transition-all" value="12000" oninput="runROICalc()">
+                        </div>
+                    </div>
+                    <div class="p-10 bg-blue-600 text-white rounded-[2.5rem] text-center shadow-2xl">
+                         <span class="text-[10px] font-black text-blue-200 uppercase tracking-[0.4em] mb-4 block">Marketing Efficiency Factor</span>
+                         <div id="roi-out" class="text-6xl font-black mb-4">140%</div>
+                         <div class="h-1 w-full bg-blue-800 rounded-full overflow-hidden mb-8">
+                            <div id="roi-bar" class="h-full bg-white shadow-[0_0_15px_white]" style="width: 70%"></div>
+                         </div>
+                         <div class="grid grid-cols-2 gap-4">
+                            <div class="text-center">
+                                <span class="text-[8px] font-black text-blue-200 uppercase tracking-widest block mb-1">Net Profit</span>
+                                <span id="roi-p" class="text-xl font-black text-white">${cur}</span>
+                            </div>
+                            <div class="text-center">
+                                <span class="text-[8px] font-black text-blue-200 uppercase tracking-widest block mb-1">ROAS</span>
+                                <span id="roi-a" class="text-xl font-black text-white">2.4x</span>
+                            </div>
+                         </div>
+                    </div>
+                </div>
+             `;
+             runROICalc();
+             lucide.createIcons();
+             break;
+
+        case 'insurance-estimator':
+            c.innerHTML = `
+                <div class="space-y-10">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Plan Type</label>
+                            <select id="ins-type" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none" onchange="runInsCalc()">
+                                <option value="term">Term Life Insurance</option>
+                                <option value="health">Health Insurance</option>
+                                <option value="accident">Accident Cover</option>
+                            </select>
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Your Age</label>
+                            <input type="number" id="ins-age" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none" value="25" oninput="runInsCalc()">
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Coverage Amount (${cur})</label>
+                            <input type="number" id="ins-cov" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none" value="1000000" oninput="runInsCalc()">
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Tobacco User?</label>
+                            <div class="flex bg-gray-50 dark:bg-gray-900 p-2 rounded-2xl border dark:border-gray-700">
+                                <button onclick="setInsTobacco(false)" id="ins-t-no" class="flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-blue-600 text-white shadow-lg">No</button>
+                                <button onclick="setInsTobacco(true)" id="ins-t-yes" class="flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all text-gray-400 hover:text-gray-900 dark:hover:text-white">Yes</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-10 bg-blue-600 text-white rounded-[2.5rem] text-center shadow-2xl space-y-4">
+                         <span class="text-[10px] font-black text-blue-200 uppercase tracking-[0.4em] block">Estimated Monthly Premium</span>
+                         <div id="ins-out" class="text-6xl font-black">${cur}0</div>
+                         <p class="text-[8px] font-bold text-blue-300 uppercase tracking-widest">Indicative quote based on global averages</p>
+                    </div>
+                </div>
+            `;
+            runInsCalc();
+            lucide.createIcons();
+            break;
+
+        case 'username-generator':
+             c.innerHTML = `
+                <div class="space-y-10">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <div class="space-y-3">
+                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Identity Keyword</label>
+                                <input type="text" id="un-in" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-black outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" placeholder="e.g. Neo, Alex, Spark...">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Style Preset</label>
+                                    <select id="un-style" class="w-full p-4 bg-white dark:bg-gray-800 rounded-xl text-xs font-bold border dark:border-gray-700 outline-none">
+                                        <option value="modern">Modern / Clean</option>
+                                        <option value="hype">Hype / Street</option>
+                                        <option value="og">OG / Original</option>
+                                        <option value="pro">Professional</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Separator</label>
+                                    <select id="un-sep" class="w-full p-4 bg-white dark:bg-gray-800 rounded-xl text-xs font-bold border dark:border-gray-700 outline-none">
+                                        <option value="">None</option>
+                                        <option value=".">Dot (.)</option>
+                                        <option value="_">Under (_)</option>
+                                        <option value="-">Dash (-)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div class="space-y-3">
+                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Custom Modifier</label>
+                                <input type="text" id="un-mod" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold text-sm outline-none" placeholder="e.g. Official, HQ, Pro...">
+                            </div>
+                            <button onclick="runUserGen()" class="w-full py-5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-3xl font-black shadow-2xl active:scale-[0.98] transition-all uppercase tracking-[0.2em] text-[10px] flex items-center justify-center gap-2">
+                                <i data-lucide="sparkles" class="w-4 h-4"></i> Forge Identity Handles
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="un-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 animate-fade-in"></div>
+                </div>
+             `;
+             lucide.createIcons();
              break;
 
         case 'bio-generator':
@@ -749,35 +1341,608 @@ function injectToolFunctionalHTML(id) {
             
         case 'caption-generator':
             c.innerHTML = `
-                <div class="space-y-8">
-                    <input type="text" id="cap-in" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold" placeholder="Post topic (e.g. Travel, Coffee, Life)...">
-                    <button onclick="runCaptionGen()" class="w-full py-5 bg-blue-600 text-white rounded-3xl font-black uppercase shadow-xl tracking-widest">Generate Aesthetic Captions</button>
-                    <div id="cap-list" class="space-y-4"></div>
+                <div class="space-y-10">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <div class="space-y-3">
+                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Post Topic / Scene</label>
+                                <input type="text" id="cap-in" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium" placeholder="Travel, Coffee, Sunset, Gym...">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Aesthetic Vibe</label>
+                                    <select id="cap-vibe" class="w-full p-4 bg-white dark:bg-gray-800 rounded-xl text-xs font-bold border dark:border-gray-700 outline-none">
+                                        <option value="aesthetic">Minimal Aesthetic</option>
+                                        <option value="hype">Hype / Bold</option>
+                                        <option value="deep">Deep / Meaningful</option>
+                                        <option value="pro">Brand / Professional</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Emoji Load</label>
+                                    <select id="cap-emoji" class="w-full p-4 bg-white dark:bg-gray-800 rounded-xl text-xs font-bold border dark:border-gray-700 outline-none">
+                                        <option value="none">None</option>
+                                        <option value="min">Minimal (1-2)</option>
+                                        <option value="heavy">Heavy (4+)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col justify-end gap-6">
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Hashtag Blueprint</label>
+                                <select id="cap-hash" class="w-full p-4 bg-white dark:bg-gray-800 rounded-xl text-xs font-bold border dark:border-gray-700 outline-none">
+                                    <option value="0">Zero Hashtags</option>
+                                    <option value="3">Minimal (3)</option>
+                                    <option value="10">Trending (10)</option>
+                                    <option value="max">Niche Targeted (30)</option>
+                                </select>
+                            </div>
+                            <button onclick="runCaptionGen()" class="w-full py-6 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] font-black shadow-2xl shadow-blue-600/30 active:scale-[0.98] transition-all uppercase tracking-widest text-[10px] flex items-center justify-center gap-2">
+                                <i data-lucide="sparkles" class="w-4 h-4 text-blue-200"></i> Generate Social Scripts
+                            </button>
+                        </div>
+                    </div>
+                    <div id="cap-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in"></div>
                 </div>
             `;
+            lucide.createIcons();
             break;
         
         case 'image-compressor':
-        case 'background-remover':
-        case 'image-resizer':
-        case 'jpg-to-png':
-        case 'pdf-merger':
-        case 'pdf-splitter':
              c.innerHTML = `
                 <div class="space-y-8">
-                    <div class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('file-in').click()">
-                        <i data-lucide="upload-cloud" class="w-12 h-12 text-gray-300 group-hover:text-blue-500 mb-4"></i>
-                        <p class="text-sm font-bold text-gray-400 group-hover:text-gray-600">Click or Drag to Upload Files</p>
-                        <input type="file" id="file-in" class="hidden" multiple onchange="runFileSim()">
+                    <div id="comp-upload" class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('file-in').click()">
+                        <i data-lucide="upload-cloud" class="w-12 h-12 text-gray-300 group-hover:text-blue-500 mb-4 transition-transform group-hover:-translate-y-2"></i>
+                        <p class="text-sm font-bold text-gray-400 group-hover:text-gray-600">Select Image to Begin Compression</p>
+                        <p class="text-[10px] text-gray-300 dark:text-gray-600 mt-2 font-bold uppercase tracking-widest">Supports JPG, PNG, WEBP</p>
+                        <input type="file" id="file-in" class="hidden" accept="image/*" onchange="handleImageInput(this)">
                     </div>
+
+                    <div id="comp-controls" class="hidden space-y-10 animate-fade-in">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xs font-black text-blue-600 uppercase tracking-[0.2em]">Manual Compression Options</h3>
+                            <button onclick="location.reload()" class="text-[10px] font-black text-gray-400 hover:text-red-500 transition-colors uppercase tracking-widest flex items-center gap-2">
+                                <i data-lucide="refresh-cw" class="w-3 h-3"></i> Change Image
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                            <div class="space-y-8">
+                                <div class="space-y-4">
+                                    <div class="flex justify-between items-center">
+                                        <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Visual Quality</label>
+                                        <span id="qual-val" class="px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 rounded-lg text-[10px] font-black">80%</span>
+                                    </div>
+                                    <input type="range" id="comp-quality" min="1" max="100" value="80" class="w-full" oninput="document.getElementById('qual-val').innerText = this.value + '%'">
+                                    <div class="flex justify-between text-[10px] font-bold text-gray-300 dark:text-gray-600 uppercase tracking-tighter">
+                                        <span>Max Compression</span>
+                                        <span>High Fidelity</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="flex justify-between items-center">
+                                        <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Dimension Scale</label>
+                                        <span id="scale-val" class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 rounded-lg text-[10px] font-black">100%</span>
+                                    </div>
+                                    <input type="range" id="comp-scale" min="10" max="100" value="100" class="w-full" oninput="document.getElementById('scale-val').innerText = this.value + '%'">
+                                    <div class="flex justify-between text-[10px] font-bold text-gray-300 dark:text-gray-600 uppercase tracking-tighter">
+                                        <span>Small Area</span>
+                                        <span>Full Resolution</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-8">
+                                <div class="space-y-4">
+                                    <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Format Conversion</label>
+                                    <select id="comp-format" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border-2 border-transparent dark:border-gray-800 rounded-2xl font-bold outline-none focus:border-blue-500/20 focus:ring-4 focus:ring-blue-500/5 transition-all text-sm">
+                                        <option value="original">Keep Original Format</option>
+                                        <option value="image/jpeg">Convert to JPEG (Ideal for Photos)</option>
+                                        <option value="image/webp">Convert to WEBP (Best for Performance)</option>
+                                        <option value="image/png">Convert to PNG (Lossless/Icons)</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-4">
+                                    <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Advanced Customization</label>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <label class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl cursor-pointer group">
+                                            <span class="text-[10px] font-black text-gray-500 group-hover:text-blue-600 transition-colors uppercase tracking-widest">Grayscale</span>
+                                            <input type="checkbox" id="comp-gray" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                        </label>
+                                        <label class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl cursor-pointer group">
+                                            <span class="text-[10px] font-black text-gray-500 group-hover:text-blue-600 transition-colors uppercase tracking-widest">Strip EXIF</span>
+                                            <input type="checkbox" id="comp-strip" checked class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                        </label>
+                                    </div>
+                                    <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center justify-between group">
+                                        <div class="flex flex-col">
+                                            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Display Metric</span>
+                                            <span class="text-[9px] font-bold text-gray-400 lowercase">Choose KB or MB for results</span>
+                                        </div>
+                                        <div class="flex gap-1 bg-white dark:bg-gray-900 p-1 rounded-xl shadow-sm border dark:border-gray-700">
+                                            <button onclick="changeCompUnit('KB')" id="unit-kb" class="px-4 py-1.5 text-[10px] font-black rounded-lg transition-all bg-blue-600 text-white shadow-sm">KB</button>
+                                            <button onclick="changeCompUnit('MB')" id="unit-mb" class="px-4 py-1.5 text-[10px] font-black rounded-lg transition-all text-gray-400 hover:text-gray-600">MB</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="img-preview-box" class="p-4 border-2 border-dashed border-gray-100 dark:border-gray-800 rounded-[2rem] bg-gray-50/50 dark:bg-gray-900/50 relative aspect-video flex items-center justify-center overflow-hidden">
+                                    <img id="img-preview" class="max-w-full max-h-full object-contain rounded-xl shadow-2xl transition-transform hover:scale-105 duration-700">
+                                    <div class="absolute inset-x-0 bottom-0 p-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-center">
+                                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Live Metadata Preview</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="runManualCompress()" class="group relative w-full py-6 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] font-black shadow-2xl shadow-blue-600/30 active:scale-[0.98] transition-all uppercase tracking-[0.2em] text-xs overflow-hidden">
+                            <span class="relative z-10">Start Manual Processing</span>
+                            <div class="absolute inset-0 bg-gradient-to-r from-blue-400/0 via-blue-400/20 to-blue-400/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                        </button>
+                    </div>
+
                     <div id="file-box" class="hidden animate-fade-in space-y-6">
-                         <div class="w-full bg-gray-100 dark:bg-gray-800 h-2 rounded-full overflow-hidden">
+                         <div class="flex justify-between items-end mb-2">
+                            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Processing Bitstream...</span>
+                            <span id="prog-val" class="text-[10px] font-black text-blue-600">0%</span>
+                         </div>
+                         <div class="w-full bg-gray-100 dark:bg-gray-800 h-3 rounded-full overflow-hidden">
+                             <div id="file-prog" class="w-0 h-full bg-blue-600 transition-all duration-700 ease-out"></div>
+                         </div>
+                         <div id="comp-res-box" class="hidden p-8 bg-green-50 dark:bg-green-900/10 border-2 border-green-100 dark:border-green-800/20 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-6 animate-slide-up">
+                             <div class="flex flex-col items-center md:items-start">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-green-600"></i>
+                                    <span class="font-black text-green-600 uppercase tracking-widest text-xs">Ready for Distribution</span>
+                                </div>
+                                <span class="text-sm font-bold text-gray-900 dark:text-gray-100" id="comp-saved">Saved 45% (850KB → 460KB)</span>
+                             </div>
+                             <button class="w-full md:w-auto px-10 py-4 bg-green-600 text-white rounded-2xl text-xs font-black shadow-xl shadow-green-500/30 hover:bg-green-700 transition-all uppercase tracking-widest">Download Now</button>
+                         </div>
+                    </div>
+                </div>
+             `;
+             lucide.createIcons();
+             break;
+
+        case 'unit-converter':
+            c.innerHTML = `
+                <div class="space-y-10">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div class="space-y-8">
+                            <div class="space-y-4">
+                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Source Magnitude</label>
+                                <input type="number" id="uc-in" oninput="runUnitConv()" class="w-full p-6 bg-gray-50 dark:bg-gray-900 border-2 border-transparent focus:border-blue-500/20 rounded-[2rem] font-black text-2xl outline-none focus:ring-4 focus:ring-blue-500/5 transition-all" placeholder="100">
+                            </div>
+                            <div class="space-y-4">
+                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Output Customization</label>
+                                <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-[2rem] space-y-6">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Precision Decimals</span>
+                                        <div class="flex items-center gap-3">
+                                            <button onclick="adjustUCPrec(-1)" class="w-8 h-8 flex items-center justify-center bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 hover:bg-blue-50 transition-colors">-</button>
+                                            <span id="uc-dec-v" class="w-6 text-center font-black text-blue-600">2</span>
+                                            <button onclick="adjustUCPrec(1)" class="w-8 h-8 flex items-center justify-center bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 hover:bg-blue-50 transition-colors">+</button>
+                                        </div>
+                                    </div>
+                                    <label class="flex items-center justify-between cursor-pointer group">
+                                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest group-hover:text-blue-600 transition-colors">Scientific Notation</span>
+                                        <input type="checkbox" id="uc-sci" onchange="runUnitConv()" class="w-4 h-4 rounded border-gray-300 text-blue-600">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-8">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-3">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Base</label>
+                                    <select id="uc-f" onchange="runUnitConv()" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none text-sm"></select>
+                                </div>
+                                <div class="space-y-3">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Target</label>
+                                    <select id="uc-t" onchange="runUnitConv()" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none text-sm"></select>
+                                </div>
+                            </div>
+                            
+                            <div class="tool-result flex flex-col items-center justify-center py-10 bg-blue-600 text-white rounded-[2.5rem] shadow-2xl shadow-blue-600/30 overflow-hidden relative group">
+                                <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                                <span class="text-[10px] font-black uppercase tracking-[0.4em] mb-4 opacity-60">Resultant Value</span>
+                                <div class="flex flex-col items-center gap-1">
+                                    <div class="text-5xl font-black tracking-tighter" id="uc-out">0.00</div>
+                                    <div id="uc-unit-name" class="text-[10px] font-black uppercase tracking-widest opacity-40">---</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            initUnitConv();
+            lucide.createIcons();
+            break;
+
+        case 'pdf-merger':
+             c.innerHTML = `
+                <div class="space-y-10">
+                    <div id="comp-upload" class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('file-in').click()">
+                        <i data-lucide="file-stack" class="w-12 h-12 text-gray-300 group-hover:text-blue-500 mb-4 transition-transform group-hover:-translate-y-2"></i>
+                        <p class="text-sm font-bold text-gray-400 group-hover:text-gray-600">Select PDF Files for Merger</p>
+                        <p class="text-[10px] text-gray-300 dark:text-gray-600 mt-2 font-bold uppercase tracking-widest">Process entirely in RAM (Privacy Secure)</p>
+                        <input type="file" id="file-in" class="hidden" accept="application/pdf" multiple onchange="handlePDFInput(this)">
+                    </div>
+
+                    <div id="pdf-controls" class="hidden animate-fade-in space-y-10">
+                        <div class="flex items-center justify-between">
+                            <h3 id="pdf-count" class="text-xs font-black text-blue-600 uppercase tracking-[0.2em]">0 Files Documented</h3>
+                            <button onclick="location.reload()" class="text-[10px] font-black text-gray-400 hover:text-red-500 transition-colors uppercase tracking-widest flex items-center gap-2">
+                                <i data-lucide="refresh-cw" class="w-3 h-3"></i> Clear Workspace
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                             <div class="space-y-3">
+                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Output Filename</label>
+                                <input type="text" id="pdf-name" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" value="Merged_Document">
+                             </div>
+                             <div class="space-y-3">
+                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Optimization Strategy</label>
+                                <select id="pdf-opt" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none text-sm">
+                                    <option value="hq">Preserve Original Vector Quality</option>
+                                    <option value="web">Web Optimized (Compressed)</option>
+                                    <option value="grayscale">Ink-Saver Grayscale</option>
+                                </select>
+                             </div>
+                        </div>
+
+                        <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-[2rem] border dark:border-gray-800 space-y-6">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Document Flow Options</label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <label class="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-2xl cursor-pointer group hover:border-blue-500 border border-transparent transition-all">
+                                    <span class="text-[10px] font-black text-gray-500 group-hover:text-blue-600 uppercase tracking-widest">Insert Blank Separation</span>
+                                    <input type="checkbox" id="pdf-blank" class="w-4 h-4 rounded text-blue-600">
+                                </label>
+                                <label class="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-2xl cursor-pointer group hover:border-blue-500 border border-transparent transition-all">
+                                    <span class="text-[10px] font-black text-gray-500 group-hover:text-blue-600 uppercase tracking-widest">Generate Table of Contents</span>
+                                    <input type="checkbox" id="pdf-toc" class="w-4 h-4 rounded text-blue-600">
+                                </label>
+                            </div>
+                        </div>
+
+                        <button onclick="runFileSim()" class="w-full py-6 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-[2rem] font-black shadow-2xl active:scale-[0.98] transition-all uppercase tracking-[0.2em] text-xs">
+                           Merge Digital Assets
+                        </button>
+                    </div>
+
+                    <div id="file-box" class="hidden animate-fade-in space-y-6">
+                         <div class="w-full bg-gray-100 dark:bg-gray-800 h-3 rounded-full overflow-hidden">
                              <div id="file-prog" class="w-0 h-full bg-blue-600 transition-all duration-1000"></div>
                          </div>
-                         <div class="p-6 bg-green-50 dark:bg-green-900/10 border-2 border-green-100 dark:border-green-800/20 rounded-2xl flex items-center justify-between">
-                             <span class="font-bold text-green-600 text-sm">Processing Complete!</span>
-                             <button class="px-6 py-2 bg-green-600 text-white rounded-xl text-xs font-black shadow-lg shadow-green-500/20">Download Result</button>
+                         <div id="pdf-res" class="hidden p-8 bg-green-50 dark:bg-green-900/10 border-2 border-green-100 dark:border-green-800/20 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-6 animate-slide-up">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-green-600">
+                                    <i data-lucide="check-check"></i>
+                                </div>
+                                <div>
+                                    <div class="font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-widest mb-1">Synthesized Successfully</div>
+                                    <div id="pdf-final-name" class="text-sm font-bold text-gray-500">Document_Final.pdf</div>
+                                </div>
+                            </div>
+                            <button class="w-full md:w-auto px-10 py-4 bg-green-600 text-white rounded-2xl text-xs font-black shadow-xl hover:bg-green-700 transition-all uppercase tracking-widest">Retrieve Artifact</button>
                          </div>
+                    </div>
+                </div>
+             `;
+             lucide.createIcons();
+             break;
+
+        case 'pdf-splitter':
+             c.innerHTML = `
+                <div class="space-y-10">
+                    <div id="comp-upload" class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('file-in').click()">
+                        <i data-lucide="scissors" class="w-12 h-12 text-gray-300 group-hover:text-blue-500 mb-4 transition-transform group-hover:-translate-y-2"></i>
+                        <p class="text-sm font-bold text-gray-400 group-hover:text-gray-600">Select PDF Source for Extraction</p>
+                        <p class="text-[10px] text-gray-300 dark:text-gray-600 mt-2 font-bold uppercase tracking-widest">Supports files up to 500MB</p>
+                        <input type="file" id="file-in" class="hidden" accept="application/pdf" onchange="handlePDFSplitInput(this)">
+                    </div>
+
+                    <div id="pdf-split-controls" class="hidden animate-fade-in space-y-10">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xs font-black text-blue-600 uppercase tracking-[0.2em]">Surgical Extraction Setup</h3>
+                            <button onclick="location.reload()" class="text-[10px] font-black text-gray-400 hover:text-red-500 transition-colors uppercase tracking-widest flex items-center gap-2">
+                                <i data-lucide="refresh-cw" class="w-3 h-3"></i> Switch Document
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                             <div class="space-y-3">
+                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Extraction Mode</label>
+                                <select id="pdf-split-mode" onchange="document.getElementById('pdf-range-box').style.opacity = this.value === 'all' ? '0.3' : '1'; document.getElementById('pdf-range').disabled = this.value === 'all'" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none text-sm">
+                                    <option value="range">Specific Range (e.g. 1-5)</option>
+                                    <option value="individual">Individual Pages (e.g. 2,4,9)</option>
+                                    <option value="all">Deconstruct (Every page separate)</option>
+                                </select>
+                             </div>
+                             <div class="space-y-3" id="pdf-range-box">
+                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Target Pages</label>
+                                <input type="text" id="pdf-range" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" placeholder="1-5 or 2,5,8">
+                             </div>
+                        </div>
+
+                        <button onclick="runFileSim()" class="w-full py-6 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] font-black shadow-2xl shadow-blue-600/30 active:scale-[0.98] transition-all uppercase tracking-[0.2em] text-xs">
+                           Execute Precision Split
+                        </button>
+                    </div>
+
+                    <div id="file-box" class="hidden animate-fade-in space-y-6">
+                         <div class="w-full bg-gray-100 dark:bg-gray-800 h-3 rounded-full overflow-hidden">
+                             <div id="file-prog" class="w-0 h-full bg-blue-600 transition-all duration-1000"></div>
+                         </div>
+                         <div id="pdf-split-res" class="hidden p-8 bg-blue-50 dark:bg-blue-900/10 border-2 border-blue-100 dark:border-blue-900/20 rounded-[2.5rem] flex flex-col items-center justify-center gap-4 text-center animate-slide-up">
+                            <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-2">
+                                <i data-lucide="layers"></i>
+                            </div>
+                            <div class="font-black text-gray-900 dark:text-white uppercase text-xs tracking-widest">Extraction Vector Ready</div>
+                            <p class="text-xs text-gray-500 font-bold">Successfully isolated 12 individual document segments.</p>
+                            <button class="w-full mt-4 py-4 bg-blue-600 text-white rounded-2xl text-xs font-black shadow-xl hover:bg-blue-700 transition-all uppercase tracking-widest">Download ZIP Archive</button>
+                         </div>
+                    </div>
+                </div>
+             `;
+             lucide.createIcons();
+             break;
+
+        case 'image-resizer':
+             c.innerHTML = `
+                <div class="space-y-10">
+                    <div id="comp-upload" class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('file-in').click()">
+                        <i data-lucide="maximize" class="w-12 h-12 text-gray-300 group-hover:text-blue-500 mb-4 transition-transform group-hover:scale-110"></i>
+                        <p class="text-sm font-bold text-gray-400 group-hover:text-gray-600">Select Image to Resize</p>
+                        <input type="file" id="file-in" class="hidden" accept="image/*" onchange="handleResizerInput(this)">
+                    </div>
+
+                    <div id="resizer-controls" class="hidden animate-fade-in space-y-10">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                             <div class="space-y-6">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Width (px)</label>
+                                        <input type="number" id="res-w" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" value="1920">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Height (px)</label>
+                                        <input type="number" id="res-h" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" value="1080">
+                                    </div>
+                                </div>
+                                <label class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl cursor-pointer group">
+                                    <span class="text-[10px] font-black text-gray-500 group-hover:text-blue-600 uppercase tracking-widest">Maintain Aspect Ratio</span>
+                                    <input type="checkbox" id="res-aspect" checked class="w-4 h-4 rounded text-blue-600 border-gray-300">
+                                </label>
+                             </div>
+                             <div class="space-y-6">
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Export Format</label>
+                                    <select id="res-format" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none text-xs">
+                                        <option value="image/png">PNG (Lossless / Transparent)</option>
+                                        <option value="image/jpeg">JPEG (High Quality Compression)</option>
+                                        <option value="image/webp">WEBP (Modern Web Format)</option>
+                                    </select>
+                                </div>
+                                <button onclick="runFileSim()" class="w-full h-16 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black shadow-2xl shadow-blue-600/30 transition-all uppercase tracking-widest text-[10px]">
+                                    Process Transformation
+                                </button>
+                             </div>
+                        </div>
+                    </div>
+
+                    <div id="file-box" class="hidden animate-fade-in space-y-6">
+                         <div class="w-full bg-gray-100 dark:bg-gray-800 h-3 rounded-full overflow-hidden">
+                             <div id="file-prog" class="w-0 h-full bg-blue-600 transition-all duration-1000"></div>
+                         </div>
+                         <div id="res-out-box" class="hidden p-8 bg-green-50 dark:bg-green-900/10 border-2 border-green-100 dark:border-green-800/20 rounded-[2.5rem] flex flex-col items-center justify-center gap-4 text-center animate-slide-up">
+                            <i data-lucide="image" class="w-10 h-10 text-green-600 mb-2"></i>
+                            <div class="font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-widest">Dimensions Optimized</div>
+                            <button class="w-full mt-2 py-4 bg-green-600 text-white rounded-2xl text-xs font-black shadow-xl hover:bg-green-700 transition-all uppercase tracking-widest">Download Asset</button>
+                         </div>
+                    </div>
+                </div>
+             `;
+             lucide.createIcons();
+             break;
+
+        case 'case-converter':
+             c.innerHTML = `
+                <div class="space-y-6">
+                    <textarea id="case-in" class="w-full h-64 p-8 bg-gray-50 dark:bg-gray-900 border rounded-[2rem] dark:border-gray-700 outline-none focus:ring-4 focus:ring-blue-500/5 font-medium leading-relaxed shadow-inner placeholder:text-gray-300" placeholder="Type or paste your text for character transformation..."></textarea>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <button onclick="runCaseConv('upper')" class="py-4 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-50 transition-colors">UPPERCASE</button>
+                        <button onclick="runCaseConv('lower')" class="py-4 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-50 transition-colors">lowercase</button>
+                        <button onclick="runCaseConv('title')" class="py-4 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-50 transition-colors">Title Case</button>
+                        <button onclick="runCaseConv('sentence')" class="py-4 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-50 transition-colors">Sentence Case</button>
+                    </div>
+                </div>
+             `;
+             break;
+
+        case 'text-to-speech':
+             c.innerHTML = `
+                <div class="space-y-10">
+                    <textarea id="tts-in" class="w-full h-48 p-8 bg-gray-50 dark:bg-gray-900 border rounded-[2.5rem] dark:border-gray-700 outline-none font-medium leading-relaxed" placeholder="Enter text to synthesize..."></textarea>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-4">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Select Voice Actor</label>
+                            <select id="tts-voice" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none text-xs"></select>
+                        </div>
+                        <div class="flex items-end gap-4">
+                            <button onclick="runTTS()" class="flex-grow py-5 bg-blue-600 text-white rounded-2xl font-black shadow-xl flex items-center justify-center gap-3 uppercase tracking-widest text-[10px]">
+                                <i data-lucide="volume-2"></i> Initialise Synthesis
+                            </button>
+                            <button onclick="stopTTS()" class="px-6 py-5 bg-gray-100 dark:bg-gray-800 rounded-2xl font-black text-gray-500"><i data-lucide="square"></i></button>
+                        </div>
+                    </div>
+                </div>
+             `;
+             initTTSVoices();
+             lucide.createIcons();
+             break;
+
+        case 'speech-to-text':
+             c.innerHTML = `
+                <div class="space-y-10 text-center py-10">
+                    <div id="stt-active" class="hidden mb-10">
+                        <div class="w-24 h-24 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto animate-pulse">
+                            <div class="w-8 h-8 bg-red-600 rounded-full"></div>
+                        </div>
+                        <p class="mt-4 text-xs font-black text-red-600 uppercase tracking-widest">Listening to Audio Stream...</p>
+                    </div>
+                    <div id="stt-idle" class="mb-10">
+                        <div class="w-24 h-24 bg-blue-50 dark:bg-blue-900/10 rounded-full flex items-center justify-center mx-auto">
+                            <i data-lucide="mic" class="w-8 h-8 text-blue-600"></i>
+                        </div>
+                        <p class="mt-4 text-xs font-black text-gray-400 uppercase tracking-widest">Mic Ready for Input</p>
+                    </div>
+                    <textarea id="stt-out" class="w-full h-48 p-8 bg-gray-50 dark:bg-gray-900 border rounded-[2.5rem] dark:border-gray-700 outline-none font-medium leading-relaxed font-mono text-sm" placeholder="Transcribed text will appear here..."></textarea>
+                    <button onclick="toggleSTT()" id="stt-btn" class="w-full py-6 bg-blue-600 text-white rounded-[2rem] font-black shadow-2xl flex items-center justify-center gap-3 uppercase tracking-widest text-[10px]">
+                        Start Dictation
+                    </button>
+                </div>
+             `;
+             lucide.createIcons();
+             break;
+
+        case 'color-picker':
+             c.innerHTML = `
+                <div class="space-y-12">
+                    <div class="flex flex-col md:flex-row gap-12 items-start justify-center">
+                        <div class="relative group mx-auto">
+                            <input type="color" id="cp-in" oninput="runColorPicker()" class="w-56 h-56 rounded-full border-[10px] border-white dark:border-gray-800 shadow-2xl cursor-pointer bg-transparent transition-transform hover:scale-105 active:scale-95">
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span class="bg-black/70 backdrop-blur-md text-white px-4 py-2 rounded-2xl text-[9px] font-black uppercase tracking-widest border border-white/10">Base Frequency</span>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-6 flex-grow max-w-sm w-full">
+                            <div class="p-8 bg-gray-50 dark:bg-gray-900 rounded-[2rem] border dark:border-gray-800 space-y-6 shadow-inner">
+                                <div class="flex items-center justify-between group">
+                                    <span onclick="copyToClipboard(document.getElementById('cp-hex').innerText, 'Hex Signature')" class="text-[10px] font-mono font-black text-gray-400 uppercase tracking-widest group-hover:text-blue-500 transition-colors cursor-help" title="HEX: Six-digit alphanumeric code representing color frequencies. Click to copy.">HEX Spectrum</span>
+                                    <div class="flex items-center gap-3">
+                                        <span id="cp-hex" class="font-mono font-black text-xl text-blue-600">#000000</span>
+                                        <button onclick="copyToClipboard(document.getElementById('cp-hex').innerText, 'Hex Signature')" class="text-gray-300 hover:text-blue-500 transition-colors p-1">
+                                            <i data-lucide="copy" class="w-4 h-4"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="h-px bg-gray-200 dark:bg-gray-800 opacity-50"></div>
+                                <div class="flex items-center justify-between group">
+                                    <span onclick="copyToClipboard(document.getElementById('cp-rgb').innerText, 'RGB Matrix')" class="text-[10px] font-mono font-black text-gray-400 uppercase tracking-widest group-hover:text-blue-500 transition-colors cursor-help" title="RGB: Values 0-255 for Red, Green, and Blue. Click to copy.">RGB Matrix</span>
+                                    <div class="flex items-center gap-3">
+                                        <span id="cp-rgb" class="font-mono font-black text-gray-500">rgb(0, 0, 0)</span>
+                                        <button onclick="copyToClipboard(document.getElementById('cp-rgb').innerText, 'RGB Matrix')" class="text-gray-300 hover:text-blue-500 transition-colors p-1">
+                                            <i data-lucide="copy" class="w-4 h-4"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="h-px bg-gray-200 dark:bg-gray-800 opacity-50"></div>
+                                <div class="flex items-center justify-between group">
+                                    <span onclick="copyToClipboard(document.getElementById('cp-hsl').innerText, 'HSL Gradient')" class="text-[10px] font-mono font-black text-gray-400 uppercase tracking-widest group-hover:text-blue-500 transition-colors cursor-help" title="HSL: Representation in degrees and percentages. Click to copy.">HSL Gradient</span>
+                                    <span id="cp-hsl" class="font-mono font-black text-gray-500">hsl(0, 0%, 0%)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-8">
+                        <div>
+                            <div class="flex items-center gap-4 mb-6">
+                                <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Shades & Tints (Lightness Variance)</h3>
+                                <div class="h-px bg-gray-100 dark:bg-gray-800 flex-grow"></div>
+                            </div>
+                            <div id="cp-swatch" class="grid grid-cols-5 md:grid-cols-10 gap-3"></div>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center gap-4 mb-6">
+                                <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Color Harmonies (Schematic Pairs)</h3>
+                                <div class="h-px bg-gray-100 dark:bg-gray-800 flex-grow"></div>
+                            </div>
+                            <div id="cp-harmony" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+                        </div>
+                    </div>
+                </div>
+             `;
+             runColorPicker();
+             lucide.createIcons();
+             break;
+
+        case 'background-remover':
+             c.innerHTML = `
+                <div class="space-y-10">
+                    <div id="br-upload" class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('br-in').click()">
+                        <i data-lucide="image" class="w-12 h-12 text-gray-300 group-hover:text-blue-500 mb-4 transition-transform group-hover:-translate-y-2"></i>
+                        <p class="text-sm font-bold text-gray-400">Select Portrait/Image</p>
+                        <p class="text-[10px] text-gray-300 dark:text-gray-600 mt-2 font-bold uppercase tracking-widest italic">Local AI Processing • No Uploads</p>
+                        <input type="file" id="br-in" class="hidden" accept="image/*" onchange="handleBRInput(this)">
+                    </div>
+                    <div id="br-status" class="hidden text-center space-y-4">
+                        <div class="flex justify-center"><i data-lucide="loader-2" class="w-8 h-8 text-blue-600 animate-spin"></i></div>
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest" id="br-progress">Initalizing AI Tensor Models...</p>
+                    </div>
+                    <div id="br-result" class="hidden space-y-8 animate-fade-in">
+                        <div class="p-4 bg-gray-50 dark:bg-gray-900 rounded-[2.5rem] border dark:border-gray-800">
+                            <img id="br-img" class="w-full rounded-2xl shadow-xl max-h-80 object-contain bg-[url('https://www.transparenttextures.com/patterns/checkerboard.png')]">
+                        </div>
+                        <button onclick="downloadBR()" class="w-full py-6 bg-gray-900 dark:bg-white dark:text-gray-900 text-white rounded-[2rem] font-black shadow-2xl uppercase tracking-widest text-[10px]">Download Transparent Asset</button>
+                    </div>
+                </div>
+             `;
+             lucide.createIcons();
+             break;
+
+        case 'jpg-to-png':
+             c.innerHTML = `
+                <div class="space-y-10">
+                    <div id="conv-upload" class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('conv-in').click()">
+                        <i data-lucide="file-type" class="w-12 h-12 text-gray-300 group-hover:text-blue-500 mb-4 transition-transform group-hover:-translate-y-2"></i>
+                        <p class="text-sm font-bold text-gray-400">Upload Image to Convert</p>
+                        <input type="file" id="conv-in" class="hidden" accept="image/*" onchange="handleConvInput(this)">
+                    </div>
+                    <div id="conv-controls" class="hidden space-y-10 animate-fade-in">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-3">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Target Format</label>
+                                <select id="conv-fmt" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none text-sm">
+                                    <option value="png">PNG (Transparent)</option>
+                                    <option value="webp">WebP (Efficient)</option>
+                                    <option value="jpeg">JPEG (Compressed)</option>
+                                </select>
+                            </div>
+                            <div class="space-y-3">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Image Quality</label>
+                                <input type="range" id="conv-qual" min="1" max="100" value="95" class="w-full accent-blue-600">
+                            </div>
+                        </div>
+                        <button onclick="runConvAction()" class="w-full py-6 bg-blue-600 text-white rounded-[2rem] font-black shadow-2xl uppercase tracking-widest text-[10px]">Process & Secure Download</button>
+                    </div>
+                </div>
+             `;
+             lucide.createIcons();
+             break;
+
+        case 'url-converter':
+             c.innerHTML = `
+                <div class="space-y-8">
+                    <div class="space-y-4">
+                        <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Source URL / String</label>
+                        <textarea id="url-in" class="w-full h-32 p-6 bg-gray-50 dark:bg-gray-900 border rounded-[2rem] dark:border-gray-700 outline-none font-medium text-sm" placeholder="https://example.com/search?q=smart tools"></textarea>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <button onclick="runUrlAction('encode')" class="p-4 bg-blue-50 dark:bg-blue-900/40 text-blue-600 rounded-2xl font-bold text-[10px] uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all">Encode URL</button>
+                        <button onclick="runUrlAction('decode')" class="p-4 bg-blue-50 dark:bg-blue-900/40 text-blue-600 rounded-2xl font-bold text-[10px] uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all">Decode URL</button>
+                        <button onclick="runUrlAction('slug')" class="p-4 bg-blue-50 dark:bg-blue-900/40 text-blue-600 rounded-2xl font-bold text-[10px] uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all">Slugify</button>
+                    </div>
+                    <div id="url-box" class="hidden p-6 bg-blue-600 text-white rounded-[2.5rem] shadow-xl relative group animate-fade-in">
+                        <span class="text-[8px] font-black uppercase tracking-widest opacity-60 mb-2 block">Sanitized Output</span>
+                        <div id="url-out" class="font-mono text-sm break-all font-bold"></div>
+                        <button onclick="copyToolVal('url-out')" class="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all"><i data-lucide="copy" class="w-3 h-3"></i></button>
                     </div>
                 </div>
              `;
@@ -792,52 +1957,379 @@ function injectToolFunctionalHTML(id) {
 // --- LOGIC FUNCTIONS ---
 window.runEMICalc = () => {
     const p = parseFloat(document.getElementById('emi-p').value);
-    const r = parseFloat(document.getElementById('emi-r').value) / 12 / 100;
+    const r = (parseFloat(document.getElementById('emi-r').value) / 100);
     const n = parseFloat(document.getElementById('emi-n').value) * 12;
+    const freq = parseInt(document.getElementById('emi-freq').value || 12);
+    
     if(!p || !r || !n) return toast("Enter valid numbers");
-    const emi = p * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+    
+    const monthlyRate = r / 12;
+    const emi = p * monthlyRate * Math.pow(1 + monthlyRate, n) / (Math.pow(1 + monthlyRate, n) - 1);
+    
     document.getElementById('emi-box').classList.remove('hidden');
     document.getElementById('emi-out').innerText = formatToolCurrency(emi);
 };
 
+let ucPrec = 2;
+window.compUnit = 'KB';
+
+window.changeCompUnit = (u) => {
+    window.compUnit = u;
+    const kb = document.getElementById('unit-kb');
+    const mb = document.getElementById('unit-mb');
+    if(!kb || !mb) return;
+    
+    if(u === 'KB') {
+        kb.className = "px-4 py-1.5 text-[10px] font-black rounded-lg transition-all bg-blue-600 text-white shadow-sm";
+        mb.className = "px-4 py-1.5 text-[10px] font-black rounded-lg transition-all text-gray-400 hover:text-gray-600";
+    } else {
+        mb.className = "px-4 py-1.5 text-[10px] font-black rounded-lg transition-all bg-blue-600 text-white shadow-sm";
+        kb.className = "px-4 py-1.5 text-[10px] font-black rounded-lg transition-all text-gray-400 hover:text-gray-600";
+    }
+};
+
+window.adjustUCPrec = (dir) => {
+    ucPrec = Math.max(0, Math.min(10, ucPrec + dir));
+    document.getElementById('uc-dec-v').innerText = ucPrec;
+    runUnitConv();
+};
+
+window.runUnitConv = () => {
+    const v = parseFloat(document.getElementById('uc-in').value) || 0;
+    const f_el = document.getElementById('uc-f');
+    const t_el = document.getElementById('uc-t');
+    const f = f_el.value;
+    const t = t_el.value;
+    const useSci = document.getElementById('uc-sci')?.checked;
+    
+    // Multipliers relative to Meters or Kilograms
+    const units = {
+        km: 1000, m: 1, cm: 0.01, mm: 0.001, mi: 1609.34, yd: 0.9144, ft: 0.3048, in: 0.0254,
+        kg: 1, g: 0.001, lb: 0.453592, oz: 0.0283495
+    };
+    
+    let res = 0;
+    
+    // Temperature handles separately
+    const isTemp = (u) => ['c', 'f', 'k'].includes(u);
+    
+    if (isTemp(f) || isTemp(t)) {
+        if (!isTemp(f) || !isTemp(t)) {
+            res = 0; // Incompatible categories
+        } else {
+            // Convert everything to Celsius first
+            let c = v;
+            if (f === 'f') c = (v - 32) * 5/9;
+            if (f === 'k') c = v - 273.15;
+            
+            // Convert to Target
+            if (t === 'c') res = c;
+            if (t === 'f') res = (c * 9/5) + 32;
+            if (t === 'k') res = c + 273.15;
+        }
+    } else {
+        let base = v * (units[f] || 1);
+        res = base / (units[t] || 1);
+    }
+    
+    const out = document.getElementById('uc-out');
+    const label = document.getElementById('uc-unit-name');
+    
+    if (useSci) {
+        out.innerText = res.toExponential(ucPrec);
+    } else {
+        out.innerText = res.toFixed(ucPrec);
+    }
+    
+    label.innerText = t_el.options[t_el.selectedIndex]?.text || '';
+};
+
 window.runWordCount = () => {
-    const t = document.getElementById('wc-in').value.trim();
-    document.getElementById('wc-w').innerText = t ? t.split(/\s+/).length : 0;
+    const el = document.getElementById('wc-in');
+    const t = el.value.trim();
+    const words = t ? t.split(/\s+/).length : 0;
+    
+    document.getElementById('wc-w').innerText = words;
     document.getElementById('wc-c').innerText = t.length;
     document.getElementById('wc-s').innerText = t ? t.split(/[.!?]+/).filter(Boolean).length : 0;
-    document.getElementById('wc-r').innerText = Math.ceil((t.split(/\s+/).length || 0) / 200) + 'm';
+    document.getElementById('wc-r').innerText = Math.ceil((words || 0) / 200) + 'm';
+    
+    // Progress logic
+    const prog = document.getElementById('wc-prog');
+    if(prog) {
+        const perc = Math.min(100, (words / 500) * 100);
+        prog.style.width = perc + '%';
+        prog.style.backgroundColor = perc >= 100 ? '#10b981' : '#2563eb';
+    }
+};
+
+// --- NEW TOOL LOGICS ---
+window.initUnitConv = () => {
+    const f = document.getElementById('uc-f');
+    const t = document.getElementById('uc-t');
+    if (!f || !t) return;
+    const units = [
+        {k:'m', n:'Meter'}, {k:'km', n:'Kilometer'}, {k:'cm', n:'Centimeter'}, {k:'mm', n:'Millimeter'},
+        {k:'mi', n:'Mile'}, {k:'yd', n:'Yard'}, {k:'ft', n:'Foot'}, {k:'in', n:'Inch'},
+        {k:'kg', n:'Kilogram'}, {k:'g', n:'Gram'}, {k:'lb', n:'Pound'}, {k:'oz', n:'Ounce'},
+        {k:'c', n:'Celsius'}, {k:'f', n:'Fahrenheit'}, {k:'k', n:'Kelvin'}
+    ];
+    units.forEach(u => {
+        const o1 = document.createElement('option'); o1.value = u.k; o1.innerText = u.n;
+        const o2 = document.createElement('option'); o2.value = u.k; o2.innerText = u.n;
+        f.appendChild(o1); t.appendChild(o2);
+    });
+    f.value = 'm'; t.value = 'km';
+    runUnitConv();
+};
+
+window.runCaseConv = (mode) => {
+    const el = document.getElementById('case-in');
+    let text = el.value;
+    if (mode === 'upper') text = text.toUpperCase();
+    if (mode === 'lower') text = text.toLowerCase();
+    if (mode === 'title') text = text.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+    if (mode === 'sentence') text = text.toLowerCase().replace(/(^\s*\w|[\.\!\?]\s*\w)/g, (c) => c.toUpperCase());
+    el.value = text;
+};
+
+let ttsSynth = window.speechSynthesis;
+window.initTTSVoices = () => {
+    const sel = document.getElementById('tts-voice');
+    if (!sel) return;
+    const updateVoices = () => {
+        const voices = ttsSynth.getVoices();
+        sel.innerHTML = voices.map(v => `<option value="${v.name}">${v.name} (${v.lang})</option>`).join('');
+    };
+    if (ttsSynth.onvoiceschanged !== undefined) ttsSynth.onvoiceschanged = updateVoices;
+    updateVoices();
+};
+
+window.runTTS = () => {
+    const text = document.getElementById('tts-in').value;
+    if (!text) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    const voices = ttsSynth.getVoices();
+    utterance.voice = voices.find(v => v.name === document.getElementById('tts-voice').value);
+    ttsSynth.speak(utterance);
+};
+window.stopTTS = () => ttsSynth.cancel();
+
+let sttRec = null;
+window.toggleSTT = () => {
+    const btn = document.getElementById('stt-btn');
+    if (sttRec) {
+        sttRec.stop();
+        sttRec = null;
+        btn.innerText = "Start Dictation";
+        document.getElementById('stt-active').classList.add('hidden');
+        document.getElementById('stt-idle').classList.remove('hidden');
+        return;
+    }
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRec) return alert("Browser does not support Speech Recognition.");
+    sttRec = new SpeechRec();
+    sttRec.continuous = true;
+    sttRec.onresult = (event) => {
+        const last = event.results.length - 1;
+        document.getElementById('stt-out').value += event.results[last][0].transcript;
+    };
+    sttRec.start();
+    btn.innerText = "Stop Dictation";
+    document.getElementById('stt-active').classList.remove('hidden');
+    document.getElementById('stt-idle').classList.add('hidden');
+};
+
+window.runColorPicker = () => {
+    const input = document.getElementById('cp-in');
+    if (!input) return;
+    const val = input.value;
+    document.getElementById('cp-hex').innerText = val.toUpperCase();
+    
+    const r = parseInt(val.substr(1,2), 16);
+    const g = parseInt(val.substr(3,2), 16);
+    const b = parseInt(val.substr(5,2), 16);
+    document.getElementById('cp-rgb').innerText = `rgb(${r}, ${g}, ${b})`;
+
+    // Helper: Hex to HSL
+    const hexToHSL = (hex) => {
+        let r = parseInt(hex.substr(1, 2), 16) / 255;
+        let g = parseInt(hex.substr(3, 2), 16) / 255;
+        let b = parseInt(hex.substr(5, 2), 16) / 255;
+        let max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+        if (max === min) { h = s = 0; }
+        else {
+            let d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+        return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+    };
+
+    // Helper: HSL to Hex
+    const hslToHex = (h, s, l) => {
+        l /= 100;
+        const a = s * Math.min(l, 1 - l) / 100;
+        const f = n => {
+            const k = (n + h / 30) % 12;
+            const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+            return Math.round(255 * color).toString(16).padStart(2, '0');
+        };
+        return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
+    };
+
+    const hsl = hexToHSL(val);
+    document.getElementById('cp-hsl').innerText = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+    
+    // Generate Shades (Brightness variance)
+    const swatch = document.getElementById('cp-swatch');
+    const lightLevels = [10, 20, 30, 40, 50, 60, 70, 80, 90, 95];
+    swatch.innerHTML = lightLevels.map(l => {
+        const hex = hslToHex(hsl.h, hsl.s, l);
+        return `
+            <div class="group relative aspect-square rounded-xl shadow-lg border-2 border-white dark:border-gray-800 transition-transform hover:scale-110 active:scale-95 cursor-pointer" 
+                 style="background: ${hex}" 
+                 onclick="document.getElementById('cp-in').value='${hex}'; runColorPicker()"
+                 title="${hex}">
+                 <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
+                    <span class="bg-black/50 text-[6px] font-black text-white px-1 py-0.5 rounded uppercase">${l}%</span>
+                 </div>
+            </div>
+        `;
+    }).join('');
+
+    // Generate Harmonies
+    const harmony = document.getElementById('cp-harmony');
+    const presets = [
+        { name: 'Compl.', h: (hsl.h + 180) % 360 },
+        { name: 'Analog 1', h: (hsl.h + 30) % 360 },
+        { name: 'Analog 2', h: (hsl.h - 30 + 360) % 360 },
+        { name: 'Triadic 1', h: (hsl.h + 120) % 360 },
+    ];
+
+    harmony.innerHTML = presets.map(p => {
+        const hex = hslToHex(p.h, hsl.s, hsl.l);
+        return `
+            <div class="p-4 bg-white dark:bg-gray-800 rounded-2xl border dark:border-gray-700 space-y-3 shadow-sm hover:shadow-md transition-shadow group cursor-pointer" onclick="document.getElementById('cp-in').value='${hex}'; runColorPicker()">
+                <div class="flex items-center justify-between">
+                    <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest">${p.name}</span>
+                    <span class="font-mono text-[9px] font-black text-blue-600">${hex}</span>
+                </div>
+                <div class="h-10 rounded-lg shadow-inner overflow-hidden border dark:border-gray-700" style="background: ${hex}"></div>
+            </div>
+        `;
+    }).join('');
+};
+
+window.copyColor = () => {
+    const hex = document.getElementById('cp-hex').innerText;
+    navigator.clipboard.writeText(hex);
+    toast("HEX Signature Locked!");
+};
+
+window.processWCText = (action) => {
+    const el = document.getElementById('wc-in');
+    let val = el.value;
+    
+    if(action === 'upper') val = val.toUpperCase();
+    if(action === 'lower') val = val.toLowerCase();
+    if(action === 'clean') val = val.replace(/\s+/g, ' ').trim();
+    
+    el.value = val;
+    runWordCount();
 };
 
 window.runPassGen = () => {
-    const len = document.getElementById('pg-len')?.value || 16;
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+{}[]";
+    const len = parseInt(document.getElementById('pg-len')?.value || 16);
+    const useUp = document.getElementById('pg-up')?.checked ?? true;
+    const useLow = document.getElementById('pg-low')?.checked ?? true;
+    const useNum = document.getElementById('pg-num')?.checked ?? true;
+    const useSym = document.getElementById('pg-sym')?.checked ?? true;
+    
+    let chars = "";
+    if(useUp) chars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    if(useLow) chars += "abcdefghijklmnopqrstuvwxyz";
+    if(useNum) chars += "0123456789";
+    if(useSym) chars += "!@#$%^&*()_+{}[]|:<>?";
+    
+    if(!chars) {
+        document.getElementById('pg-out').innerHTML = '<span class="text-red-400 text-sm italic">Select at least one category</span>';
+        return;
+    }
+    
     let p = "";
     for(let i=0; i<len; i++) p += chars.charAt(Math.floor(Math.random() * chars.length));
     document.getElementById('pg-out').innerText = p;
 };
 
 window.runAgeCalc = () => {
-    const dob = new Date(document.getElementById('age-in').value);
-    if(isNaN(dob)) return toast("Check date");
+    const dobInput = document.getElementById('age-in').value;
+    if(!dobInput) return toast("Chronological origin required");
+    
+    const dob = new Date(dobInput);
     const now = new Date();
+    
     let y = now.getFullYear() - dob.getFullYear();
     let m = now.getMonth() - dob.getMonth();
     let d = now.getDate() - dob.getDate();
-    if(d < 0) { m--; d += 30; }
+    
+    if(d < 0) { m--; const p = new Date(now.getFullYear(), now.getMonth(), 0); d += p.getDate(); }
     if(m < 0) { y--; m += 12; }
+    
+    // Advanced Stats
+    const diffMs = now - dob;
+    const weeks = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 7));
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    
+    // Next Birthday
+    let nextBday = new Date(now.getFullYear(), dob.getMonth(), dob.getDate());
+    if (now > nextBday) nextBday.setFullYear(now.getFullYear() + 1);
+    const daysToBday = Math.ceil((nextBday - now) / (1000 * 60 * 60 * 24));
+
     document.getElementById('age-box').classList.remove('hidden');
     document.getElementById('age-y').innerText = y;
     document.getElementById('age-m').innerText = m;
     document.getElementById('age-d').innerText = d;
+    document.getElementById('age-weeks').innerText = weeks.toLocaleString();
+    document.getElementById('age-hours').innerText = hours.toLocaleString();
+    document.getElementById('age-next').innerText = `${daysToBday} Days Until Celebration`;
+};
+
+window.exportNotes = () => {
+    const text = document.getElementById('notes-in').value;
+    if(!text) return toast("Notes are empty");
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `notes_${new Date().toISOString().split('T')[0]}.txt`;
+    a.click();
+};
+
+window.copyNotes = () => {
+    const text = document.getElementById('notes-in').value;
+    if(!text) return toast("Nothing to copy");
+    window.copyToClipboard(text, "Notes Content");
 };
 
 window.runQRGen = () => {
     const val = document.getElementById('qr-in').value;
     if(!val) return toast("Enter text/URL");
+    const color = document.getElementById('qr-color').value.replace('#','');
+    const bgcolor = document.getElementById('qr-bg').value.replace('#','');
+    const size = document.getElementById('qr-size').value;
+    
     const img = document.getElementById('qr-img');
     const box = document.getElementById('qr-box');
     const down = document.getElementById('qr-down');
-    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(val)}`;
+    
+    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(val)}&color=${color}&bgcolor=${bgcolor}`;
     img.onload = () => { 
         box.classList.remove('hidden');
         down.href = img.src;
@@ -847,6 +2339,15 @@ window.runQRGen = () => {
 window.runNotesSave = () => {
     state.notes = document.getElementById('notes-in').value;
     localStorage.setItem('tool_notes', state.notes);
+};
+
+window.clearNotes = () => {
+    const el = document.getElementById('notes-in');
+    if (!el) return;
+    el.value = '';
+    state.notes = '';
+    localStorage.setItem('tool_notes', '');
+    toast("Fragment destroyed successfully.");
 };
 
 window.runAddTodo = () => {
@@ -912,44 +2413,301 @@ window.runStopwatchReset = () => {
 };
 
 window.runSIPCalc = () => {
-    const p = parseFloat(document.getElementById('sip-m').value);
+    let m = parseFloat(document.getElementById('sip-m').value) || 0;
     const r = parseFloat(document.getElementById('sip-r').value) / 100 / 12;
-    const n = parseFloat(document.getElementById('sip-n').value) * 12;
-    const mat = p * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+    const n = parseFloat(document.getElementById('sip-n').value);
+    const step = parseFloat(document.getElementById('sip-step').value) / 100;
+    
+    if(!m || !r || !n) return toast("Parameters incomplete");
+
+    let maturity = 0;
+    let totalInvested = 0;
+    
+    // Monthly calculation with yearly step-up
+    for (let year = 1; year <= n; year++) {
+        for (let month = 1; month <= 12; month++) {
+            maturity += m;
+            totalInvested += m;
+            maturity *= (1 + r);
+        }
+        m *= (1 + step);
+    }
+    
     document.getElementById('sip-box').classList.remove('hidden');
-    document.getElementById('sip-out').innerText = formatToolCurrency(mat);
+    document.getElementById('sip-out').innerText = formatToolCurrency(maturity);
+    document.getElementById('sip-invested').innerText = formatToolCurrency(totalInvested);
+    document.getElementById('sip-gained').innerText = formatToolCurrency(maturity - totalInvested);
+};
+
+let taxRegime = 'new';
+window.setTaxRegime = (r) => {
+    taxRegime = r;
+    const nEl = document.getElementById('tax-reg-new');
+    const oEl = document.getElementById('tax-reg-old');
+    if(r === 'new') {
+        nEl.className = "flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-blue-600 text-white shadow-lg";
+        oEl.className = "flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all text-gray-400 hover:text-gray-900 dark:hover:text-white";
+    } else {
+        oEl.className = "flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-blue-600 text-white shadow-lg";
+        nEl.className = "flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all text-gray-400 hover:text-gray-900 dark:hover:text-white";
+    }
+    runTaxCalc();
 };
 
 window.runTaxCalc = () => {
     const sal = parseFloat(document.getElementById('tax-in').value) || 0;
     let t = 0;
-    if(sal > 1500000) t = (sal - 1500000) * 0.3 + 187500;
-    else if(sal > 1000000) t = (sal - 1000000) * 0.2 + 87500;
-    else if(sal > 500000) t = (sal - 500000) * 0.1 + 12500;
+    
+    if(taxRegime === 'new') {
+        if(sal > 1500000) t = (sal - 1500000) * 0.3 + 150000;
+        else if(sal > 1200000) t = (sal - 1200000) * 0.2 + 90000;
+        else if(sal > 900000) t = (sal - 900000) * 0.15 + 45000;
+        else if(sal > 600000) t = (sal - 600000) * 0.1 + 15000;
+        else if(sal > 300000) t = (sal - 300000) * 0.05;
+    } else {
+        // Old Regime simplified
+        if(sal > 1000000) t = (sal - 1000000) * 0.3 + 112500;
+        else if(sal > 500000) t = (sal - 500000) * 0.2 + 12500;
+        else if(sal > 250000) t = (sal - 250000) * 0.05;
+    }
+    
+    const rate = sal > 0 ? (t / sal) * 100 : 0;
+    
     document.getElementById('tax-box').classList.remove('hidden');
     document.getElementById('tax-out').innerText = formatToolCurrency(t);
+    document.getElementById('tax-rate').innerText = rate.toFixed(1) + '%';
 };
 
 window.runUserGen = () => {
-    const k = document.getElementById('un-in').value || 'cool';
-    const sufs = ['_dev', 'master', 'io', 'hq', 'official', '2k26', 'x', 'box', 'ultra', 'hub'];
-    const names = sufs.map(s => k.toLowerCase().replace(/\s/g, '') + s);
+    const k = document.getElementById('un-in').value || 'User';
+    const mod = document.getElementById('un-mod').value || '';
+    const style = document.getElementById('un-style').value;
+    const sep = document.getElementById('un-sep').value;
+    
+    const cleanK = k.toLowerCase().replace(/\s/g, '');
+    const cleanMod = mod.toLowerCase().replace(/\s/g, '');
+    
+    let presets = [];
+    if(style === 'modern') presets = ['io', 'dot', 'kit', 'lab', 'app', 'hub', 'flow'];
+    if(style === 'hype') presets = ['vx', 'z', 'hype', 'flex', 'drip', 'vibe', 'mode'];
+    if(style === 'og') presets = ['the', 'real', 'og', 'main', 'prime', 'ace', 'king'];
+    if(style === 'pro') presets = ['consult', 'hq', 'official', 'pro', 'partner', 'inc'];
+    
+    const results = presets.map(p => {
+        const parts = [cleanK, p];
+        if(cleanMod) parts.push(cleanMod);
+        return parts.join(sep);
+    });
+    
     const g = document.getElementById('un-grid');
-    g.innerHTML = names.map(n => `<div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl text-center text-xs font-bold border dark:border-gray-700">${n}</div>`).join('');
+    g.innerHTML = results.map(n => `
+        <div onclick="navigator.clipboard.writeText('${n}'); toast('Handle Copied!')" class="p-5 bg-gray-50 dark:bg-gray-800 rounded-2xl text-center text-xs font-black border dark:border-gray-700 hover:border-blue-500 cursor-pointer transition-all active:scale-95 group">
+            <span class="group-hover:text-blue-600 transition-colors">${n}</span>
+        </div>
+    `).join('');
 };
 
 window.runBioGen = () => {
-    const bios = [
-        "✨ Dreamer | Explorer of Code \n📍 Earth \n🛠️ Building SmartTools",
-        "Digital Enthusiast 💻 \nCurating experiences with logic & love ❤️ \n#DeveloperLife",
-        "minimalist. ⚪ \nproductivity obsessed. \n2026 vibes only.",
+    const input = document.getElementById('bio-in').value || "Creator";
+    const templates = [
+        `✨ {t} | Making waves\n📍 Earth \n🛠️ Professional SmartTools usage`,
+        `Digital Enthusiast 💻\n{t} centered experiences.\nCurating logic & love ❤️`,
+        `{t} state of mind. ⚪\nproductivity obsessed.\n2026 vibes only.`,
+        `Mastering the art of {t}.\nDM for collaboration 📩\nofficial {t} handle.`,
+        `Passionate about {t} 🌿\nBuilding the future, one byte at a time.\n#Innovation #Growth`
     ];
-    document.getElementById('bio-list').innerHTML = bios.map(b => `<pre class="p-6 bg-gray-50 dark:bg-gray-900 border dark:border-gray-800 rounded-3xl font-bold whitespace-pre-wrap text-sm">${b}</pre>`).join('');
+
+    const list = document.getElementById('bio-list');
+    list.innerHTML = templates.map(tpl => {
+        const text = tpl.replace(/{t}/g, input);
+        return `
+            <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-3xl border dark:border-gray-800 group relative">
+                <p class="text-sm font-bold whitespace-pre-wrap leading-relaxed">${text}</p>
+                <button onclick="copyToClipboard('${text.replace(/\n/g, '\\n')}')" class="absolute top-4 right-4 p-2 bg-white dark:bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-all border dark:border-gray-700 shadow-sm">
+                    <i data-lucide="copy" class="w-3 h-3"></i>
+                </button>
+            </div>
+        `;
+    }).join("");
+    lucide.createIcons();
+};
+
+let selectedFile = null;
+
+window.handleImageInput = (input) => {
+    if (input.files && input.files[0]) {
+        selectedFile = input.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            document.getElementById('img-preview').src = e.target.result;
+            document.getElementById('comp-upload').classList.add('hidden');
+            document.getElementById('comp-controls').classList.remove('hidden');
+        };
+        reader.readAsDataURL(selectedFile);
+    }
+};
+
+window.runManualCompress = () => {
+    if (!selectedFile) return toast("Please upload an image first");
+
+    const quality = document.getElementById('comp-quality').value / 100;
+    const scale = document.getElementById('comp-scale').value / 100;
+    const format = document.getElementById('comp-format').value;
+    
+    const prog = document.getElementById('file-prog');
+    const box = document.getElementById('file-box');
+    const res = document.getElementById('comp-res-box');
+    
+    box.classList.remove('hidden');
+    res.classList.add('hidden');
+    prog.style.width = '0%';
+    
+    const img = new Image();
+    img.src = document.getElementById('img-preview').src;
+    
+    img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        const width = img.width * scale;
+        const height = img.height * scale;
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        if (document.getElementById('comp-gray')?.checked) {
+            ctx.filter = 'grayscale(100%)';
+        }
+        
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        const targetFormat = format === 'original' ? selectedFile.type : format;
+        const compressedDataUrl = canvas.toDataURL(targetFormat, quality);
+        
+        // Update progress
+        setTimeout(() => { 
+            prog.style.width = '100%'; 
+            setTimeout(() => {
+                res.classList.remove('hidden');
+                
+                // Calculate real savings
+                const originalSize = selectedFile.size;
+                const head = 'data:' + targetFormat + ';base64,';
+                const compressedSize = Math.round((compressedDataUrl.length - head.length) * 3 / 4);
+                const savings = Math.round((1 - (compressedSize / originalSize)) * 100);
+                
+                const formatSize = (s) => {
+                    if (window.compUnit === 'MB') return (s / (1024 * 1024)).toFixed(2) + ' MB';
+                    return (s / 1024).toFixed(1) + ' KB';
+                };
+                document.getElementById('comp-saved').innerText = `Saved ${savings}% (${formatSize(originalSize)} → ${formatSize(compressedSize)})`;
+                
+                // Setup download button
+                const dlBtn = res.querySelector('button');
+                dlBtn.onclick = () => {
+                    const link = document.createElement('a');
+                    link.href = compressedDataUrl;
+                    link.download = `compressed_${selectedFile.name.split('.')[0]}.${targetFormat.split('/')[1]}`;
+                    link.click();
+                };
+            }, 500);
+        }, 50);
+    };
+};
+
+window.handlePDFInput = (input) => {
+    if (!input.files.length) return;
+    const count = input.files.length;
+    document.getElementById('comp-upload').classList.add('hidden');
+    document.getElementById('pdf-controls').classList.remove('hidden');
+    document.getElementById('pdf-count').innerText = `${count} ${count === 1 ? 'File' : 'Files'} Documented`;
+    
+    // Generate suggested filename
+    const first = input.files[0].name.split('.')[0];
+    document.getElementById('pdf-name').value = `${first}_merged`;
+    lucide.createIcons();
+};
+
+window.handlePDFSplitInput = (input) => {
+    if (!input.files.length) return;
+    document.getElementById('comp-upload').classList.add('hidden');
+    document.getElementById('pdf-split-controls').classList.remove('hidden');
+    lucide.createIcons();
 };
 
 window.runCaptionGen = () => {
-    const caps = ["Escaping the ordinary. ✨", "Code is poetry. 💻", "Just vibes and utilities. 🛠️", "Focus on results. 📈"];
-    document.getElementById('cap-list').innerHTML = caps.map(c => `<div class="p-6 bg-gray-50 dark:bg-gray-900 border dark:border-gray-800 rounded-3xl font-bold text-sm">${c}</div>`).join('');
+    const topic = document.getElementById('cap-in').value;
+    if(!topic) return toast("What is the scene about?");
+    
+    const vibe = document.getElementById('cap-vibe').value;
+    const emoji = document.getElementById('cap-emoji').value;
+    const hashCount = document.getElementById('cap-hash').value === 'max' ? 30 : parseInt(document.getElementById('cap-hash').value);
+    
+    const templates = {
+        aesthetic: [
+            "soft mornings & {t} 🕊️",
+            "finding magic in {t} ✨",
+            "just another day with {t} ☁️",
+            "{t} state of mind.",
+            "POV: you found the perfect {t} 🎞️"
+        ],
+        hype: [
+            "Main character energy with {t} ⚡",
+            "{t} season is officially here.",
+            "Nobody does {t} like this. 😤",
+            "{t} > Everything else.",
+            "Locked in on {t}. 🔒"
+        ],
+        deep: [
+            "{t} taught me more than I expected.",
+            "In a world of noise, find your {t}. 🌿",
+            "The beauty of {t} is in the details.",
+            "Gratitude for moments like {t}.",
+            "Quietly evolving through {t}."
+        ],
+        pro: [
+            "Elevating your workflow with {t}.",
+            "The fundamental guide to {t} in 2026.",
+            "Why {t} remains a top priority for teams.",
+            "Strategic insights into {t}.",
+            "Mastering the art of {t}."
+        ]
+    };
+
+    const emojiSets = ["✨", "☁️", "🕊️", "🌿", "⚡", "🎞️", "🔥", "💎"];
+    const hashtagSets = ["#aesthetic", "#vibes", "#explore", "#dailymotivation", "#mindset", "#lifestyle"];
+
+    const list = document.getElementById('cap-list');
+    list.innerHTML = templates[vibe].map(tpl => {
+        let text = tpl.replace('{t}', topic);
+        
+        // Add emojis
+        if (emoji === 'min') text += " " + emojiSets[Math.floor(Math.random() * emojiSets.length)];
+        if (emoji === 'heavy') text += " " + emojiSets.sort(() => .5 - Math.random()).slice(0, 4).join("");
+
+        // Add hashtags
+        let hashes = "";
+        if (hashCount > 0) {
+            hashes = "\n\n" + hashtagSets.sort(() => .5 - Math.random()).slice(0, hashCount).join(" ");
+        }
+
+        return `
+            <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-3xl border dark:border-gray-800 group relative">
+                <p class="text-sm font-medium mb-4 whitespace-pre-wrap">${text}${hashes}</p>
+                <button onclick="copyToClipboard('${text}${hashes.replace(/\n\n/, '\\n\\n')}')" class="absolute top-4 right-4 p-2 bg-white dark:bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-all border dark:border-gray-700 shadow-sm">
+                    <i data-lucide="copy" class="w-3 h-3"></i>
+                </button>
+            </div>
+        `;
+    }).join('');
+    lucide.createIcons();
+};
+
+window.handleResizerInput = (input) => {
+    if (!input.files.length) return;
+    document.getElementById('comp-upload').classList.add('hidden');
+    document.getElementById('resizer-controls').classList.remove('hidden');
+    lucide.createIcons();
 };
 
 window.runFileSim = () => {
@@ -957,8 +2715,292 @@ window.runFileSim = () => {
     const box = document.getElementById('file-box');
     box.classList.remove('hidden');
     prog.style.width = '0%';
-    setTimeout(() => { prog.style.width = '100%'; }, 50);
+    
+    setTimeout(() => { 
+        prog.style.width = '100%'; 
+        setTimeout(() => {
+            if (state.activeTool.id === 'pdf-merger') {
+                document.getElementById('pdf-res').classList.remove('hidden');
+                document.getElementById('pdf-final-name').innerText = (document.getElementById('pdf-name').value || 'Merged_Document') + '.pdf';
+            }
+            if (state.activeTool.id === 'pdf-splitter') {
+                document.getElementById('pdf-split-res').classList.remove('hidden');
+            }
+            if (state.activeTool.id === 'image-resizer') {
+                document.getElementById('res-out-box').classList.remove('hidden');
+            }
+        }, 1200);
+    }, 50);
 };
+
+// --- PHASE 4 FINANCE LOGIC ---
+window.runCCCalc = () => {
+    const p = parseFloat(document.getElementById('cc-p').value);
+    const r = (parseFloat(document.getElementById('cc-r').value) / 100) / 12;
+    const m = parseFloat(document.getElementById('cc-m').value);
+    const t = parseFloat(document.getElementById('cc-t').value);
+
+    if(!p || !m) return toast("Enter valid balance and payment");
+    if(m <= p * r) return toast("Monthly payment must be greater than interest accrued");
+
+    let totalInterest = 0;
+    let months = 0;
+    let balance = p;
+
+    while (balance > t && months < 600) { // Limit to 50 years
+        let interest = balance * r;
+        totalInterest += interest;
+        balance = balance + interest - m;
+        months++;
+    }
+
+    document.getElementById('cc-box').classList.remove('hidden');
+    document.getElementById('cc-total-i').innerText = formatToolCurrency(totalInterest);
+    document.getElementById('cc-months').innerText = months + ' Months';
+    document.getElementById('cc-daily').innerText = formatToolCurrency((p * r * 12) / 365);
+};
+
+window.runWebCost = () => {
+    let total = 500; // Base rate
+    const opts = document.querySelectorAll('#web-opts input[type="checkbox"]');
+    opts.forEach(opt => {
+        if(opt.checked) total += parseInt(opt.getAttribute('data-val'));
+    });
+    document.getElementById('web-total').innerText = formatToolCurrency(total);
+};
+
+window.runFreelanceCalc = () => {
+    const r = parseFloat(document.getElementById('fr-rate').value) || 0;
+    const h = parseFloat(document.getElementById('fr-hours').value) || 0;
+    
+    const monthly = r * h * 4.33; // Avg weeks in month
+    const yearly = monthly * 12;
+
+    document.getElementById('fr-month').innerText = formatToolCurrency(monthly);
+    document.getElementById('fr-year').innerText = formatToolCurrency(yearly);
+};
+
+window.runDomEst = () => {
+    const domain = document.getElementById('dom-in').value.trim();
+    if(!domain) return;
+
+    let score = 500;
+    const parts = domain.split('.');
+    const name = parts[0];
+    const tld = parts[1] || 'com';
+
+    // Length heuristic
+    if(name.length < 5) score += 2000;
+    else if(name.length < 8) score += 500;
+    else score -= 100;
+
+    // TLD heuristic
+    const premiumTLDs = ['com', 'io', 'ai', 'net', 'org'];
+    if(premiumTLDs.includes(tld)) score *= 2.5;
+
+    // Keyword heuristic
+    const keywords = ['pay', 'fit', 'sex', 'crypto', 'loan', 'bank', 'tech'];
+    keywords.forEach(k => { if(name.includes(k)) score += 1000; });
+
+    document.getElementById('dom-box').classList.remove('hidden');
+    document.getElementById('dom-val').innerText = formatToolCurrency(score);
+    document.getElementById('dom-len').innerText = `Length: ${name.length} Chars`;
+    document.getElementById('dom-tld').innerText = `TLD: ${tld.toUpperCase()}`;
+};
+
+window.runCryCalc = () => {
+    const cap = parseFloat(document.getElementById('cry-in').value) || 0;
+    const buy = parseFloat(document.getElementById('cry-buy').value) || 1;
+    const sell = parseFloat(document.getElementById('cry-sell').value) || 0;
+
+    const tokens = cap / buy;
+    const balance = tokens * sell;
+    const profit = balance - cap;
+    const perc = ((sell - buy) / buy) * 100;
+
+    document.getElementById('cry-profit').innerText = formatToolCurrency(Math.abs(profit));
+    document.getElementById('cry-profit').style.color = profit >= 0 ? '#10b981' : '#ef4444';
+    
+    document.getElementById('cry-perc').innerText = (profit >= 0 ? '+' : '') + perc.toFixed(2) + '%';
+    document.getElementById('cry-perc').className = `text-lg font-black ${profit >= 0 ? 'text-green-400' : 'text-red-400'}`;
+    
+    document.getElementById('cry-bal').innerText = formatToolCurrency(balance);
+};
+
+window.runROICalc = () => {
+    const s = parseFloat(document.getElementById('roi-s').value) || 1;
+    const r = parseFloat(document.getElementById('roi-r').value) || 0;
+
+    const profit = r - s;
+    const roi = (profit / s) * 100;
+    const roas = r / s;
+
+    document.getElementById('roi-out').innerText = roi.toFixed(0) + '%';
+    document.getElementById('roi-p').innerText = formatToolCurrency(profit);
+    document.getElementById('roi-a').innerText = roas.toFixed(1) + 'x';
+    
+    const bar = document.getElementById('roi-bar');
+    const perc = Math.max(0, Math.min(100, (roi / 200) * 100)); // Normalized to 200% baseline
+    bar.style.width = perc + '%';
+    bar.style.backgroundColor = roi >= 0 ? '#ffffff' : '#ef4444';
+};
+
+window.runInsCalc = () => {
+    const type = document.getElementById('ins-type').value;
+    const age = parseInt(document.getElementById('ins-age').value) || 25;
+    const cov = parseFloat(document.getElementById('ins-cov').value) || 0;
+    const isTobacco = document.getElementById('ins-t-yes').classList.contains('bg-blue-600');
+
+    let baseRate = 0.0001; // Base multiplier
+    if (type === 'health') baseRate = 0.0005;
+    if (type === 'accident') baseRate = 0.00005;
+
+    // Age multiplier
+    let ageMult = 1 + (Math.max(0, age - 25) * 0.05);
+    if (isTobacco) ageMult *= 1.8;
+
+    const monthly = (cov * baseRate * ageMult) / 12;
+    document.getElementById('ins-out').innerText = formatToolCurrency(monthly);
+};
+
+window.setInsTobacco = (val) => {
+    const no = document.getElementById('ins-t-no');
+    const yes = document.getElementById('ins-t-yes');
+    if (val) {
+        yes.className = "flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-blue-600 text-white shadow-lg";
+        no.className = "flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all text-gray-400 hover:text-gray-900 dark:hover:text-white";
+    } else {
+        no.className = "flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-blue-600 text-white shadow-lg";
+        yes.className = "flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all text-gray-400 hover:text-gray-900 dark:hover:text-white";
+    }
+    runInsCalc();
+};
+
+// --- PHASE 3 LOGIC ---
+let brFile = null;
+window.handleBRInput = (input) => {
+    if (input.files && input.files[0]) {
+        brFile = input.files[0];
+        document.getElementById('br-upload').classList.add('hidden');
+        document.getElementById('br-status').classList.remove('hidden');
+        
+        // AI Removal Logic
+        if (typeof imglyRemoveBackground !== 'undefined') {
+            imglyRemoveBackground(brFile).then((blob) => {
+                const url = URL.createObjectURL(blob);
+                const img = document.getElementById('br-img');
+                img.src = url;
+                document.getElementById('br-status').classList.add('hidden');
+                document.getElementById('br-result').classList.remove('hidden');
+                lucide.createIcons();
+            }).catch((err) => {
+                console.error(err);
+                toast("AI Logic Error: " + err.message);
+                document.getElementById('br-status').classList.add('hidden');
+                document.getElementById('br-upload').classList.remove('hidden');
+            });
+        } else {
+            toast("AI Module Loading... Please retry in 3s");
+            setTimeout(() => {
+                document.getElementById('br-status').classList.add('hidden');
+                document.getElementById('br-upload').classList.remove('hidden');
+            }, 3000);
+        }
+    }
+};
+
+window.downloadBR = () => {
+    const img = document.getElementById('br-img');
+    const a = document.createElement('a');
+    a.href = img.src;
+    a.download = `removed_bg_${Date.now()}.png`;
+    a.click();
+};
+
+let convFile = null;
+window.handleConvInput = (input) => {
+    if (input.files && input.files[0]) {
+        convFile = input.files[0];
+        document.getElementById('conv-upload').classList.add('hidden');
+        document.getElementById('conv-controls').classList.remove('hidden');
+        lucide.createIcons();
+    }
+};
+
+window.runConvAction = () => {
+    if (!convFile) return;
+    const fmt = document.getElementById('conv-fmt').value;
+    const qual = document.getElementById('conv-qual').value / 100;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            
+            const mime = `image/${fmt}`;
+            const dataUrl = canvas.toDataURL(mime, qual);
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = `converted_image.${fmt === 'jpeg' ? 'jpg' : fmt}`;
+            a.click();
+            toast("Conversion Success!");
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(convFile);
+};
+
+window.runUrlAction = (mode) => {
+    const val = document.getElementById('url-in').value;
+    if (!val) return;
+    
+    let res = "";
+    if (mode === 'encode') res = encodeURIComponent(val);
+    if (mode === 'decode') res = decodeURIComponent(val);
+    if (mode === 'slug') res = val.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
+    
+    document.getElementById('url-out').innerText = res;
+    document.getElementById('url-box').classList.remove('hidden');
+    lucide.createIcons();
+};
+
+window.copyToolVal = (id) => {
+    const text = document.getElementById(id).innerText;
+    copyToClipboard(text);
+};
+
+window.copyToClipboard = (text, label = "Content") => {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            toast(`${label} Locked to Clipboard!`);
+        }).catch(() => {
+            fallbackCopy(text, label);
+        });
+    } else {
+        fallbackCopy(text, label);
+    }
+};
+
+function fallbackCopy(text, label) {
+    const el = document.createElement('textarea');
+    el.value = text;
+    el.style.position = 'fixed';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    try {
+        document.execCommand('copy');
+        toast(`${label} Locked to Clipboard!`);
+    } catch (err) {
+        toast("Copy Failed. Please manual select.");
+    }
+    document.body.removeChild(el);
+}
 
 // --- HELPERS ---
 function formatToolCurrency(v) {
