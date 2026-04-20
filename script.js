@@ -35,7 +35,7 @@ const TOOLS = [
     { id: 'domain-estimator', nameKey: 'dom', icon: 'search', category: 'Finance', desc: 'Check the heuristic value of your domain name.' },
     { id: 'crypto-profit', nameKey: 'crypto', icon: 'coins', category: 'Finance', desc: 'Calculate ROI for your crypto trades.' },
     { id: 'roi-calculator', nameKey: 'roi', icon: 'line-chart', category: 'Finance', desc: 'Ads ROI and marketing spend analyzer.' },
-    { id: 'username-generator', nameKey: 'username', icon: 'instagram', category: 'Instagram', desc: 'Creative handle generator for socials.' },
+    { id: 'username-generator', nameKey: 'username', icon: 'user-plus', category: 'Instagram', desc: 'Creative handle generator for socials.' },
     { id: 'caption-generator', nameKey: 'caption', icon: 'message-circle', category: 'Instagram', desc: 'Engaging AI-vibe captions for posts.' },
     { id: 'bio-generator', nameKey: 'bio', icon: 'sparkles', category: 'Instagram', desc: 'Professional and aesthetic user bios.' },
 ];

@@ -4,7 +4,7 @@ const TOOLS = [
     { id: 'pdf-m', name: 'PDF Merger', icon: 'file-text', cat: 'PDF', desc: 'Combine multiple PDFs into one.' },
     { id: 'word-c', name: 'Word Counter', icon: 'type', cat: 'Text', desc: 'Live word and char analysis.' },
     { id: 'emi', name: 'EMI Calculator', icon: 'landmark', cat: 'Finance', desc: 'Loan installment calculator.' },
-    { id: 'ig-user', name: 'Username Generator', icon: 'instagram', cat: 'Instagram', desc: 'Cool handle suggestions.' },
+    { id: 'ig-user', name: 'Username Generator', icon: 'user-plus', cat: 'Instagram', desc: 'Cool handle suggestions.' },
     { id: 'pass-g', name: 'Password Gen', icon: 'lock', cat: 'Utility', desc: 'Strong random passwords.' },
     { id: 'age-c', name: 'Age Calculator', icon: 'calendar', cat: 'Utility', desc: 'Exact age in days/hours.' },
     { id: 'qr-g', name: 'QR Generator', icon: 'qr-code', cat: 'Utility', desc: 'Instant QR for links.' },
