@@ -630,10 +630,12 @@ function trackRecentlyUsed(id) {
 
 // --- TOOLS IMPLEMENTATION HUB ---
 function injectToolFunctionalHTML(id) {
+    const normalizedId = (id || location.hash.replace('#', '') || '').toLowerCase().trim().replace('#', '').replace(/\s+/g, '-');
+    console.log("TOOL ID (injected):", normalizedId);
     const c = document.getElementById('tool-content');
     const cur = CURRENCIES[state.currency].symbol;
 
-    switch(id) {
+    switch(normalizedId) {
         case 'emi-calculator':
             c.innerHTML = `
                 <div class="space-y-10">
@@ -1950,7 +1952,8 @@ function injectToolFunctionalHTML(id) {
              break;
 
         default:
-            c.innerHTML = `<div class="p-20 text-center opacity-30"><i data-lucide="wrench" class="w-16 h-16 mx-auto mb-6 animate-bounce"></i><p class="font-black text-xl uppercase tracking-widest">Premium Logic Coming Soon</p></div>`;
+            console.error("Unknown tool ID:", normalizedId);
+            c.innerHTML = `<div class="p-20 text-center text-red-500"><i data-lucide="alert-triangle" class="w-16 h-16 mx-auto mb-6"></i><p class="font-black text-xl uppercase tracking-widest">Tool configuration error.</p></div>`;
     }
 }
 
