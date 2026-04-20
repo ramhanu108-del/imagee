@@ -542,8 +542,12 @@ document.getElementById('currency-select').onchange = (e) => {
 
 // --- MODAL ENGINE ---
 window.openToolModal = (id) => {
+    console.log("openToolModal called with ID:", id);
     const tool = TOOLS.find(t => t.id === id);
-    if (!tool) return;
+    if (!tool) {
+        console.error("Tool not found for ID:", id);
+        return;
+    }
 
     state.activeTool = tool;
     trackRecentlyUsed(id);
