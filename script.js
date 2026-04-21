@@ -2442,26 +2442,50 @@ window.runStopwatchReset = () => {
 };
 
 window.runSIPCalc = () => {
-    let m = parseFloat(document.getElementById('sip-m').value) || 0;
-    const r = parseFloat(document.getElementById('sip-r').value) / 100 / 12;
-    const n = parseFloat(document.getElementById('sip-n').value);
-    const step = parseFloat(document.getElementById('sip-step').value) / 100;
-    
-    if(!m || !r || !n) return toast("Parameters incomplete");
+    const mInput = document.getElementById('sip-m');
+    const rInput = document.getElementById('sip-r');
+    const nInput = document.getElementById('sip-n');
+    const stepInput = document.getElementById('sip-step');
+
+    const mBase = parseFloat(mInput.value);
+    const annualRate = parseFloat(rInput.value);
+    const years = parseFloat(nInput.value);
+    const stepPercent = parseFloat(stepInput.value) || 0;
+
+    // Validation for Indian Financial Standards
+    if (isNaN(mBase) || mBase <= 0) return toast("Monthly investment must be greater than zero");
+    if (isNaN(annualRate) || annualRate <= 0) return toast("Expected yield must be positive");
+    if (isNaN(years) || years <= 0) return toast("Investment duration must be at least 1 year");
+    if (years > 50) return toast("Maximum timeline is 50 years");
+
+    const r = annualRate / 12 / 100; // Monthly interest rate
+    const totalMonths = Math.floor(years * 12);
+    const step = stepPercent / 100;
 
     let maturity = 0;
     let totalInvested = 0;
-    
-    // Monthly calculation with yearly step-up
-    for (let year = 1; year <= n; year++) {
-        for (let month = 1; month <= 12; month++) {
-            maturity += m;
-            totalInvested += m;
+    let currentM = mBase;
+
+    // If step-up is 0, we can use the requested high-accuracy formula
+    if (step === 0) {
+        // FV = P × [((1 + r)^n - 1) / r] × (1 + r)
+        maturity = mBase * ((Math.pow(1 + r, totalMonths) - 1) / r) * (1 + r);
+        totalInvested = mBase * totalMonths;
+    } else {
+        // Handle Step-Up SIP (increases every 12 months)
+        for (let t = 1; t <= totalMonths; t++) {
+            maturity += currentM;
+            totalInvested += currentM;
             maturity *= (1 + r);
+
+            // Apply step-up at the end of every 12 months
+            if (t % 12 === 0 && t < totalMonths) {
+                currentM *= (1 + step);
+            }
         }
-        m *= (1 + step);
     }
-    
+
+    // Display Results
     document.getElementById('sip-box').classList.remove('hidden');
     document.getElementById('sip-out').innerText = formatToolCurrency(maturity);
     document.getElementById('sip-invested').innerText = formatToolCurrency(totalInvested);
@@ -2892,7 +2916,7 @@ window.runWebCost = () => {
     opts.forEach(opt => {
         if(opt.checked) total += parseInt(opt.getAttribute('data-val'));
     });
-    document.getElementById('web-total').innerText = formatToolCurrency(total);
+    document.getElementById('web-total').innerText = formatToolCurrency(total, true);
 };
 
 window.runFreelanceCalc = () => {
@@ -2929,7 +2953,7 @@ window.runDomEst = () => {
     keywords.forEach(k => { if(name.includes(k)) score += 1000; });
 
     document.getElementById('dom-box').classList.remove('hidden');
-    document.getElementById('dom-val').innerText = formatToolCurrency(score);
+    document.getElementById('dom-val').innerText = formatToolCurrency(score, true);
     document.getElementById('dom-len').innerText = `Length: ${name.length} Chars`;
     document.getElementById('dom-tld').innerText = `TLD: ${tld.toUpperCase()}`;
 };
@@ -3131,10 +3155,15 @@ function fallbackCopy(text, label) {
 }
 
 // --- HELPERS ---
-function formatToolCurrency(v) {
+function formatToolCurrency(v, convert = false) {
     const cur = CURRENCIES[state.currency];
-    const convertedValue = v * (state.currency === 'USD' ? 1 : cur.rate);
-    return new Intl.NumberFormat(state.lang === 'hi' ? 'en-IN' : 'en-US', {
+    const convertedValue = convert ? v * (state.currency === 'USD' ? 1 : cur.rate) : v;
+    
+    // For INR, always use en-IN to get the lakh/crore comma system (e.g., 1,00,000)
+    // For other currencies, use en-US (standard million/billion grouping)
+    const locale = (state.currency === 'INR') ? 'en-IN' : 'en-US';
+    
+    return new Intl.NumberFormat(locale, {
         style: 'currency',
         currency: state.currency,
         maximumFractionDigits: 0
