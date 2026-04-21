@@ -3183,4 +3183,8 @@ function boot() {
     handleRoute();
 }
 
+// Expose local functions to window for legacy inline onclick handlers
+window.closeToolModal = closeToolModal;
+window.renderUI = renderUI;
+
 boot();
