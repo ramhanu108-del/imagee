@@ -587,6 +587,11 @@ window.openToolModal = (id) => {
 
     // Inject Specific Logic
     injectToolFunctionalHTML(id);
+    
+    // Update URL hash without jumping if possible
+    if(location.hash !== '#' + id) {
+        history.pushState(null, null, '#' + id);
+    }
 
     // Similar tools
     const related = TOOLS.filter(t => t.category === tool.category && t.id !== tool.id).slice(0, 4);
@@ -611,6 +616,9 @@ window.openToolModal = (id) => {
 };
 
 function closeToolModal() {
+    // Clear URL hash
+    history.pushState(null, null, ' ');
+    
     const modal = document.getElementById('modal-container');
     const overlay = document.getElementById('modal-overlay');
     
@@ -2328,19 +2336,31 @@ window.copyNotes = () => {
 window.runQRGen = () => {
     const val = document.getElementById('qr-in').value;
     if(!val) return toast("Enter text/URL");
-    const color = document.getElementById('qr-color').value.replace('#','');
-    const bgcolor = document.getElementById('qr-bg').value.replace('#','');
+    const color = document.getElementById('qr-color').value;
+    const bgcolor = document.getElementById('qr-bg').value;
     const size = document.getElementById('qr-size').value;
     
     const img = document.getElementById('qr-img');
     const box = document.getElementById('qr-box');
     const down = document.getElementById('qr-down');
     
-    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(val)}&color=${color}&bgcolor=${bgcolor}`;
-    img.onload = () => { 
-        box.classList.remove('hidden');
-        down.href = img.src;
-    };
+    if (typeof QRCode !== 'undefined') {
+        QRCode.toDataURL(val, {
+            width: size,
+            margin: 2,
+            color: {
+                dark: color,
+                light: bgcolor
+            }
+        }, function (err, url) {
+            if (err) return toast("QR Error: " + err);
+            img.src = url;
+            box.classList.remove('hidden');
+            down.href = url;
+        });
+    } else {
+        toast("Loading QR Engine... Retry in 2s");
+    }
 };
 
 window.runNotesSave = () => {
@@ -2717,27 +2737,124 @@ window.handleResizerInput = (input) => {
     lucide.createIcons();
 };
 
-window.runFileSim = () => {
+window.runFileSim = async () => {
     const prog = document.getElementById('file-prog');
     const box = document.getElementById('file-box');
-    box.classList.remove('hidden');
-    prog.style.width = '0%';
+    const input = document.getElementById('file-in');
     
-    setTimeout(() => { 
-        prog.style.width = '100%'; 
-        setTimeout(() => {
-            if (state.activeTool.id === 'pdf-merger') {
-                document.getElementById('pdf-res').classList.remove('hidden');
-                document.getElementById('pdf-final-name').innerText = (document.getElementById('pdf-name').value || 'Merged_Document') + '.pdf';
+    if (!input || !input.files.length) return toast("Please select files first");
+    
+    box.classList.remove('hidden');
+    prog.style.width = '100%';
+    prog.classList.add('animate-pulse');
+
+    const id = state.activeTool.id;
+
+    try {
+        if (id === 'pdf-merger' && typeof PDFLib !== 'undefined') {
+            const { PDFDocument } = PDFLib;
+            const mergedPdf = await PDFDocument.create();
+            
+            for (const file of input.files) {
+                const bytes = await file.arrayBuffer();
+                const pdf = await PDFDocument.load(bytes);
+                const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+                copiedPages.forEach((page) => mergedPdf.addPage(page));
             }
-            if (state.activeTool.id === 'pdf-splitter') {
-                document.getElementById('pdf-split-res').classList.remove('hidden');
+            
+            const pdfBytes = await mergedPdf.save();
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            
+            document.getElementById('pdf-res').classList.remove('hidden');
+            const finalName = (document.getElementById('pdf-name').value || 'Merged_Document') + '.pdf';
+            document.getElementById('pdf-final-name').innerText = finalName;
+            
+            const dlBtn = document.getElementById('pdf-res').querySelector('button');
+            dlBtn.onclick = () => {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = finalName;
+                a.click();
+            };
+        } 
+        else if (id === 'pdf-splitter' && typeof PDFLib !== 'undefined') {
+            const { PDFDocument } = PDFLib;
+            const file = input.files[0];
+            const bytes = await file.arrayBuffer();
+            const pdf = await PDFDocument.load(bytes);
+            
+            const range = document.getElementById('pdf-range').value;
+            const mode = document.getElementById('pdf-split-mode').value;
+            
+            // For simplicity in this suite, we'll extract the first page or the range
+            // Real complex splitting often needs a loop and multiple files
+            const newPdf = await PDFDocument.create();
+            let pagesToExtract = [0];
+            
+            if (mode === 'range' && range.includes('-')) {
+                const parts = range.split('-').map(p => parseInt(p.trim()) - 1);
+                pagesToExtract = [];
+                for(let i=parts[0]; i<=parts[1]; i++) {
+                    if (i < pdf.getPageCount()) pagesToExtract.push(i);
+                }
             }
-            if (state.activeTool.id === 'image-resizer') {
-                document.getElementById('res-out-box').classList.remove('hidden');
-            }
-        }, 1200);
-    }, 50);
+            
+            const copiedPages = await newPdf.copyPages(pdf, pagesToExtract);
+            copiedPages.forEach(p => newPdf.addPage(p));
+            
+            const pdfBytes = await newPdf.save();
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            
+            document.getElementById('pdf-split-res').classList.remove('hidden');
+            const dlBtn = document.getElementById('pdf-split-res').querySelector('button');
+            dlBtn.onclick = () => {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Split_${file.name}`;
+                a.click();
+            };
+        }
+        else if (id === 'image-resizer') {
+            const file = input.files[0];
+            const w = parseInt(document.getElementById('res-w').value);
+            const h = parseInt(document.getElementById('res-h').value);
+            const format = document.getElementById('res-format').value;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    
+                    const url = canvas.toDataURL(format);
+                    document.getElementById('res-out-box').classList.remove('hidden');
+                    const dlBtn = document.getElementById('res-out-box').querySelector('button');
+                    dlBtn.onclick = () => {
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `resized_${file.name.split('.')[0]}.${format.split('/')[1]}`;
+                        a.click();
+                    };
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+        else {
+            toast("Module not loaded or unsupported tool.");
+        }
+    } catch (err) {
+        console.error(err);
+        toast("Processing Error: " + err.message);
+    } finally {
+        prog.classList.remove('animate-pulse');
+    }
 };
 
 // --- PHASE 4 FINANCE LOGIC ---
@@ -3045,6 +3162,21 @@ function boot() {
     
     setInterval(autoRotateQuotes, 8000);
     lucide.createIcons();
+
+    // Direct routing handler
+    const handleRoute = () => {
+        const id = location.hash.replace('#', '');
+        if (id) {
+            // Short delay to ensure DOM is ready
+            setTimeout(() => {
+                const tool = TOOLS.find(t => t.id === id);
+                if (tool) openToolModal(id);
+            }, 100);
+        }
+    };
+
+    window.addEventListener('hashchange', handleRoute);
+    handleRoute();
 }
 
 boot();
