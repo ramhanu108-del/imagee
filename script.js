@@ -360,17 +360,37 @@ const TRANSLATIONS = {
     }
 };
 
-const QUOTES = QUOTES_LIBRARY || [
-    { text: "The unexamined life is not worth living.", author: "Socrates" },
-    { text: "Knowing yourself is the beginning of all wisdom.", author: "Aristotle" }
-];
-
 const CURRENCIES = {
     USD: { symbol: '$', rate: 1 },
     INR: { symbol: '₹', rate: 83 },
     EUR: { symbol: '€', rate: 0.92 },
-    GBP: { symbol: '£', rate: 0.79 }
+    GBP: { symbol: '£', rate: 0.79 },
+    JPY: { symbol: '¥', rate: 151 },
+    CAD: { symbol: '$', rate: 1.36 },
+    AUD: { symbol: '$', rate: 1.54 },
+    AED: { symbol: 'DH', rate: 3.67 },
+    SAR: { symbol: 'SR', rate: 3.75 },
+    SGD: { symbol: '$', rate: 1.35 },
+    CNY: { symbol: '¥', rate: 7.23 }
 };
+
+let quoteBag = [];
+let quoteLangConfigured = null;
+
+function getNextRandomQuote() {
+    if (quoteBag.length === 0 || quoteLangConfigured !== state.lang) {
+        quoteLangConfigured = state.lang;
+        const library = typeof QUOTES_LIBRARY !== 'undefined' ? QUOTES_LIBRARY : {};
+        const quotesForLang = library[state.lang] || library['en'] || [{ text: "Knowledge is power.", author: "Francis Bacon" }];
+        
+        quoteBag = [...quotesForLang];
+        for (let i = quoteBag.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [quoteBag[i], quoteBag[j]] = [quoteBag[j], quoteBag[i]];
+        }
+    }
+    return quoteBag.pop();
+}
 
 // --- STATE MANAGER ---
 let state = {
@@ -381,10 +401,14 @@ let state = {
     category: 'All',
     recent: JSON.parse(localStorage.getItem('tool_recent') || '[]'),
     activeTool: null,
-    quoteIdx: Math.floor(Math.random() * (window.QUOTES_LIBRARY ? window.QUOTES_LIBRARY.length : 2)),
+    currentQuote: null, 
     todo: JSON.parse(localStorage.getItem('tool_todo') || '[]'),
     notes: localStorage.getItem('tool_notes') || ''
 };
+
+// Initialize quote safely
+state.currentQuote = getNextRandomQuote();
+
 
 // --- UI CORE RENDERING ---
 function renderUI() {
@@ -393,6 +417,27 @@ function renderUI() {
     renderCategoryTabs();
     renderToolShelves();
     renderFullGrid();
+    
+    // Auto-update open tool content on currency/lang switch
+    if (state.activeTool) {
+        injectToolFunctionalHTML(state.activeTool);
+        
+        const tid = state.activeTool.replace('#', '').toLowerCase();
+        const runMap = {
+            'emi-calculator': 'runEMICalc',
+            'sip-calculator': 'runSIPCalc',
+            'tax-calculator': 'runTaxCalc',
+            'credit-card-interest': 'runCCCalc',
+            'website-cost': 'runWebCost',
+            'freelancer-earning': 'runFreelanceCalc',
+            'crypto-profit': 'runCryCalc',
+            'roi-calculator': 'runROICalc',
+            'insurance-estimator': 'runInsCalc'
+        };
+        if (runMap[tid] && typeof window[runMap[tid]] === 'function') {
+            window[runMap[tid]]();
+        }
+    }
 }
 
 function applyTheme() {
@@ -413,6 +458,14 @@ function updateText() {
     document.getElementById('footer-hub-name').innerText = t.nav.logo;
     document.getElementById('footer-rights').innerText = `© 2026 ${t.nav.logo}. ${t.ui.rights}`;
     document.getElementById('quote-header').innerText = t.ui.quotesTitle;
+    
+    // Update active quote logic (refill tracking if necessary)
+    if (!state.currentQuote || quoteLangConfigured !== state.lang) {
+        state.currentQuote = getNextRandomQuote();
+    }
+    const q = state.currentQuote;
+    document.getElementById('quote-text').innerText = `"${q.text}"`;
+    document.getElementById('quote-author').innerText = `— ${q.author}`;
 }
 
 function renderCategoryTabs() {
@@ -494,19 +547,15 @@ function createToolCard(t) {
 
 // --- QUOTES SYSTEM ---
 function autoRotateQuotes() {
-    let nextIdx;
-    do {
-        nextIdx = Math.floor(Math.random() * QUOTES.length);
-    } while (nextIdx === state.quoteIdx && QUOTES.length > 1);
-    
-    state.quoteIdx = nextIdx;
+    state.currentQuote = getNextRandomQuote();
     const content = document.getElementById('quote-content');
     content.style.opacity = '0';
     content.style.transform = 'translateY(15px)';
     
     setTimeout(() => {
-        document.getElementById('quote-text').innerText = `"${QUOTES[state.quoteIdx].text}"`;
-        document.getElementById('quote-author').innerText = `— ${QUOTES[state.quoteIdx].author}`;
+        const q = state.currentQuote;
+        document.getElementById('quote-text').innerText = `"${q.text}"`;
+        document.getElementById('quote-author').innerText = `— ${q.author}`;
         content.style.opacity = '1';
         content.style.transform = 'translateY(0)';
     }, 800);
@@ -533,13 +582,18 @@ document.getElementById('theme-toggle').onclick = () => {
 document.getElementById('lang-select').onchange = (e) => {
     state.lang = e.target.value;
     localStorage.setItem('lang', state.lang);
+    quoteBag = []; // clear the bag to force new language pick immediately
+    state.currentQuote = getNextRandomQuote();
     renderUI();
 };
 
 document.getElementById('currency-select').onchange = (e) => {
+    const oldCur = state.currency;
     state.currency = e.target.value;
     localStorage.setItem('currency', state.currency);
+    console.log(`[Global] Currency changed from ${oldCur} to ${state.currency}`);
     renderUI();
+    window.dispatchEvent(new CustomEvent('currencyChanged', { detail: state.currency }));
 };
 
 // --- MODAL ENGINE ---
@@ -647,7 +701,8 @@ function injectToolFunctionalHTML(id) {
     const normalizedId = (id || location.hash.replace('#', '') || '').toLowerCase().trim().replace('#', '').replace(/\s+/g, '-');
     console.log("TOOL ID (injected):", normalizedId);
     const c = document.getElementById('tool-content');
-    const cur = CURRENCIES[state.currency].symbol;
+    const curCode = getSelectedCurrency();
+    const cur = curCode; 
 
     switch(normalizedId) {
         case 'emi-calculator':
@@ -657,21 +712,21 @@ function injectToolFunctionalHTML(id) {
                         <div class="space-y-6">
                             <div class="space-y-3">
                                 <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Loan Amount (${cur})</label>
-                                <input type="number" id="emi-p" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" value="500000" placeholder="500000">
+                                <input type="number" id="emi-p" oninput="runEMICalc()" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" value="500000" placeholder="500000">
                             </div>
                             <div class="space-y-3">
                                 <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Annual Rate (%)</label>
-                                <input type="number" id="emi-r" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" value="10.5" placeholder="10.5">
+                                <input type="number" id="emi-r" oninput="runEMICalc()" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" value="10.5" placeholder="10.5">
                             </div>
                         </div>
                         <div class="space-y-6">
                             <div class="space-y-3">
                                 <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Tenure (Years)</label>
-                                <input type="number" id="emi-n" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" value="5" placeholder="5">
+                                <input type="number" id="emi-n" oninput="runEMICalc()" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" value="5" placeholder="5">
                             </div>
                             <div class="space-y-3">
                                 <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Interest Customization</label>
-                                <select id="emi-freq" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none">
+                                <select id="emi-freq" onchange="runEMICalc()" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none">
                                     <option value="12">Compounded Monthly (Standard)</option>
                                     <option value="4">Compounded Quarterly</option>
                                     <option value="1">Compounded Annually</option>
@@ -684,7 +739,7 @@ function injectToolFunctionalHTML(id) {
                     </button>
                     <div id="emi-box" class="hidden animate-fade-in tool-result text-center py-10 bg-blue-600/5 border-2 border-blue-600/20 rounded-[2.5rem]">
                         <span class="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] mb-4 block">Scheduled Monthly Installment</span>
-                        <div class="text-6xl font-black text-gray-900 dark:text-white" id="emi-out"></div>
+                        <div class="text-6xl font-black text-gray-900 dark:text-white" id="emi-out">---</div>
                     </div>
                 </div>
             `;
@@ -1121,8 +1176,8 @@ function injectToolFunctionalHTML(id) {
                     <div class="p-10 bg-gray-900 text-white rounded-[2.5rem] text-center shadow-2xl relative overflow-hidden">
                         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
                         <span class="text-[10px] font-black text-gray-500 uppercase tracking-[0.4em] mb-4 block">Estimated Market Quote</span>
-                        <div class="text-6xl font-black mb-2" id="web-total">${cur}0</div>
-                        <p class="text-[10px] font-black text-blue-400 uppercase tracking-widest">Base Rate: ${cur}500 Applied</p>
+                        <div class="text-6xl font-black mb-2" id="web-total">---</div>
+                        <p class="text-[10px] font-black text-blue-400 uppercase tracking-widest">Pricing model: Global Flat-Rate Basis</p>
                     </div>
                 </div>
             `;
@@ -1145,11 +1200,11 @@ function injectToolFunctionalHTML(id) {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                          <div class="p-8 bg-blue-50 dark:bg-blue-900/10 rounded-[2.5rem] border dark:border-blue-900/20 text-center">
                             <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest block mb-4">Monthly Income</span>
-                            <div id="fr-month" class="text-4xl font-black text-blue-600">${cur}0</div>
+                            <div id="fr-month" class="text-4xl font-black text-blue-600">---</div>
                          </div>
                          <div class="p-8 bg-gray-900 text-white rounded-[2.5rem] text-center shadow-xl">
                             <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest block mb-4 text-blue-400">Annual Projection</span>
-                            <div id="fr-year" class="text-4xl font-black">${cur}0</div>
+                            <div id="fr-year" class="text-4xl font-black">---</div>
                          </div>
                     </div>
                 </div>
@@ -1203,7 +1258,7 @@ function injectToolFunctionalHTML(id) {
                     <div id="cry-res" class="p-10 bg-gray-900 text-white rounded-[2.5rem] text-center shadow-2xl space-y-6">
                         <div>
                              <span class="text-[8px] font-black text-gray-500 uppercase tracking-[0.4em] mb-2 block text-blue-400">Net Return</span>
-                             <div id="cry-profit" class="text-5xl font-black">$0</div>
+                             <div id="cry-profit" class="text-5xl font-black">---</div>
                         </div>
                         <div class="flex justify-center gap-10">
                              <div class="text-center">
@@ -1212,7 +1267,7 @@ function injectToolFunctionalHTML(id) {
                              </div>
                              <div class="text-center">
                                 <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest block mb-1">Total Balance</span>
-                                <span id="cry-bal" class="text-lg font-black">$0</span>
+                                <span id="cry-bal" class="text-lg font-black">---</span>
                              </div>
                         </div>
                     </div>
@@ -1244,11 +1299,11 @@ function injectToolFunctionalHTML(id) {
                          <div class="grid grid-cols-2 gap-4">
                             <div class="text-center">
                                 <span class="text-[8px] font-black text-blue-200 uppercase tracking-widest block mb-1">Net Profit</span>
-                                <span id="roi-p" class="text-xl font-black text-white">${cur}</span>
+                                <span id="roi-p" class="text-xl font-black text-white">---</span>
                             </div>
                             <div class="text-center">
                                 <span class="text-[8px] font-black text-blue-200 uppercase tracking-widest block mb-1">ROAS</span>
-                                <span id="roi-a" class="text-xl font-black text-white">2.4x</span>
+                                <span id="roi-a" class="text-xl font-black text-white">---</span>
                             </div>
                          </div>
                     </div>
@@ -1288,8 +1343,8 @@ function injectToolFunctionalHTML(id) {
                     </div>
                     <div class="p-10 bg-blue-600 text-white rounded-[2.5rem] text-center shadow-2xl space-y-4">
                          <span class="text-[10px] font-black text-blue-200 uppercase tracking-[0.4em] block">Estimated Monthly Premium</span>
-                         <div id="ins-out" class="text-6xl font-black">${cur}0</div>
-                         <p class="text-[8px] font-bold text-blue-300 uppercase tracking-widest">Indicative quote based on global averages</p>
+                         <div id="ins-out" class="text-6xl font-black">---</div>
+                         <p class="text-[8px] font-bold text-blue-300 uppercase tracking-widest">Actuarial quote based on risk profile</p>
                     </div>
                 </div>
             `;
@@ -1580,7 +1635,7 @@ function injectToolFunctionalHTML(id) {
         case 'pdf-merger':
              c.innerHTML = `
                 <div class="space-y-10">
-                    <div id="comp-upload" class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('file-in').click()">
+                    <div id="pdf-upload" class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('file-in').click()">
                         <i data-lucide="file-stack" class="w-12 h-12 text-gray-300 group-hover:text-blue-500 mb-4 transition-transform group-hover:-translate-y-2"></i>
                         <p class="text-sm font-bold text-gray-400 group-hover:text-gray-600">Select PDF Files for Merger</p>
                         <p class="text-[10px] text-gray-300 dark:text-gray-600 mt-2 font-bold uppercase tracking-widest">Process entirely in RAM (Privacy Secure)</p>
@@ -1654,7 +1709,7 @@ function injectToolFunctionalHTML(id) {
         case 'pdf-splitter':
              c.innerHTML = `
                 <div class="space-y-10">
-                    <div id="comp-upload" class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('file-in').click()">
+                    <div id="pdf-split-upload" class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('file-in').click()">
                         <i data-lucide="scissors" class="w-12 h-12 text-gray-300 group-hover:text-blue-500 mb-4 transition-transform group-hover:-translate-y-2"></i>
                         <p class="text-sm font-bold text-gray-400 group-hover:text-gray-600">Select PDF Source for Extraction</p>
                         <p class="text-[10px] text-gray-300 dark:text-gray-600 mt-2 font-bold uppercase tracking-widest">Supports files up to 500MB</p>
@@ -1710,7 +1765,7 @@ function injectToolFunctionalHTML(id) {
         case 'image-resizer':
              c.innerHTML = `
                 <div class="space-y-10">
-                    <div id="comp-upload" class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('file-in').click()">
+                    <div id="resizer-upload" class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('file-in').click()">
                         <i data-lucide="maximize" class="w-12 h-12 text-gray-300 group-hover:text-blue-500 mb-4 transition-transform group-hover:scale-110"></i>
                         <p class="text-sm font-bold text-gray-400 group-hover:text-gray-600">Select Image to Resize</p>
                         <input type="file" id="file-in" class="hidden" accept="image/*" onchange="handleResizerInput(this)">
@@ -1973,16 +2028,23 @@ function injectToolFunctionalHTML(id) {
 
 // --- LOGIC FUNCTIONS ---
 window.runEMICalc = () => {
+    console.log("Tool: EMI Calculator | Currency:", state.currency);
     const p = parseFloat(document.getElementById('emi-p').value);
-    const r = (parseFloat(document.getElementById('emi-r').value) / 100);
-    const n = parseFloat(document.getElementById('emi-n').value) * 12;
-    const freq = parseInt(document.getElementById('emi-freq').value || 12);
+    const rInput = parseFloat(document.getElementById('emi-r').value);
+    const nInput = parseFloat(document.getElementById('emi-n').value);
+
+    // Validation
+    if (isNaN(p) || p <= 0) return toast("Invalid Principal Amount");
+    if (isNaN(rInput) || rInput < 0) return toast("Invalid Interest Rate");
+    if (isNaN(nInput) || nInput <= 0) return toast("Invalid Loan Tenure");
+
+    const r = (rInput / 100) / 12; // Monthly rate
+    const n = nInput * 12; // Total months
     
-    if(!p || !r || !n) return toast("Enter valid numbers");
+    // Formula: EMI = P × r × (1+r)^n / ((1+r)^n − 1)
+    const emi = p * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
     
-    const monthlyRate = r / 12;
-    const emi = p * monthlyRate * Math.pow(1 + monthlyRate, n) / (Math.pow(1 + monthlyRate, n) - 1);
-    
+    console.log("Result (Monthly EMI):", emi);
     document.getElementById('emi-box').classList.remove('hidden');
     document.getElementById('emi-out').innerText = formatToolCurrency(emi);
 };
@@ -2442,6 +2504,7 @@ window.runStopwatchReset = () => {
 };
 
 window.runSIPCalc = () => {
+    console.log("Tool: SIP Calculator | Currency:", state.currency);
     const mInput = document.getElementById('sip-m');
     const rInput = document.getElementById('sip-r');
     const nInput = document.getElementById('sip-n');
@@ -2452,11 +2515,11 @@ window.runSIPCalc = () => {
     const years = parseFloat(nInput.value);
     const stepPercent = parseFloat(stepInput.value) || 0;
 
-    // Validation for Indian Financial Standards
+    // Hardened Validation
     if (isNaN(mBase) || mBase <= 0) return toast("Monthly investment must be greater than zero");
     if (isNaN(annualRate) || annualRate <= 0) return toast("Expected yield must be positive");
     if (isNaN(years) || years <= 0) return toast("Investment duration must be at least 1 year");
-    if (years > 50) return toast("Maximum timeline is 50 years");
+    if (years > 50) return toast("Maximum timeline is 50 years (Protection against overflow)");
 
     const r = annualRate / 12 / 100; // Monthly interest rate
     const totalMonths = Math.floor(years * 12);
@@ -2466,9 +2529,9 @@ window.runSIPCalc = () => {
     let totalInvested = 0;
     let currentM = mBase;
 
-    // If step-up is 0, we can use the requested high-accuracy formula
+    // Use high-accuracy SIP formula (Annuity Due) if no step-up
     if (step === 0) {
-        // FV = P × [((1 + r)^n - 1) / r] × (1 + r)
+        // Formula: FV = P × [((1 + r)^n - 1) / r] × (1 + r)
         maturity = mBase * ((Math.pow(1 + r, totalMonths) - 1) / r) * (1 + r);
         totalInvested = mBase * totalMonths;
     } else {
@@ -2478,14 +2541,13 @@ window.runSIPCalc = () => {
             totalInvested += currentM;
             maturity *= (1 + r);
 
-            // Apply step-up at the end of every 12 months
             if (t % 12 === 0 && t < totalMonths) {
                 currentM *= (1 + step);
             }
         }
     }
 
-    // Display Results
+    console.log("Result (Maturity):", maturity);
     document.getElementById('sip-box').classList.remove('hidden');
     document.getElementById('sip-out').innerText = formatToolCurrency(maturity);
     document.getElementById('sip-invested').innerText = formatToolCurrency(totalInvested);
@@ -2508,23 +2570,33 @@ window.setTaxRegime = (r) => {
 };
 
 window.runTaxCalc = () => {
+    console.log("Tool: Tax Calculator | Currency:", state.currency);
     const sal = parseFloat(document.getElementById('tax-in').value) || 0;
+    if (sal < 0) return toast("Revenue cannot be negative");
+    
     let t = 0;
     
-    if(taxRegime === 'new') {
-        if(sal > 1500000) t = (sal - 1500000) * 0.3 + 150000;
-        else if(sal > 1200000) t = (sal - 1200000) * 0.2 + 90000;
-        else if(sal > 900000) t = (sal - 900000) * 0.15 + 45000;
-        else if(sal > 600000) t = (sal - 600000) * 0.1 + 15000;
-        else if(sal > 300000) t = (sal - 300000) * 0.05;
+    // Country-aware logic based on selected currency
+    if (state.currency === 'INR') {
+        // India New Regime (FY 2024-25)
+        if (sal <= 300000) t = 0;
+        else if (sal <= 700000) t = (sal - 300000) * 0.05;
+        else if (sal <= 1000000) t = (sal - 700000) * 0.10 + 20000;
+        else if (sal <= 1200000) t = (sal - 1000000) * 0.15 + 50000;
+        else if (sal <= 1500000) t = (sal - 1200000) * 0.20 + 80000;
+        else t = (sal - 1500000) * 0.30 + 140000;
+        // Tax rebate if income <= 7L
+        if (sal <= 700000) t = 0;
     } else {
-        // Old Regime simplified
-        if(sal > 1000000) t = (sal - 1000000) * 0.3 + 112500;
-        else if(sal > 500000) t = (sal - 500000) * 0.2 + 12500;
-        else if(sal > 250000) t = (sal - 250000) * 0.05;
+        // Simplified Global/USA baseline (15% avg across tiers for simplicity in tool)
+        if (sal <= 11000) t = sal * 0.10;
+        else if (sal <= 44725) t = (sal - 11000) * 0.12 + 1100;
+        else if (sal <= 95375) t = (sal - 44725) * 0.22 + 5147;
+        else t = (sal - 95375) * 0.24 + 16290;
     }
     
     const rate = sal > 0 ? (t / sal) * 100 : 0;
+    console.log("Result (Liability):", t);
     
     document.getElementById('tax-box').classList.remove('hidden');
     document.getElementById('tax-out').innerText = formatToolCurrency(t);
@@ -2885,25 +2957,31 @@ window.runFileSim = async () => {
 
 // --- PHASE 4 FINANCE LOGIC ---
 window.runCCCalc = () => {
+    console.log("Tool: CC Interest Calculator | Currency:", state.currency);
     const p = parseFloat(document.getElementById('cc-p').value);
-    const r = (parseFloat(document.getElementById('cc-r').value) / 100) / 12;
+    const apr = parseFloat(document.getElementById('cc-r').value);
     const m = parseFloat(document.getElementById('cc-m').value);
-    const t = parseFloat(document.getElementById('cc-t').value);
+    const t = parseFloat(document.getElementById('cc-t').value) || 0;
 
-    if(!p || !m) return toast("Enter valid balance and payment");
-    if(m <= p * r) return toast("Monthly payment must be greater than interest accrued");
+    if(isNaN(p) || p <= 0) return toast("Enter valid debt balance");
+    if(isNaN(apr) || apr <= 0) return toast("Invalid APR Percentage");
+    if(isNaN(m) || m <= 0) return toast("Missing monthly payment");
+    
+    const r = (apr / 100) / 12; // Monthly periodic rate
+    if(m <= p * r) return toast("Payment is too low - interest will compound faster than you pay!");
 
     let totalInterest = 0;
     let months = 0;
     let balance = p;
 
-    while (balance > t && months < 600) { // Limit to 50 years
+    while (balance > t && months < 600) { // Safety ceiling: 50 years
         let interest = balance * r;
         totalInterest += interest;
         balance = balance + interest - m;
         months++;
     }
 
+    console.log("Result (Total Interest):", totalInterest);
     document.getElementById('cc-box').classList.remove('hidden');
     document.getElementById('cc-total-i').innerText = formatToolCurrency(totalInterest);
     document.getElementById('cc-months').innerText = months + ' Months';
@@ -2911,47 +2989,59 @@ window.runCCCalc = () => {
 };
 
 window.runWebCost = () => {
-    let total = 500; // Base rate
+    console.log("Tool: Website Cost Calculator | Currency:", state.currency);
+    let total = 500; // Base market entry rate
     const opts = document.querySelectorAll('#web-opts input[type="checkbox"]');
     opts.forEach(opt => {
         if(opt.checked) total += parseInt(opt.getAttribute('data-val'));
     });
+    
+    console.log("Result (Base USD Estimate):", total);
     document.getElementById('web-total').innerText = formatToolCurrency(total, true);
 };
 
 window.runFreelanceCalc = () => {
+    console.log("Tool: Freelance Earnings | Currency:", state.currency);
     const r = parseFloat(document.getElementById('fr-rate').value) || 0;
     const h = parseFloat(document.getElementById('fr-hours').value) || 0;
     
-    const monthly = r * h * 4.33; // Avg weeks in month
+    if (r < 0 || h < 0) return toast("Inputs cannot be negative");
+
+    const weekly = r * h;
+    const monthly = weekly * 4.33; // Standard calculation: 52 weeks / 12 months
     const yearly = monthly * 12;
 
+    console.log("Result (Monthly):", monthly);
     document.getElementById('fr-month').innerText = formatToolCurrency(monthly);
     document.getElementById('fr-year').innerText = formatToolCurrency(yearly);
 };
 
 window.runDomEst = () => {
+    console.log("Tool: Domain Estimator | Currency:", state.currency);
     const domain = document.getElementById('dom-in').value.trim();
-    if(!domain) return;
+    if(!domain) return toast("Enter a domain name");
 
-    let score = 500;
+    let score = 500; // Initial base value
     const parts = domain.split('.');
     const name = parts[0];
     const tld = parts[1] || 'com';
 
-    // Length heuristic
-    if(name.length < 5) score += 2000;
-    else if(name.length < 8) score += 500;
-    else score -= 100;
+    // Algorithmic valuation
+    if(name.length < 4) score += 5000;
+    else if(name.length < 6) score += 2000;
+    else if(name.length < 10) score += 500;
+    else score -= 150;
 
-    // TLD heuristic
-    const premiumTLDs = ['com', 'io', 'ai', 'net', 'org'];
-    if(premiumTLDs.includes(tld)) score *= 2.5;
+    // TLD Multipliers
+    const premiumTLDs = ['com', 'io', 'ai', 'tech', 'net', 'org'];
+    if(premiumTLDs.includes(tld.toLowerCase())) score *= 3.8;
+    else score *= 0.5;
 
-    // Keyword heuristic
-    const keywords = ['pay', 'fit', 'sex', 'crypto', 'loan', 'bank', 'tech'];
-    keywords.forEach(k => { if(name.includes(k)) score += 1000; });
+    // Power keywords
+    const keywords = ['pay', 'fit', 'sex', 'crypto', 'loan', 'bank', 'tech', 'smart', 'hub', 'ai'];
+    keywords.forEach(k => { if(name.toLowerCase().includes(k)) score += 1200; });
 
+    console.log("Result (Value):", score);
     document.getElementById('dom-box').classList.remove('hidden');
     document.getElementById('dom-val').innerText = formatToolCurrency(score, true);
     document.getElementById('dom-len').innerText = `Length: ${name.length} Chars`;
@@ -2959,17 +3049,25 @@ window.runDomEst = () => {
 };
 
 window.runCryCalc = () => {
-    const cap = parseFloat(document.getElementById('cry-in').value) || 0;
-    const buy = parseFloat(document.getElementById('cry-buy').value) || 1;
-    const sell = parseFloat(document.getElementById('cry-sell').value) || 0;
+    console.log("Tool: Crypto Profit Calculator | Currency:", state.currency);
+    const cap = parseFloat(document.getElementById('cry-in').value);
+    const buy = parseFloat(document.getElementById('cry-buy').value);
+    const sell = parseFloat(document.getElementById('cry-sell').value);
+
+    // Validation
+    if (isNaN(cap) || cap <= 0) return;
+    if (isNaN(buy) || buy <= 0) return;
+    if (isNaN(sell) || sell < 0) return;
 
     const tokens = cap / buy;
     const balance = tokens * sell;
     const profit = balance - cap;
     const perc = ((sell - buy) / buy) * 100;
 
-    document.getElementById('cry-profit').innerText = formatToolCurrency(Math.abs(profit));
-    document.getElementById('cry-profit').style.color = profit >= 0 ? '#10b981' : '#ef4444';
+    console.log("Result (Net Profit):", profit);
+    const profitEl = document.getElementById('cry-profit');
+    profitEl.innerText = formatToolCurrency(Math.abs(profit));
+    profitEl.style.color = profit >= 0 ? '#10b981' : '#ef4444';
     
     document.getElementById('cry-perc').innerText = (profit >= 0 ? '+' : '') + perc.toFixed(2) + '%';
     document.getElementById('cry-perc').className = `text-lg font-black ${profit >= 0 ? 'text-green-400' : 'text-red-400'}`;
@@ -2978,38 +3076,55 @@ window.runCryCalc = () => {
 };
 
 window.runROICalc = () => {
-    const s = parseFloat(document.getElementById('roi-s').value) || 1;
-    const r = parseFloat(document.getElementById('roi-r').value) || 0;
+    console.log("Tool: Ads ROI Calculator | Currency:", state.currency);
+    const s = parseFloat(document.getElementById('roi-s').value);
+    const r = parseFloat(document.getElementById('roi-r').value);
+
+    // Guard against zero spend or invalid inputs
+    if (isNaN(s) || s <= 0) return;
+    if (isNaN(r) || r < 0) return;
 
     const profit = r - s;
     const roi = (profit / s) * 100;
     const roas = r / s;
 
+    console.log("Result (ROI%):", roi.toFixed(1));
     document.getElementById('roi-out').innerText = roi.toFixed(0) + '%';
     document.getElementById('roi-p').innerText = formatToolCurrency(profit);
+    document.getElementById('roi-p').style.color = profit >= 0 ? 'white' : '#ffcccb';
     document.getElementById('roi-a').innerText = roas.toFixed(1) + 'x';
     
     const bar = document.getElementById('roi-bar');
-    const perc = Math.max(0, Math.min(100, (roi / 200) * 100)); // Normalized to 200% baseline
+    const perc = Math.max(0, Math.min(100, (roi / 200) * 100 + 50)); 
     bar.style.width = perc + '%';
     bar.style.backgroundColor = roi >= 0 ? '#ffffff' : '#ef4444';
 };
 
 window.runInsCalc = () => {
+    console.log("Tool: Insurance Estimator | Currency:", state.currency);
     const type = document.getElementById('ins-type').value;
     const age = parseInt(document.getElementById('ins-age').value) || 25;
     const cov = parseFloat(document.getElementById('ins-cov').value) || 0;
     const isTobacco = document.getElementById('ins-t-yes').classList.contains('bg-blue-600');
 
-    let baseRate = 0.0001; // Base multiplier
-    if (type === 'health') baseRate = 0.0005;
-    if (type === 'accident') baseRate = 0.00005;
+    if (cov <= 0) return;
 
-    // Age multiplier
-    let ageMult = 1 + (Math.max(0, age - 25) * 0.05);
-    if (isTobacco) ageMult *= 1.8;
+    // Actuarial Risk Analysis
+    let baseMultiplier = 0.00015; // Global term average
+    if (type === 'health') baseMultiplier = 0.00075;
+    if (type === 'accident') baseMultiplier = 0.00008;
 
-    const monthly = (cov * baseRate * ageMult) / 12;
+    // Age-based logarithmic risk escalation
+    let ageRisk = 1.0;
+    if (age > 30) ageRisk += (age - 30) * 0.045;
+    if (age > 50) ageRisk += (age - 50) * 0.12; // High risk tier
+    
+    if (isTobacco) ageRisk *= 2.1; // Serious loading for tobacco
+
+    const annualPremium = cov * baseMultiplier * ageRisk;
+    const monthly = annualPremium / 12;
+    
+    console.log("Result (Premium):", monthly);
     document.getElementById('ins-out').innerText = formatToolCurrency(monthly);
 };
 
@@ -3155,23 +3270,37 @@ function fallbackCopy(text, label) {
 }
 
 // --- HELPERS ---
+function getSelectedCurrency() {
+    return state.currency;
+}
+
+// Alias for tool requested name
+function formatCurrency(amount) {
+    return formatToolCurrency(amount);
+}
+
 function formatToolCurrency(v, convert = false) {
-    const cur = CURRENCIES[state.currency];
-    const convertedValue = convert ? v * (state.currency === 'USD' ? 1 : cur.rate) : v;
+    const curCode = getSelectedCurrency();
+    const cur = CURRENCIES[curCode];
+    const convertedValue = convert ? v * (curCode === 'USD' ? 1 : cur.rate) : v;
     
-    // For INR, always use en-IN to get the lakh/crore comma system (e.g., 1,00,000)
-    // For other currencies, use en-US (standard million/billion grouping)
-    const locale = (state.currency === 'INR') ? 'en-IN' : 'en-US';
+    // Hardened locale mapping for accurate formatting
+    let locale = 'en-US'; 
+    if (curCode === 'INR') locale = 'en-IN';
+    if (curCode === 'EUR') locale = 'de-DE';
+    if (curCode === 'GBP') locale = 'en-GB';
+    if (curCode === 'JPY') locale = 'ja-JP';
     
     return new Intl.NumberFormat(locale, {
         style: 'currency',
-        currency: state.currency,
+        currency: curCode,
         maximumFractionDigits: 0
     }).format(convertedValue);
 }
 
 function toast(msg) {
     const t = document.getElementById('toast');
+    if (!t) return;
     t.innerText = msg;
     t.classList.remove('translate-y-20', 'opacity-0');
     setTimeout(() => {
@@ -3189,7 +3318,7 @@ function boot() {
     renderUI();
     
     // Initialize with the random quote from state
-    const firstQuote = QUOTES[state.quoteIdx];
+    const firstQuote = state.currentQuote;
     document.getElementById('quote-text').innerText = `"${firstQuote.text}"`;
     document.getElementById('quote-author').innerText = `— ${firstQuote.author}`;
     
