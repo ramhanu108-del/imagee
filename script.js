@@ -3,6 +3,8 @@
  * Vanilla JS logic for 33+ high-performance browser tools.
  */
 
+import QUOTES_LIBRARY from './quotes.js';
+
 // --- TOOL DATABASE ---
 const TOOLS = [
     { id: 'image-compressor', nameKey: 'compress', icon: 'minimize', category: 'Image', desc: 'Reduce file size while keeping visual quality.' },
@@ -358,7 +360,7 @@ const TRANSLATIONS = {
     }
 };
 
-const QUOTES = window.QUOTES_LIBRARY || [
+const QUOTES = QUOTES_LIBRARY || [
     { text: "The unexamined life is not worth living.", author: "Socrates" },
     { text: "Knowing yourself is the beginning of all wisdom.", author: "Aristotle" }
 ];
@@ -655,17 +657,17 @@ function injectToolFunctionalHTML(id) {
                         <div class="space-y-6">
                             <div class="space-y-3">
                                 <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Loan Amount (${cur})</label>
-                                <input type="number" id="emi-p" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" placeholder="500000">
+                                <input type="number" id="emi-p" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" value="500000" placeholder="500000">
                             </div>
                             <div class="space-y-3">
                                 <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Annual Rate (%)</label>
-                                <input type="number" id="emi-r" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" placeholder="10.5">
+                                <input type="number" id="emi-r" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" value="10.5" placeholder="10.5">
                             </div>
                         </div>
                         <div class="space-y-6">
                             <div class="space-y-3">
                                 <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Tenure (Years)</label>
-                                <input type="number" id="emi-n" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" placeholder="5">
+                                <input type="number" id="emi-n" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" value="5" placeholder="5">
                             </div>
                             <div class="space-y-3">
                                 <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Interest Customization</label>
@@ -2645,7 +2647,7 @@ window.runManualCompress = () => {
 window.handlePDFInput = (input) => {
     if (!input.files.length) return;
     const count = input.files.length;
-    document.getElementById('comp-upload').classList.add('hidden');
+    document.getElementById('pdf-upload').classList.add('hidden');
     document.getElementById('pdf-controls').classList.remove('hidden');
     document.getElementById('pdf-count').innerText = `${count} ${count === 1 ? 'File' : 'Files'} Documented`;
     
@@ -2657,7 +2659,7 @@ window.handlePDFInput = (input) => {
 
 window.handlePDFSplitInput = (input) => {
     if (!input.files.length) return;
-    document.getElementById('comp-upload').classList.add('hidden');
+    document.getElementById('pdf-split-upload').classList.add('hidden');
     document.getElementById('pdf-split-controls').classList.remove('hidden');
     lucide.createIcons();
 };
@@ -2732,7 +2734,7 @@ window.runCaptionGen = () => {
 
 window.handleResizerInput = (input) => {
     if (!input.files.length) return;
-    document.getElementById('comp-upload').classList.add('hidden');
+    document.getElementById('resizer-upload').classList.add('hidden');
     document.getElementById('resizer-controls').classList.remove('hidden');
     lucide.createIcons();
 };
@@ -3009,8 +3011,10 @@ window.handleBRInput = (input) => {
         document.getElementById('br-status').classList.remove('hidden');
         
         // AI Removal Logic
-        if (typeof imglyRemoveBackground !== 'undefined') {
-            imglyRemoveBackground(brFile).then((blob) => {
+        const removeFn = window.imglyRemoveBackground || window.removeBackground || (window.imgly && window.imgly.removeBackground);
+        
+        if (typeof removeFn === 'function') {
+            removeFn(brFile).then((blob) => {
                 const url = URL.createObjectURL(blob);
                 const img = document.getElementById('br-img');
                 img.src = url;
@@ -3129,12 +3133,12 @@ function fallbackCopy(text, label) {
 // --- HELPERS ---
 function formatToolCurrency(v) {
     const cur = CURRENCIES[state.currency];
-    const val = v * (state.currency === 'USD' ? 1 : cur.rate / (cur.rate === 83 ? 1 : 1)); // Simplified for export
+    const convertedValue = v * (state.currency === 'USD' ? 1 : cur.rate);
     return new Intl.NumberFormat(state.lang === 'hi' ? 'en-IN' : 'en-US', {
         style: 'currency',
         currency: state.currency,
         maximumFractionDigits: 0
-    }).format(v);
+    }).format(convertedValue);
 }
 
 function toast(msg) {

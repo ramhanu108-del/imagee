@@ -109,4 +109,7 @@ while(FULL_1008_QUOTES.length < 1008) {
 }
 // Truncate to exactly 1008
 const FINAL_QUOTES = FULL_1008_QUOTES.slice(0, 1008);
-window.QUOTES_LIBRARY = FINAL_QUOTES;
+if (typeof window !== 'undefined') {
+    window.QUOTES_LIBRARY = FINAL_QUOTES;
+}
+export default FINAL_QUOTES;
