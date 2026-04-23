@@ -4,6 +4,7 @@
  */
 
 import QUOTES_LIBRARY from './quotes.js';
+import Decimal from 'decimal.js';
 
 // --- TOOL DATABASE ---
 const TOOLS = [
@@ -734,12 +735,41 @@ function injectToolFunctionalHTML(id) {
                             </div>
                         </div>
                     </div>
-                    <button onclick="runEMICalc()" class="w-full py-6 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] font-black shadow-2xl shadow-blue-600/30 active:scale-[0.98] transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2">
+                    <button onclick="document.getElementById('emi-box').classList.remove('hidden'); runEMICalc()" class="w-full py-6 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] font-black shadow-2xl shadow-blue-600/30 active:scale-[0.98] transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2">
                         <i data-lucide="calculator" class="w-4 h-4"></i> Generate Amortization Summary
                     </button>
-                    <div id="emi-box" class="hidden animate-fade-in tool-result text-center py-10 bg-blue-600/5 border-2 border-blue-600/20 rounded-[2.5rem]">
-                        <span class="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] mb-4 block">Scheduled Monthly Installment</span>
-                        <div class="text-6xl font-black text-gray-900 dark:text-white" id="emi-out">---</div>
+                    <div id="emi-box" class="hidden animate-fade-in tool-result text-center space-y-6 pt-6">
+                        <div class="py-10 bg-blue-600/5 border-2 border-blue-600/20 rounded-[2.5rem]">
+                            <span class="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] mb-4 block">Scheduled Monthly Installment</span>
+                            <div class="text-6xl font-black text-gray-900 dark:text-white mb-2" id="emi-out">---</div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 max-w-lg mx-auto">
+                            <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-3xl border dark:border-gray-800">
+                                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Total Interest</span>
+                                <div id="emi-tot-int" class="font-bold text-xl text-red-500">---</div>
+                            </div>
+                            <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-3xl border dark:border-gray-800">
+                                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Total Payment</span>
+                                <div id="emi-tot-pay" class="font-bold text-xl text-gray-900 dark:text-white">---</div>
+                            </div>
+                        </div>
+                        <button onclick="document.getElementById('emi-schedule-container').classList.toggle('hidden'); lucide.createIcons()" class="mx-auto flex items-center gap-2 text-[10px] font-black text-blue-600 uppercase tracking-widest hover:text-blue-700 transition-colors p-4">
+                            <i data-lucide="list"></i> Toggle Amortization Schedule
+                        </button>
+                        <div id="emi-schedule-container" class="hidden text-left bg-white dark:bg-gray-900 border dark:border-gray-800 rounded-2xl overflow-hidden max-h-96 overflow-y-auto custom-scrollbar">
+                           <table class="w-full text-xs">
+                               <thead class="sticky top-0 bg-gray-100 dark:bg-gray-800 text-[10px] uppercase font-black tracking-widest text-gray-500 z-10 shadow-sm">
+                                   <tr>
+                                       <th class="p-4 border-b dark:border-gray-700">Month</th>
+                                       <th class="p-4 border-b dark:border-gray-700 text-right">Principal</th>
+                                       <th class="p-4 border-b dark:border-gray-700 text-right">Interest</th>
+                                       <th class="p-4 border-b dark:border-gray-700 text-right">Balance</th>
+                                   </tr>
+                               </thead>
+                               <tbody id="emi-tbody" class="font-mono pt-2 text-gray-700 dark:text-gray-300">
+                               </tbody>
+                           </table>
+                        </div>
                     </div>
                 </div>
             `;
@@ -2028,25 +2058,83 @@ function injectToolFunctionalHTML(id) {
 
 // --- LOGIC FUNCTIONS ---
 window.runEMICalc = () => {
-    console.log("Tool: EMI Calculator | Currency:", state.currency);
-    const p = parseFloat(document.getElementById('emi-p').value);
-    const rInput = parseFloat(document.getElementById('emi-r').value);
-    const nInput = parseFloat(document.getElementById('emi-n').value);
+    const pVal = document.getElementById('emi-p').value;
+    const rVal = document.getElementById('emi-r').value;
+    const nVal = document.getElementById('emi-n').value;
+    const freqElem = document.getElementById('emi-freq');
+    const freqInput = freqElem ? (parseInt(freqElem.value, 10) || 12) : 12;
+    const box = document.getElementById('emi-box');
+    const out = document.getElementById('emi-out');
 
-    // Validation
-    if (isNaN(p) || p <= 0) return toast("Invalid Principal Amount");
-    if (isNaN(rInput) || rInput < 0) return toast("Invalid Interest Rate");
-    if (isNaN(nInput) || nInput <= 0) return toast("Invalid Loan Tenure");
+    if (!box) return;
 
-    const r = (rInput / 100) / 12; // Monthly rate
-    const n = nInput * 12; // Total months
+    const P = new Decimal(pVal || 0);
+    const annRateInput = new Decimal(rVal || 0);
+    const tenureYears = new Decimal(nVal || 0);
+
+    if (P.lte(0) || annRateInput.lt(0) || tenureYears.lte(0)) {
+        if (!box.classList.contains('hidden')) out.innerText = 'Error';
+        return;
+    }
+
+    const n = tenureYears.mul(12).round().toNumber();
+    const R = annRateInput.div(100);
+    const m = new Decimal(freqInput); 
+
+    let r_monthly;
+    let emi;
+
+    if (R.isZero()) {
+        r_monthly = new Decimal(0);
+        emi = P.div(n);
+    } else {
+        r_monthly = R.div(m).add(1).pow(m.div(12)).sub(1);
+        const factor = r_monthly.add(1).pow(n);
+        emi = P.mul(r_monthly).mul(factor).div(factor.sub(1));
+    }
+
+    const emiRounded = emi.toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
+
+    let balance = P;
+    let totalInterest = new Decimal(0);
+    let schedRows = '';
+
+    for (let i = 1; i <= n; i++) {
+        let interest = balance.mul(r_monthly).toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
+        let principal;
+        
+        if (i === n) {
+            principal = balance;
+            balance = new Decimal(0);
+        } else {
+            principal = emiRounded.sub(interest).toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
+            balance = balance.sub(principal).toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
+        }
+        
+        totalInterest = totalInterest.add(interest);
+
+        schedRows += `
+            <tr class="border-b dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                <td class="p-4 font-bold text-gray-500">${i}</td>
+                <td class="p-4 text-right text-green-600">${formatToolCurrency(principal.toNumber())}</td>
+                <td class="p-4 text-right text-red-500">${formatToolCurrency(interest.toNumber())}</td>
+                <td class="p-4 text-right font-bold text-gray-900 dark:text-gray-100">${formatToolCurrency(balance.toNumber())}</td>
+            </tr>
+        `;
+    }
+
+    const totalPayment = P.add(totalInterest);
+
+    out.innerText = formatToolCurrency(emiRounded.toNumber());
     
-    // Formula: EMI = P × r × (1+r)^n / ((1+r)^n − 1)
-    const emi = p * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+    const totIntEl = document.getElementById('emi-tot-int');
+    if (totIntEl) totIntEl.innerText = formatToolCurrency(totalInterest.toNumber());
     
-    console.log("Result (Monthly EMI):", emi);
-    document.getElementById('emi-box').classList.remove('hidden');
-    document.getElementById('emi-out').innerText = formatToolCurrency(emi);
+    const totPayEl = document.getElementById('emi-tot-pay');
+    if (totPayEl) totPayEl.innerText = formatToolCurrency(totalPayment.toNumber());
+
+    const tbody = document.getElementById('emi-tbody');
+    if (tbody) tbody.innerHTML = schedRows;
 };
 
 let ucPrec = 2;
