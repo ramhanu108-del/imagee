@@ -193,6 +193,30 @@ input::-webkit-inner-spin-button {
     overflow: hidden;
 }
 
-.h-18 {
-    height: 4.5rem;
+/* Fintech Insight Animations */
+@keyframes bounceSubtle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+.animate-bounce-subtle {
+    animation: bounceSubtle 3s ease-in-out infinite;
+}
+
+canvas {
+    filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.05));
+    transition: filter 0.3s ease;
+}
+
+.dark canvas {
+    filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.15));
+}
+
+#emi-smart-highlights > div {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#emi-smart-highlights > div:hover {
+    transform: scale(1.05);
+    filter: brightness(1.05);
 }

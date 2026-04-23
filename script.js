@@ -5,6 +5,9 @@
 
 import QUOTES_LIBRARY from './quotes.js';
 import Decimal from 'decimal.js';
+import { Chart, registerables } from 'chart.js';
+import annotationPlugin from 'chartjs-plugin-annotation';
+Chart.register(...registerables, annotationPlugin);
 
 // --- TOOL DATABASE ---
 const TOOLS = [
@@ -404,7 +407,8 @@ let state = {
     activeTool: null,
     currentQuote: null, 
     todo: JSON.parse(localStorage.getItem('tool_todo') || '[]'),
-    notes: localStorage.getItem('tool_notes') || ''
+    notes: localStorage.getItem('tool_notes') || '',
+    emiCharts: {}
 };
 
 // Initialize quote safely
@@ -710,9 +714,48 @@ function injectToolFunctionalHTML(id) {
             c.innerHTML = `
                 <div class="space-y-10">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="p-6 bg-blue-50/50 dark:bg-blue-900/5 border border-blue-100 dark:border-blue-900/20 rounded-[2rem] space-y-6">
+                            <h3 class="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                <i data-lucide="coins" class="w-3 h-3"></i> Currency & Exchange Settings
+                            </h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Display Currency</label>
+                                    <select id="emi-currency" onchange="syncEMIRate(); runEMICalc()" class="w-full p-4 bg-white dark:bg-gray-900 border rounded-xl dark:border-gray-700 font-bold outline-none text-sm">
+                                        ${Object.keys(CURRENCIES).map(c => `<option value="${c}" ${c === state.currency ? 'selected' : ''}>${c} (${CURRENCIES[c].symbol})</option>`).join('')}
+                                    </select>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Exchange Rate</label>
+                                    <div class="relative">
+                                        <input type="number" id="emi-ex-rate" value="1" step="0.01" oninput="runEMICalc()" class="w-full p-4 pr-10 bg-white dark:bg-gray-900 border rounded-xl dark:border-gray-700 font-bold outline-none text-sm">
+                                        <button onclick="syncEMIRate(); runEMICalc()" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Sync Market Rate">
+                                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-6 bg-gray-50/50 dark:bg-gray-900/5 border border-gray-100 dark:border-gray-800/20 rounded-[2rem] space-y-6">
+                             <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                <i data-lucide="settings-2" class="w-3 h-3"></i> Advanced Logic
+                            </h3>
+                             <div class="space-y-3">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Interest Customization</label>
+                                <select id="emi-freq" onchange="runEMICalc()" class="w-full p-4 bg-white dark:bg-gray-900 border rounded-xl dark:border-gray-700 font-bold outline-none text-sm">
+                                    <option value="12">Compounded Monthly (Standard)</option>
+                                    <option value="4">Compounded Quarterly</option>
+                                    <option value="1">Compounded Annually</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-6">
                             <div class="space-y-3">
-                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Loan Amount (${cur})</label>
+                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Base Loan Amount</label>
                                 <input type="number" id="emi-p" oninput="runEMICalc()" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" value="500000" placeholder="500000">
                             </div>
                             <div class="space-y-3">
@@ -726,22 +769,31 @@ function injectToolFunctionalHTML(id) {
                                 <input type="number" id="emi-n" oninput="runEMICalc()" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" value="5" placeholder="5">
                             </div>
                             <div class="space-y-3">
-                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Interest Customization</label>
-                                <select id="emi-freq" onchange="runEMICalc()" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none">
-                                    <option value="12">Compounded Monthly (Standard)</option>
-                                    <option value="4">Compounded Quarterly</option>
-                                    <option value="1">Compounded Annually</option>
-                                </select>
+                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Prepayment (Extra Monthly)</label>
+                                <div class="flex items-center gap-4">
+                                    <input type="range" id="emi-prep-slider" min="0" max="50000" step="500" value="0" oninput="document.getElementById('emi-prep').value=this.value; runEMICalc()" class="flex-grow">
+                                    <input type="number" id="emi-prep" oninput="document.getElementById('emi-prep-slider').value=this.value; runEMICalc()" class="w-24 p-3 text-center bg-gray-50 dark:bg-gray-900 border rounded-xl dark:border-gray-700 font-bold text-sm outline-none" value="0">
+                                </div>
                             </div>
                         </div>
                     </div>
                     <button onclick="document.getElementById('emi-box').classList.remove('hidden'); runEMICalc()" class="w-full py-6 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] font-black shadow-2xl shadow-blue-600/30 active:scale-[0.98] transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2">
-                        <i data-lucide="calculator" class="w-4 h-4"></i> Generate Amortization Summary
+                        <i data-lucide="calculator" class="w-4 h-4"></i> Generate Advanced Projections
                     </button>
                     <div id="emi-box" class="hidden animate-fade-in tool-result text-center space-y-6 pt-6">
-                        <div class="py-10 bg-blue-600/5 border-2 border-blue-600/20 rounded-[2.5rem]">
-                            <span class="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] mb-4 block">Scheduled Monthly Installment</span>
-                            <div class="text-6xl font-black text-gray-900 dark:text-white mb-2" id="emi-out">---</div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="py-10 bg-blue-600/5 border-2 border-blue-600/20 rounded-[2.5rem] md:col-span-1">
+                                <span class="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] mb-4 block">Base Installment</span>
+                                <div class="text-4xl font-black text-gray-900 dark:text-white mb-2" id="emi-out">---</div>
+                            </div>
+                            <div class="py-10 bg-green-600/5 border-2 border-green-600/20 rounded-[2.5rem] md:col-span-1">
+                                <span class="text-[10px] font-black text-green-600 uppercase tracking-[0.3em] mb-4 block">Interest Saved</span>
+                                <div class="text-4xl font-black text-gray-900 dark:text-white mb-2" id="emi-saved">₹0</div>
+                            </div>
+                            <div class="py-10 bg-purple-600/5 border-2 border-purple-600/20 rounded-[2.5rem] md:col-span-1">
+                                <span class="text-[10px] font-black text-purple-600 uppercase tracking-[0.3em] mb-4 block">New Tenure</span>
+                                <div class="text-4xl font-black text-gray-900 dark:text-white mb-2" id="emi-new-tenure">---</div>
+                            </div>
                         </div>
                         <div class="grid grid-cols-2 gap-4 max-w-lg mx-auto">
                             <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-3xl border dark:border-gray-800">
@@ -752,6 +804,15 @@ function injectToolFunctionalHTML(id) {
                                 <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Total Payment</span>
                                 <div id="emi-tot-pay" class="font-bold text-xl text-gray-900 dark:text-white">---</div>
                             </div>
+                        </div>
+                        
+                        <div id="emi-smart-highlights" class="flex flex-wrap justify-center gap-3 py-4">
+                            <!-- Smart highlights like "Break even month" will appear here -->
+                        </div>
+
+                        <div class="flex items-center justify-center gap-4 py-2">
+                             <button onclick="window.emiViewMode='abs'; runEMICalc()" id="emi-mode-abs" class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest bg-blue-600 text-white shadow-lg">Absolute Mode (₹)</button>
+                             <button onclick="window.emiViewMode='pct'; runEMICalc()" id="emi-mode-pct" class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest bg-gray-100 dark:bg-gray-800 text-gray-500">Percentage Mode (%)</button>
                         </div>
                         <button onclick="document.getElementById('emi-schedule-container').classList.toggle('hidden'); lucide.createIcons()" class="mx-auto flex items-center gap-2 text-[10px] font-black text-blue-600 uppercase tracking-widest hover:text-blue-700 transition-colors p-4">
                             <i data-lucide="list"></i> Toggle Amortization Schedule
@@ -769,6 +830,31 @@ function injectToolFunctionalHTML(id) {
                                <tbody id="emi-tbody" class="font-mono pt-2 text-gray-700 dark:text-gray-300">
                                </tbody>
                            </table>
+                        </div>
+
+                        <div class="space-y-8 pt-10 border-t dark:border-gray-800 text-left">
+                            <div class="flex items-center gap-4">
+                                <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest">Loan Insights & Projections</h3>
+                                <div class="h-px bg-gray-100 dark:bg-gray-800 flex-grow"></div>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <div class="p-6 bg-white dark:bg-gray-900 border dark:border-gray-800 rounded-[2rem] shadow-sm">
+                                    <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                        <i data-lucide="pie-chart" class="w-3 h-3"></i> Repayment Composition
+                                    </h4>
+                                    <div class="aspect-square max-w-[280px] mx-auto relative">
+                                        <canvas id="emi-pie-chart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="p-6 bg-white dark:bg-gray-900 border dark:border-gray-800 rounded-[2rem] shadow-sm">
+                                    <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                        <i data-lucide="line-chart" class="w-3 h-3"></i> Amortization Timeline
+                                    </h4>
+                                    <div class="h-[280px] w-full">
+                                        <canvas id="emi-line-chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2057,10 +2143,24 @@ function injectToolFunctionalHTML(id) {
 }
 
 // --- LOGIC FUNCTIONS ---
+window.syncEMIRate = () => {
+    const curCode = document.getElementById('emi-currency')?.value || state.currency;
+    const rateEl = document.getElementById('emi-ex-rate');
+    if (rateEl) {
+        // Base rate logic (relative to global state or internal tool base)
+        const marketRate = CURRENCIES[curCode].rate;
+        rateEl.value = marketRate;
+    }
+};
+
+window.emiViewMode = 'abs';
 window.runEMICalc = () => {
     const pVal = document.getElementById('emi-p').value;
     const rVal = document.getElementById('emi-r').value;
     const nVal = document.getElementById('emi-n').value;
+    const prepaymentVal = document.getElementById('emi-prep')?.value || 0;
+    const exRateVal = document.getElementById('emi-ex-rate')?.value || 1;
+    const targetCurrency = document.getElementById('emi-currency')?.value || state.currency;
     const freqElem = document.getElementById('emi-freq');
     const freqInput = freqElem ? (parseInt(freqElem.value, 10) || 12) : 12;
     const box = document.getElementById('emi-box');
@@ -2071,6 +2171,8 @@ window.runEMICalc = () => {
     const P = new Decimal(pVal || 0);
     const annRateInput = new Decimal(rVal || 0);
     const tenureYears = new Decimal(nVal || 0);
+    const extraMonthly = new Decimal(prepaymentVal || 0);
+    const exRate = new Decimal(exRateVal || 1);
 
     if (P.lte(0) || annRateInput.lt(0) || tenureYears.lte(0)) {
         if (!box.classList.contains('hidden')) out.innerText = 'Error';
@@ -2095,46 +2197,308 @@ window.runEMICalc = () => {
 
     const emiRounded = emi.toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
 
+    // Calculate baseline without prepayment
+    let baselineTotalInterest = new Decimal(0);
+    let tempBalance = P;
+    for (let i = 1; i <= n; i++) {
+        let interest = tempBalance.mul(r_monthly).toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
+        let principal = emiRounded.sub(interest).toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
+        if (i === n) principal = tempBalance;
+        baselineTotalInterest = baselineTotalInterest.add(interest);
+        tempBalance = tempBalance.sub(principal);
+    }
+
+    // Main Calculation with Prepayment (in Base Currency)
     let balance = P;
     let totalInterest = new Decimal(0);
     let schedRows = '';
+    const scheduleData = [];
+    let breakEvenMonth = null;
+    let halfPaidMonth = null;
+    const halfPrincipal = P.div(2);
 
     for (let i = 1; i <= n; i++) {
         let interest = balance.mul(r_monthly).toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
         let principal;
         
-        if (i === n) {
+        let totalCurrentPayment = emiRounded.add(extraMonthly);
+
+        if (balance.lte(totalCurrentPayment.sub(interest))) {
             principal = balance;
             balance = new Decimal(0);
+            totalInterest = totalInterest.add(interest);
+            
+            scheduleData.push({ 
+                month: i, 
+                principal: principal.mul(exRate).toNumber(), 
+                interest: interest.mul(exRate).toNumber(), 
+                balance: balance.mul(exRate).toNumber(),
+                basePrincipal: principal.toNumber()
+            });
+            
+            schedRows += `
+                <tr class="border-b dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                    <td class="p-4 font-bold text-gray-500">${i}</td>
+                    <td class="p-4 text-right text-green-600">${formatEMICurrency(principal.mul(exRate).toNumber(), targetCurrency)}</td>
+                    <td class="p-4 text-right text-red-500">${formatEMICurrency(interest.mul(exRate).toNumber(), targetCurrency)}</td>
+                    <td class="p-4 text-right font-bold text-gray-900 dark:text-gray-100">${formatEMICurrency(balance.mul(exRate).toNumber(), targetCurrency)}</td>
+                </tr>
+            `;
+            break;
         } else {
-            principal = emiRounded.sub(interest).toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
+            principal = totalCurrentPayment.sub(interest).toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
             balance = balance.sub(principal).toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
         }
         
         totalInterest = totalInterest.add(interest);
 
+        if (!breakEvenMonth && principal.gt(interest)) breakEvenMonth = i;
+        if (!halfPaidMonth && P.sub(balance).gte(halfPrincipal)) halfPaidMonth = i;
+
+        scheduleData.push({
+            month: i,
+            principal: principal.mul(exRate).toNumber(),
+            interest: interest.mul(exRate).toNumber(),
+            balance: balance.mul(exRate).toNumber(),
+            basePrincipal: principal.toNumber()
+        });
+
         schedRows += `
             <tr class="border-b dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                 <td class="p-4 font-bold text-gray-500">${i}</td>
-                <td class="p-4 text-right text-green-600">${formatToolCurrency(principal.toNumber())}</td>
-                <td class="p-4 text-right text-red-500">${formatToolCurrency(interest.toNumber())}</td>
-                <td class="p-4 text-right font-bold text-gray-900 dark:text-gray-100">${formatToolCurrency(balance.toNumber())}</td>
+                <td class="p-4 text-right text-green-600">${formatEMICurrency(principal.mul(exRate).toNumber(), targetCurrency)}</td>
+                <td class="p-4 text-right text-red-500">${formatEMICurrency(interest.mul(exRate).toNumber(), targetCurrency)}</td>
+                <td class="p-4 text-right font-bold text-gray-900 dark:text-gray-100">${formatEMICurrency(balance.mul(exRate).toNumber(), targetCurrency)}</td>
             </tr>
         `;
     }
 
     const totalPayment = P.add(totalInterest);
+    const savings = baselineTotalInterest.sub(totalInterest);
 
-    out.innerText = formatToolCurrency(emiRounded.toNumber());
+    out.innerText = formatEMICurrency(emiRounded.mul(exRate).toNumber(), targetCurrency);
     
+    document.getElementById('emi-saved').innerText = formatEMICurrency(savings.mul(exRate).toNumber(), targetCurrency);
+    document.getElementById('emi-new-tenure').innerText = `${scheduleData.length} Months`;
+
     const totIntEl = document.getElementById('emi-tot-int');
-    if (totIntEl) totIntEl.innerText = formatToolCurrency(totalInterest.toNumber());
+    if (totIntEl) totIntEl.innerText = formatEMICurrency(totalInterest.mul(exRate).toNumber(), targetCurrency);
     
     const totPayEl = document.getElementById('emi-tot-pay');
-    if (totPayEl) totPayEl.innerText = formatToolCurrency(totalPayment.toNumber());
+    if (totPayEl) totPayEl.innerText = formatEMICurrency(totalPayment.mul(exRate).toNumber(), targetCurrency);
 
     const tbody = document.getElementById('emi-tbody');
     if (tbody) tbody.innerHTML = schedRows;
+
+    // ... (rest of Smart Highlights logic stays similar but uses breakEven/halfPaid detected in base currency loop)
+    const highlightsEl = document.getElementById('emi-smart-highlights');
+    if (highlightsEl) {
+        let hHtml = '';
+        if (breakEvenMonth) {
+            hHtml += `<div class="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full text-[10px] font-black text-blue-600 flex items-center gap-2 animate-bounce-subtle">
+                <i data-lucide="zap" class="w-3 h-3"></i> Break-even at Month ${breakEvenMonth}
+            </div>`;
+        }
+        if (halfPaidMonth) {
+            hHtml += `<div class="px-4 py-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-full text-[10px] font-black text-green-600 flex items-center gap-2">
+                <i data-lucide="check-circle" class="w-3 h-3"></i> 50% Principal Repaid in ${halfPaidMonth} Months
+            </div>`;
+        }
+        highlightsEl.innerHTML = hHtml;
+        lucide.createIcons();
+    }
+
+    // Toggle Mode styling
+    const absBtn = document.getElementById('emi-mode-abs');
+    const pctBtn = document.getElementById('emi-mode-pct');
+    if (absBtn && pctBtn) {
+        if (window.emiViewMode === 'abs') {
+            absBtn.className = "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest bg-blue-600 text-white shadow-lg";
+            pctBtn.className = "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest bg-gray-100 dark:bg-gray-800 text-gray-500";
+        } else {
+            pctBtn.className = "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest bg-blue-600 text-white shadow-lg";
+            absBtn.className = "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest bg-gray-100 dark:bg-gray-800 text-gray-500";
+        }
+    }
+
+    updateEMICharts(P.mul(exRate).toNumber(), totalInterest.mul(exRate).toNumber(), scheduleData, breakEvenMonth, halfPaidMonth, emiRounded.mul(exRate).toNumber(), targetCurrency);
+};
+
+const formatEMICurrency = (v, code) => {
+    let locale = 'en-US'; 
+    if (code === 'INR') locale = 'en-IN';
+    if (code === 'EUR') locale = 'de-DE';
+    if (code === 'GBP') locale = 'en-GB';
+    if (code === 'JPY') locale = 'ja-JP';
+    
+    return new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: code,
+        maximumFractionDigits: 0
+    }).format(v);
+};
+
+const updateEMICharts = (principal, interest, schedule, breakEven, halfPaid, monthlyInstallment, currencyCode) => {
+    const pieCtx = document.getElementById('emi-pie-chart');
+    const lineCtx = document.getElementById('emi-line-chart');
+    if (!pieCtx || !lineCtx) return;
+
+    if (state.emiCharts.pie) state.emiCharts.pie.destroy();
+    if (state.emiCharts.line) state.emiCharts.line.destroy();
+
+    const isDark = document.documentElement.classList.contains('dark');
+    const textColor = isDark ? '#9ca3af' : '#4b5563';
+    const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+
+    state.emiCharts.pie = new Chart(pieCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Principal', 'Interest'],
+            datasets: [{
+                data: [principal, interest],
+                backgroundColor: ['#10b981', '#f97316'],
+                hoverBackgroundColor: ['#059669', '#ea580c'],
+                borderWidth: 0,
+                spacing: 2
+            }]
+        },
+        options: {
+            cutout: '75%',
+            plugins: {
+                legend: { position: 'bottom', labels: { color: textColor, font: { weight: '600', size: 10 }, padding: 20 } },
+                tooltip: {
+                    callbacks: { label: (ctx) => ` ${ctx.label}: ${formatEMICurrency(ctx.raw, currencyCode)} (${((ctx.raw / (principal + interest)) * 100).toFixed(1)}%)` }
+                }
+            }
+        }
+    });
+
+    const isPctMode = window.emiViewMode === 'pct';
+    const labels = schedule.map(s => `M${s.month}`);
+    
+    // Gradients
+    const ctx = lineCtx.getContext('2d');
+    const balanceGradient = ctx.createLinearGradient(0, 0, 0, 300);
+    balanceGradient.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
+    balanceGradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+
+    const annotations = {};
+    if (breakEven) {
+        annotations.breakEvenLine = {
+            type: 'line',
+            xMin: breakEven - 1,
+            xMax: breakEven - 1,
+            borderColor: '#3b82f6',
+            borderWidth: 2,
+            borderDash: [6, 6],
+            label: {
+                display: true,
+                content: 'Break-even Point',
+                position: 'start',
+                backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                font: { size: 9, weight: 'bold' }
+            }
+        };
+    }
+    if (halfPaid) {
+        annotations.halfPaidLine = {
+            type: 'line',
+            xMin: halfPaid - 1,
+            xMax: halfPaid - 1,
+            borderColor: '#10b981',
+            borderWidth: 2,
+            borderDash: [6, 6],
+            label: {
+                display: true,
+                content: '50% Retired',
+                position: 'center',
+                backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                font: { size: 9, weight: 'bold' }
+            }
+        };
+    }
+
+    state.emiCharts.line = new Chart(lineCtx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Remaining Balance',
+                    data: schedule.map(s => isPctMode ? (s.balance / principal * 100) : s.balance),
+                    borderColor: '#3b82f6',
+                    backgroundColor: balanceGradient,
+                    fill: !isPctMode,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    borderWidth: 3
+                },
+                {
+                    label: 'Principal Paid',
+                    data: schedule.map(s => isPctMode ? (s.principal / monthlyInstallment * 100) : s.principal),
+                    borderColor: '#10b981',
+                    tension: 0.4,
+                    pointRadius: 0,
+                    borderWidth: 2
+                },
+                {
+                    label: 'Interest Paid',
+                    data: schedule.map(s => isPctMode ? (s.interest / monthlyInstallment * 100) : s.interest),
+                    borderColor: '#f97316',
+                    tension: 0.4,
+                    pointRadius: 0,
+                    borderWidth: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            elements: { point: { hoverRadius: 6, hoverBorderWidth: 2, hoverBorderColor: '#ffffff' } },
+            scales: {
+                x: { grid: { display: false }, ticks: { color: textColor, font: { size: 9 }, autoSkip: true, maxTicksLimit: 12 } },
+                y: {
+                    beginAtZero: true,
+                    grid: { color: gridColor },
+                    ticks: {
+                        color: textColor,
+                        font: { size: 9 },
+                        callback: (v) => isPctMode ? `${v}%` : formatEMICurrency(v, currencyCode).split('.')[0]
+                    }
+                }
+            },
+            plugins: {
+                annotation: { annotations: annotations },
+                legend: { position: 'top', align: 'end', labels: { boxWidth: 6, usePointStyle: true, color: textColor, font: { weight: '800', size: 9 } } },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: isDark ? '#111827' : '#ffffff',
+                    titleColor: isDark ? '#ffffff' : '#111827',
+                    bodyColor: textColor,
+                    borderColor: isDark ? '#374151' : '#e5e7eb',
+                    borderWidth: 1,
+                    padding: 12,
+                    cornerRadius: 12,
+                    callbacks: {
+                        label: (ctx) => {
+                            const val = ctx.raw;
+                            if (isPctMode) return ` ${ctx.dataset.label}: ${val.toFixed(1)}% of Installment`;
+                            return ` ${ctx.dataset.label}: ${formatEMICurrency(val, currencyCode)}`;
+                        },
+                        footer: (items) => {
+                            const i = items[0].dataIndex;
+                            const s = schedule[i];
+                            const intPct = ((s.interest / (s.interest + s.basePrincipal)) * 100).toFixed(0);
+                            return `\n${intPct}% of payment is Interest this month.`;
+                        }
+                    },
+                    footerFont: { size: 10, weight: 'normal', style: 'italic' }
+                }
+            },
+            interaction: { mode: 'index', intersect: false }
+        }
+    });
 };
 
 let ucPrec = 2;
