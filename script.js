@@ -2119,11 +2119,14 @@ function injectToolFunctionalHTML(id) {
                             <div class="space-y-8">
                                 <div class="space-y-4">
                                     <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Format Conversion</label>
-                                    <select id="comp-format" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border-2 border-transparent dark:border-gray-800 rounded-2xl font-bold outline-none focus:border-blue-500/20 focus:ring-4 focus:ring-blue-500/5 transition-all text-sm">
+                                    <select id="comp-format" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border-2 border-transparent dark:border-gray-800 rounded-2xl font-bold outline-none focus:border-blue-500/20 focus:ring-4 focus:ring-blue-500/5 transition-all text-sm cursor-pointer appearance-none">
                                         <option value="original">Keep Original Format</option>
                                         <option value="image/jpeg">Convert to JPEG (Ideal for Photos)</option>
                                         <option value="image/webp">Convert to WEBP (Best for Performance)</option>
                                         <option value="image/png">Convert to PNG (Lossless/Icons)</option>
+                                        <option value="image/avif">Convert to AVIF (Next-Gen Compression)</option>
+                                        <option value="image/bmp">Convert to BMP (Uncompressed Legacy)</option>
+                                        <option value="image/gif">Convert to GIF (Static Image)</option>
                                     </select>
                                 </div>
                                 <div class="space-y-4">
