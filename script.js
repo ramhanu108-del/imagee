@@ -1405,17 +1405,21 @@ function injectToolFunctionalHTML(id) {
                                     <span class="text-gray-400">Resolution</span>
                                     <span id="qr-size-v" class="text-blue-600">300px</span>
                                 </div>
-                                <input type="range" id="qr-size" min="100" max="1000" step="50" value="300" oninput="document.getElementById('qr-size-v').innerText=this.value+'px'" class="w-full">
+                                <input type="range" id="qr-size" min="100" max="1000" step="50" value="300" oninput="document.getElementById('qr-size-v').innerText=this.value+'px'" class="w-full cursor-pointer">
                             </div>
+                            <button onclick="runQRGen()" class="w-full py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] font-black shadow-xl shadow-blue-600/30 active:scale-[0.98] transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-3">
+                                <i data-lucide="qr-code" class="w-4 h-4"></i> Generate QR Matrix
+                            </button>
                         </div>
                         <div id="qr-box" class="hidden animate-fade-in flex flex-col items-center justify-center gap-6 p-6 bg-gray-50 dark:bg-gray-900 rounded-[2.5rem] border-2 border-dashed border-gray-200 dark:border-gray-700">
-                            <img id="qr-img" class="w-48 h-48 rounded-2xl shadow-2xl bg-white p-2 transition-transform hover:scale-105 duration-500">
-                            <a id="qr-down" download="custom-qr.png" class="px-8 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl text-[10px] font-black shadow-lg uppercase tracking-widest flex items-center gap-2 border dark:border-gray-700">
+                            <div class="bg-white p-4 rounded-3xl shadow-xl">
+                                <img id="qr-img" class="w-full h-full object-contain max-w-[200px] transition-transform hover:scale-105 duration-500">
+                            </div>
+                            <a id="qr-down" download="custom-qr.png" class="px-8 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl text-[10px] font-black shadow-lg uppercase tracking-widest flex items-center gap-2 border dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                                 <i data-lucide="download" class="w-3 h-3"></i> Save Source
                             </a>
                         </div>
                     </div>
-                    <button onclick="runQRGen()" class="w-full py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] font-black shadow-2xl shadow-blue-600/30 active:scale-[0.98] transition-all uppercase tracking-widest text-xs">Build Custom QR Matrix</button>
                 </div>
             `;
             lucide.createIcons();
@@ -3401,7 +3405,7 @@ window.runQRGen = () => {
     if(!val) return toast("Enter text/URL");
     const color = document.getElementById('qr-color').value;
     const bgcolor = document.getElementById('qr-bg').value;
-    const size = document.getElementById('qr-size').value;
+    const size = parseInt(document.getElementById('qr-size').value, 10);
     
     const img = document.getElementById('qr-img');
     const box = document.getElementById('qr-box');
