@@ -725,9 +725,9 @@ function renderUI() {
     
     // Auto-update open tool content on currency/lang switch
     if (state.activeTool) {
-        injectToolFunctionalHTML(state.activeTool);
+        injectToolFunctionalHTML(state.activeTool.id);
         
-        const tid = state.activeTool.replace('#', '').toLowerCase();
+        const tid = state.activeTool.id.replace('#', '').toLowerCase();
         const runMap = {
             'emi-calculator': 'runEMICalc',
             'sip-calculator': 'runSIPCalc',
