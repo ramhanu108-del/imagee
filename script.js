@@ -41,6 +41,8 @@ const TOOLS = [
     { id: 'domain-estimator', nameKey: 'dom', icon: 'search', category: 'Finance', desc: 'Check the heuristic value of your domain name.' },
     { id: 'crypto-profit', nameKey: 'crypto', icon: 'coins', category: 'Finance', desc: 'Calculate ROI for your crypto trades.' },
     { id: 'roi-calculator', nameKey: 'roi', icon: 'line-chart', category: 'Finance', desc: 'Ads ROI and marketing spend analyzer.' },
+    { id: 'fd-calculator', nameKey: 'fd', icon: 'pie-chart', category: 'Finance', desc: 'Fixed Deposit maturity and interest earnings.' },
+    { id: 'loan-comparison', nameKey: 'loancomp', icon: 'git-compare', category: 'Finance', desc: 'Compare multi-bank loan offerings side-by-side.' },
     { id: 'username-generator', nameKey: 'username', icon: 'user-plus', category: 'Instagram', desc: 'Creative handle generator for socials.' },
     { id: 'caption-generator', nameKey: 'caption', icon: 'message-circle', category: 'Instagram', desc: 'Engaging AI-vibe captions for posts.' },
     { id: 'bio-generator', nameKey: 'bio', icon: 'sparkles', category: 'Instagram', desc: 'Professional and aesthetic user bios.' },
@@ -269,13 +271,14 @@ const TRANSLATIONS = {
             unit: "Unit Converter", stopwatch: "Stopwatch", todo: "To-Do List", notes: "Notes App",
             emi: "EMI Calculator", sip: "SIP Calculator", tax: "Tax Calculator", cc: "Credit Card Interest",
             ins: "Insurance Estimator", web: "Website Cost", free: "Freelance Earnings", dom: "Domain Estimator",
-            crypto: "Crypto Profit", roi: "Ads ROI Calculator", username: "Username Generator", caption: "Caption Generator", bio: "Bio Generator"
+            crypto: "Crypto Profit", roi: "Ads ROI Calculator", fd: "FD Calculator", loancomp: "Loan Comparison", 
+            username: "Username Generator", caption: "Caption Generator", bio: "Bio Generator"
         }
     },
     hi: {
         nav: { logo: "स्मार्टटूल्स हब", home: "होम", tools: "उपयोगिताएँ", about: "गोपनीयता कवच" },
         hero: { title1: "आपके सभी कामों के लिए ", title2: "स्विस चाकू", sub: "तेज़, सुरक्षित और पूरी तरह से आपके ब्राउज़र में काम करता है। आपका डेटा कहीं नहीं जाता।" },
-        ui: { all: "सभी टूल्स", popular: "🔥 लोकप्रिय टूल्स", recent: "🕒 हाल ही में प्रयुक्त", trending: "📈 अभी ट्रेंड में", about: "स्मार्टटूल्स हब", rights: "सर्वाधिकार सुरक्षित।", related: "संबंधित टूल्स", search: "टूल्स खोजें...", quotesTitle: "महान दार्शनिकों का ज्ञान", categories: { ALL: "सभी", IMAGE: "इमेज", PDF: "पीडीएफ", FINANCE: "वित्त", TEXT: "टेक्स्ट", INSTAGRAM: "इंस्टाग्राम", UTILITY: "उपयोगिता" } },
+        ui: { all: "सभी टूल्स", popular: "🔥 लोकप्रिय टूल्स", recent: "🕒 हाल ही में प्रयुक्त", trending: "📈 अभी ट्रेंड में", about: "स्मार्टटूल्स हब", rights: "सर्वाधिकार सुरक्षित।", related: "संबंधित टूल्स", search: "टूल्स खोजें...", quotesTitle: "महान दार्शनicों का ज्ञान", categories: { ALL: "सभी", IMAGE: "इमेज", PDF: "पीडीएफ", FINANCE: "वित्त", TEXT: "टेक्स्ट", INSTAGRAM: "इंस्टाग्राम", UTILITY: "उपयोगिता" } },
         tools: {
             compress: "इमेज कंप्रेशर", bgremove: "बैकग्राउंड रिमूवर", resize: "इमेज रिसाइज़र", png: "JPG से PNG कनवर्टर",
             pdfmerge: "PDF मर्जर", pdfsplit: "PDF स्प्लिटर", wordcount: "शब्द गणक", case: "केस कनवर्टर",
@@ -284,7 +287,8 @@ const TRANSLATIONS = {
             unit: "यूनिट कनवर्टर", stopwatch: "स्टॉपवॉच", todo: "टू-डू लिस्ट", notes: "नोट्स ऐप",
             emi: "EMI कैलकुलेटर", sip: "SIP कैलकुलेटर", tax: "टैक्स कैलकुलेटर", cc: "क्रेडिट कार्ड ब्याज",
             ins: "बीमा प्रीमियम", web: "वेबसाइट लागत", free: "फ्रीलांसर कमाई", dom: "डोमेन मूल्य",
-            crypto: "क्रिप्टो लाभ", roi: "विज्ञापन ROI", username: "यूज़रनेम जनरेटर", caption: "कैप्शन जनरेटर", bio: "बायो जनरेटर"
+            crypto: "क्रिप्टो लाभ", roi: "विज्ञापन ROI", fd: "एफडी कैलकुलेटर", loancomp: "लोन तुलना",
+            username: "यूज़रनेम जनरेटर", caption: "कैप्शन जनरेटर", bio: "बायो जनरेटर"
         }
     },
     es: {
@@ -1048,11 +1052,8 @@ function injectToolFunctionalHTML(id) {
                                     </select>
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">Day Count</label>
-                                    <select id="emi-daycount" onchange="runEMICalc()" class="w-full p-4 bg-white dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl font-bold outline-none text-sm transition-all shadow-sm">
-                                        <option value="30/360">30 / 360 (Institutional)</option>
-                                        <option value="actual/365">Actual / 365 (Precise)</option>
-                                    </select>
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">Processing Fee (%)</label>
+                                    <input type="number" id="emi-fee" value="1" step="0.1" min="0" max="10" oninput="runEMICalc()" class="w-full p-4 bg-white dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl font-bold outline-none text-sm transition-all shadow-sm">
                                 </div>
                             </div>
                         </div>
@@ -1181,7 +1182,15 @@ function injectToolFunctionalHTML(id) {
                                         <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white"><i data-lucide="calendar" class="w-4 h-4"></i></div>
                                         <span class="text-xs font-black uppercase tracking-widest">Full Amortization Forecast</span>
                                     </div>
-                                    <button onclick="exportEMISchedule()" class="text-[9px] font-black text-blue-600 hover:underline uppercase tracking-widest flex items-center gap-2"><i data-lucide="download" class="w-3 h-3"></i> Export Report</button>
+                                    <div class="flex items-center gap-3">
+                                        <button onclick="document.getElementById('emi-csv-file').click()" class="flex items-center gap-2 py-2 px-4 bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-blue-600 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all shadow-sm active:scale-95">
+                                            <i data-lucide="upload" class="w-3 h-3"></i> Import
+                                        </button>
+                                        <input type="file" id="emi-csv-file" class="hidden" accept=".csv" onchange="importEMICSV(event)">
+                                        <button onclick="exportEMICSV()" class="flex items-center gap-2 py-2 px-4 bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 active:scale-95">
+                                            <i data-lucide="download" class="w-3 h-3"></i> Export Result
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="max-h-[500px] overflow-y-auto custom-scrollbar overflow-x-auto">
                                     <table class="w-full text-left text-sm whitespace-nowrap">
@@ -1494,73 +1503,104 @@ function injectToolFunctionalHTML(id) {
             break;
 
         case 'sip-calculator':
-            c.innerHTML = `
-                <div class="space-y-10">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="space-y-3">
-                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Monthly Commitment (${cur})</label>
-                            <input type="number" id="sip-m" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" value="5000">
-                        </div>
-                        <div class="space-y-3">
-                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Expected Yield (%)</label>
-                            <input type="number" id="sip-r" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" value="12">
-                        </div>
-                        <div class="space-y-3">
-                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Timeline (Years)</label>
-                            <input type="number" id="sip-n" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" value="10">
-                        </div>
-                    </div>
-
-                    <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-[2rem] border dark:border-gray-800 space-y-6">
-                        <div class="flex items-center justify-between">
-                            <div class="flex flex-col">
-                                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Annual Step-Up (%)</span>
-                                <span class="text-[8px] font-bold text-blue-500 uppercase tracking-tighter">Increase investment yearly</span>
+             c.innerHTML = `
+                <div class="space-y-12">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <div class="space-y-8">
+                            <div class="grid grid-cols-2 gap-6 p-8 bg-gray-50 dark:bg-gray-900 rounded-[2.5rem] border dark:border-gray-800">
+                                <div class="space-y-4 col-span-2">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Monthly Investment</label>
+                                    <div class="relative group">
+                                        <span class="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold group-focus-within:text-blue-500 transition-colors">${CURRENCIES[state.currency].symbol}</span>
+                                        <input type="number" id="sip-m" oninput="runSIPCalc()" class="w-full p-6 pl-12 bg-white dark:bg-black/20 border rounded-3xl dark:border-gray-700 outline-none font-black text-xl focus:border-blue-500 transition-all" value="5000">
+                                    </div>
+                                </div>
+                                <div class="space-y-4">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Expected Return (%)</label>
+                                    <input type="number" id="sip-r" step="0.1" oninput="runSIPCalc()" class="w-full p-6 bg-white dark:bg-black/20 border rounded-3xl dark:border-gray-700 outline-none font-black text-xl" value="12">
+                                </div>
+                                <div class="space-y-4">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tenure (Years)</label>
+                                    <input type="number" id="sip-n" oninput="runSIPCalc()" class="w-full p-6 bg-white dark:bg-black/20 border rounded-3xl dark:border-gray-700 outline-none font-black text-xl" value="10">
+                                </div>
+                                <div class="space-y-4">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Yearly Step-Up (%)</label>
+                                    <input type="number" id="sip-step" oninput="runSIPCalc()" class="w-full p-6 bg-white dark:bg-black/20 border rounded-3xl dark:border-gray-700 outline-none font-black text-xl" value="10">
+                                </div>
+                                <div class="space-y-4">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Inflation Rate (%)</label>
+                                    <input type="number" id="sip-inf" oninput="runSIPCalc()" class="w-full p-6 bg-white dark:bg-black/20 border rounded-3xl dark:border-gray-700 outline-none font-black text-xl" value="6">
+                                </div>
                             </div>
-                            <span id="sip-step-v" class="text-xs font-black text-blue-600">0%</span>
-                        </div>
-                        <input type="range" id="sip-step" min="0" max="25" value="0" class="w-full accent-blue-600" oninput="document.getElementById('sip-step-v').innerText = this.value + '%'; runSIPCalc()">
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div class="p-10 bg-blue-600 text-white rounded-[2.5rem] shadow-2xl space-y-8">
-                             <div class="text-center space-y-2">
-                                <span class="text-[10px] font-black text-blue-200 uppercase tracking-[0.4em] block">Estimated Future Wealth</span>
-                                <div id="sip-out" class="text-5xl font-black">---</div>
-                             </div>
-                             <div class="grid grid-cols-2 gap-6 pt-6 border-t border-blue-500/30">
-                                <div class="text-center">
-                                    <span class="text-[8px] font-black text-blue-200 uppercase tracking-widest block mb-1">Invested Capital</span>
-                                    <span id="sip-cap" class="text-xl font-bold">---</span>
-                                </div>
-                                <div class="text-center">
-                                    <span class="text-[8px] font-black text-blue-200 uppercase tracking-widest block mb-1">Estimated Gains</span>
-                                    <span id="sip-gain" class="text-xl font-bold">---</span>
-                                </div>
-                             </div>
                         </div>
 
-                        <div id="sip-insights-area" class="grid grid-cols-1 gap-4"></div>
+                        <div class="flex flex-col space-y-6">
+                            <div class="p-12 bg-gray-900 text-white rounded-[3rem] shadow-2xl relative overflow-hidden group">
+                                <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-blue-600/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
+                                <div class="absolute top-4 right-4 flex gap-3">
+                                    <button onclick="document.getElementById('sip-csv-file').click()" title="Import CSV" class="p-2 bg-white/5 hover:bg-white/10 rounded-xl transition-all">
+                                        <i data-lucide="upload" class="w-3 h-3"></i>
+                                    </button>
+                                    <input type="file" id="sip-csv-file" class="hidden" accept=".csv" onchange="importSIPCSV(event)">
+                                    <button onclick="exportSIPCSV()" title="Export CSV" class="p-2 bg-white/5 hover:bg-white/10 rounded-xl transition-all">
+                                        <i data-lucide="download" class="w-3 h-3"></i>
+                                    </button>
+                                </div>
+                                <div class="relative z-10 text-center">
+                                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] mb-6 opacity-60">Estimated Wealth Maturity</h4>
+                                    <div id="sip-out" class="text-6xl font-black mb-8 tabular-nums">0</div>
+                                    <div class="grid grid-cols-2 gap-8 pt-8 border-t border-white/5">
+                                        <div class="text-center">
+                                            <p class="text-[8px] font-black uppercase opacity-40 mb-2 tracking-widest">Total Invested</p>
+                                            <span id="sip-cap" class="text-lg font-bold">0</span>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-[8px] font-black uppercase opacity-40 mb-2 tracking-widest">Wealth Gained</p>
+                                            <span id="sip-gain" class="text-lg font-bold text-green-400">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-[2rem] border border-blue-100 dark:border-blue-900/20 text-center">
+                                    <h5 class="text-[8px] font-black text-blue-600 uppercase tracking-widest mb-1">Inflation Adjusted</h5>
+                                    <div id="sip-real" class="text-xl font-black text-blue-800 dark:text-blue-300">---</div>
+                                </div>
+                                <div class="p-6 bg-purple-50 dark:bg-purple-900/10 rounded-[2rem] border border-purple-100 dark:border-purple-900/20 text-center">
+                                    <h5 class="text-[8px] font-black text-purple-600 uppercase tracking-widest mb-1">Post-Tax (12.5% Est)</h5>
+                                    <div id="sip-taxed" class="text-xl font-black text-purple-800 dark:text-purple-300">---</div>
+                                </div>
+                            </div>
+                            <div id="sip-highlights" class="flex flex-wrap gap-4 justify-center"></div>
+                        </div>
                     </div>
 
-                    <div class="bg-white dark:bg-gray-800/20 rounded-3xl border dark:border-gray-800 overflow-hidden">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-gray-50 dark:bg-gray-900 font-black text-gray-400 uppercase tracking-widest">
-                                <tr>
-                                    <th class="p-4">Year</th>
-                                    <th class="p-4 text-right">Investment</th>
-                                    <th class="p-4 text-right">Yield</th>
-                                    <th class="p-4 text-right">Balance</th>
-                                </tr>
-                            </thead>
-                            <tbody id="sip-tbody" class="divide-y dark:divide-gray-800"></tbody>
-                        </table>
+                    <div id="sip-insights-area" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+                    <div class="overflow-hidden rounded-[3rem] border dark:border-gray-800 bg-white dark:bg-gray-900">
+                         <div class="p-8 border-b dark:border-gray-800 flex items-center justify-between">
+                            <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Projection Schedule</h4>
+                            <div class="text-[10px] font-black text-blue-500 uppercase">Step-up Enabled</div>
+                         </div>
+                         <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead class="bg-gray-50/50 dark:bg-black/20 text-[8px] font-black text-gray-400 uppercase tracking-widest">
+                                    <tr>
+                                        <th class="p-6">Year</th>
+                                        <th class="p-6 text-right">Investment</th>
+                                        <th class="p-6 text-right">Interest</th>
+                                        <th class="p-6 text-right">Maturity</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sip-tbody" class="text-xs"></tbody>
+                            </table>
+                         </div>
                     </div>
                 </div>
-            `;
-            runSIPCalc();
-            lucide.createIcons();
-            break;
+             `;
+             runSIPCalc();
+             lucide.createIcons();
+             break;
 
         case 'tax-calculator':
              c.innerHTML = `
@@ -1689,6 +1729,18 @@ function injectToolFunctionalHTML(id) {
         case 'credit-card-interest':
             c.innerHTML = `
                 <div class="space-y-10">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Debt Scrutiny Engine</label>
+                        <div class="flex gap-2">
+                             <button onclick="document.getElementById('cc-csv-file').click()" title="Import CSV" class="p-2 bg-gray-50 dark:bg-gray-800 rounded-xl transition-all">
+                                <i data-lucide="upload" class="w-3 h-3"></i>
+                             </button>
+                             <input type="file" id="cc-csv-file" class="hidden" accept=".csv" onchange="importCCCSV(event)">
+                             <button onclick="exportCCCSV()" title="Export CSV" class="p-2 bg-gray-50 dark:bg-gray-800 rounded-xl transition-all">
+                                <i data-lucide="download" class="w-3 h-3"></i>
+                             </button>
+                        </div>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-3">
                             <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Unpaid Balance (${cur})</label>
@@ -1748,8 +1800,6 @@ function injectToolFunctionalHTML(id) {
                 </div>
             `;
             runCCCalc();
-            lucide.createIcons();
-            break;
             lucide.createIcons();
             break;
 
@@ -1857,34 +1907,66 @@ function injectToolFunctionalHTML(id) {
         case 'crypto-profit':
              c.innerHTML = `
                 <div class="space-y-10">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div class="space-y-3">
-                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center block">Capital In</label>
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center block">Investment</label>
                             <input type="number" id="cry-in" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" value="1000" oninput="runCryCalc()">
                         </div>
                         <div class="space-y-3">
-                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center block">Entry Price</label>
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center block">Buy Price</label>
                             <input type="number" id="cry-buy" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" value="45000" oninput="runCryCalc()">
                         </div>
                         <div class="space-y-3">
-                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center block">Exit Price</label>
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center block">Sell Price</label>
                             <input type="number" id="cry-sell" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" value="52000" oninput="runCryCalc()">
                         </div>
-                    </div>
-                    <div id="cry-res" class="p-10 bg-gray-900 text-white rounded-[2.5rem] text-center shadow-2xl space-y-6">
-                        <div>
-                             <span class="text-[8px] font-black text-gray-500 uppercase tracking-[0.4em] mb-2 block text-blue-400">Net Return</span>
-                             <div id="cry-profit" class="text-5xl font-black">---</div>
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center block">Exchange Fee (%)</label>
+                            <input type="number" id="cry-fee" step="0.1" class="w-full p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" value="0.5" oninput="runCryCalc()">
                         </div>
-                        <div class="flex justify-center gap-10">
-                             <div class="text-center">
-                                <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest block mb-1">Percentage</span>
-                                <span id="cry-perc" class="text-lg font-black text-green-400">+0%</span>
-                             </div>
-                             <div class="text-center">
-                                <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest block mb-1">Total Balance</span>
-                                <span id="cry-bal" class="text-lg font-black">---</span>
-                             </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="md:col-span-2 p-10 bg-gray-900 text-white rounded-[2.5rem] text-center shadow-2xl space-y-6 relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                            <div class="relative z-10">
+                                 <span class="text-[8px] font-black text-blue-400 uppercase tracking-[0.4em] mb-2 block">Net Profit After Fees</span>
+                                 <div id="cry-profit" class="text-5xl font-black">---</div>
+                                 <div id="cry-perc" class="text-lg font-black text-green-400 mt-2">+0%</div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 pt-6 border-t border-white/5 relative z-10">
+                                 <div class="text-center border-r border-white/5">
+                                    <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest block mb-1">Tokens Received</span>
+                                    <span id="cry-tokens" class="text-sm font-bold">---</span>
+                                 </div>
+                                 <div class="text-center">
+                                    <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest block mb-1">Total Balance</span>
+                                    <span id="cry-bal" class="text-sm font-bold">---</span>
+                                 </div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="p-6 bg-white dark:bg-gray-900 rounded-3xl border dark:border-gray-800">
+                                <h5 class="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-4">Market Metrics</h5>
+                                <div class="space-y-4">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] font-bold text-gray-500 uppercase">Break-even</span>
+                                        <span id="cry-be" class="text-xs font-black text-gray-900 dark:text-white">---</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] font-bold text-gray-500 uppercase">Fees Paid</span>
+                                        <span id="cry-fee-val" class="text-xs font-black text-red-400">---</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <input type="number" id="cry-tax" value="30" oninput="runCryCalc()" class="w-12 bg-transparent border-b dark:border-gray-700 text-[10px] font-black outline-none">% Tax
+                                        <span id="cry-tax-val" class="text-xs font-black text-red-500">---</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-3xl border border-blue-100 dark:border-blue-900/20 text-center">
+                                <h5 class="text-[8px] font-black text-blue-600 uppercase tracking-widest mb-2">Final Take-Away</h5>
+                                <div id="cry-net" class="text-xl font-black text-blue-700 dark:text-blue-400">---</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1896,32 +1978,61 @@ function injectToolFunctionalHTML(id) {
         case 'roi-calculator':
              c.innerHTML = `
                 <div class="space-y-10">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="flex items-center justify-between">
+                         <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Yield Performance Metrics</label>
+                         <div class="flex gap-2">
+                             <button onclick="document.getElementById('roi-csv-file').click()" title="Import CSV" class="p-2 bg-gray-50 dark:bg-gray-800 rounded-xl transition-all">
+                                <i data-lucide="upload" class="w-3 h-3"></i>
+                             </button>
+                             <input type="file" id="roi-csv-file" class="hidden" accept=".csv" onchange="importROICSV(event)">
+                             <button onclick="exportROICSV()" title="Export CSV" class="p-2 bg-gray-50 dark:bg-gray-800 rounded-xl transition-all">
+                                <i data-lucide="download" class="w-3 h-3"></i>
+                             </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="space-y-3">
-                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Ad Spend (${cur})</label>
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Investment (${cur})</label>
                             <input type="number" id="roi-s" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none transition-all" value="5000" oninput="runROICalc()">
                         </div>
                         <div class="space-y-3">
-                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Total Revenue (${cur})</label>
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Returns (${cur})</label>
                             <input type="number" id="roi-r" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none transition-all" value="12000" oninput="runROICalc()">
                         </div>
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Time Period (Days)</label>
+                            <input type="number" id="roi-t" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none transition-all" value="365" oninput="runROICalc()">
+                        </div>
                     </div>
-                    <div class="p-10 bg-blue-600 text-white rounded-[2.5rem] text-center shadow-2xl">
-                         <span class="text-[10px] font-black text-blue-200 uppercase tracking-[0.4em] mb-4 block">Marketing Efficiency Factor</span>
-                         <div id="roi-out" class="text-6xl font-black mb-4">140%</div>
-                         <div class="h-1 w-full bg-blue-800 rounded-full overflow-hidden mb-8">
-                            <div id="roi-bar" class="h-full bg-white shadow-[0_0_15px_white]" style="width: 70%"></div>
-                         </div>
-                         <div class="grid grid-cols-2 gap-4">
-                            <div class="text-center">
-                                <span class="text-[8px] font-black text-blue-200 uppercase tracking-widest block mb-1">Net Profit</span>
-                                <span id="roi-p" class="text-xl font-black text-white">---</span>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 p-10 bg-blue-600 text-white rounded-[2.5rem] text-center shadow-2xl flex flex-col justify-center relative overflow-hidden">
+                             <div class="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
+                             <span class="text-[10px] font-black text-blue-200 uppercase tracking-[0.4em] mb-4 block relative z-10">Performance ROI</span>
+                             <div id="roi-out" class="text-7xl font-black mb-4 relative z-10 animate-pulse-slow">140%</div>
+                             <div class="h-1.5 w-full bg-blue-800 rounded-full overflow-hidden mb-8 relative z-10">
+                                <div id="roi-bar" class="h-full bg-white shadow-[0_0_15px_white]" style="width: 70%"></div>
+                             </div>
+                             <div class="grid grid-cols-3 gap-2 relative z-10">
+                                <div class="text-center border-r border-white/10">
+                                    <span class="text-[8px] font-black text-blue-200 uppercase tracking-widest block mb-1">Net Profit</span>
+                                    <span id="roi-p" class="text-lg font-black text-white">---</span>
+                                </div>
+                                <div class="text-center border-r border-white/10">
+                                    <span class="text-[8px] font-black text-blue-200 uppercase tracking-widest block mb-1">ROAS</span>
+                                    <span id="roi-a" class="text-lg font-black text-white">---</span>
+                                </div>
+                                <div class="text-center">
+                                    <span class="text-[8px] font-black text-blue-200 uppercase tracking-widest block mb-1">Annualized</span>
+                                    <span id="roi-ann" class="text-lg font-black text-white">---</span>
+                                </div>
+                             </div>
+                        </div>
+                        <div class="p-8 bg-gray-50 dark:bg-gray-900 rounded-[2.5rem] border dark:border-gray-800 space-y-4">
+                            <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Efficiency Analysis</h4>
+                            <div id="roi-table" class="space-y-4">
+                                <!-- Dynamic Breakdown -->
                             </div>
-                            <div class="text-center">
-                                <span class="text-[8px] font-black text-blue-200 uppercase tracking-widest block mb-1">ROAS</span>
-                                <span id="roi-a" class="text-xl font-black text-white">---</span>
-                            </div>
-                         </div>
+                        </div>
                     </div>
                 </div>
              `;
@@ -1929,38 +2040,263 @@ function injectToolFunctionalHTML(id) {
              lucide.createIcons();
              break;
 
+        case 'fd-calculator':
+             c.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div class="space-y-8">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-4 col-span-2">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Principal Amount (Deposit)</label>
+                                <div class="relative">
+                                    <span class="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 font-bold">${CURRENCIES[state.currency].symbol}</span>
+                                    <input type="number" id="fd-p" oninput="runFDCalc()" class="w-full p-6 pl-12 bg-gray-50 dark:bg-gray-900 border rounded-[2rem] dark:border-gray-700 outline-none font-bold text-lg" placeholder="100,000" value="100000">
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Rate of Interest (%)</label>
+                                <input type="number" id="fd-r" step="0.1" oninput="runFDCalc()" class="w-full p-6 bg-gray-50 dark:bg-gray-900 border rounded-[2rem] dark:border-gray-700 outline-none font-bold text-lg" placeholder="7.5" value="7.5">
+                            </div>
+                            <div class="space-y-4">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tenure (Years)</label>
+                                <input type="number" id="fd-n" oninput="runFDCalc()" class="w-full p-6 bg-gray-50 dark:bg-gray-900 border rounded-[2rem] dark:border-gray-700 outline-none font-bold text-lg" placeholder="5" value="5">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-4">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Compounding Freq.</label>
+                                <select id="fd-freq" onchange="runFDCalc()" class="w-full p-6 bg-gray-50 dark:bg-gray-900 border rounded-[2rem] dark:border-gray-700 outline-none font-bold text-sm">
+                                    <option value="4">Quarterly (Standard)</option>
+                                    <option value="12">Monthly</option>
+                                    <option value="2">Half-Yearly</option>
+                                    <option value="1">Annually</option>
+                                </select>
+                            </div>
+                            <div class="space-y-4">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tax Bracket (%)</label>
+                                <input type="number" id="fd-tax" oninput="runFDCalc()" class="w-full p-6 bg-gray-50 dark:bg-gray-900 border rounded-[2rem] dark:border-gray-700 outline-none font-bold text-lg" placeholder="0" value="0">
+                            </div>
+                            <div class="space-y-4 col-span-2">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Inflation Adjust (%)</label>
+                                <input type="number" id="fd-inf" oninput="runFDCalc()" class="w-full p-6 bg-gray-50 dark:bg-gray-900 border rounded-[2rem] dark:border-gray-700 outline-none font-bold text-lg" placeholder="0" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col space-y-6">
+                        <div class="p-10 bg-gray-900 dark:bg-blue-600 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group">
+                            <div class="absolute top-4 right-4 flex gap-3">
+                                <button onclick="document.getElementById('fd-csv-file').click()" title="Import CSV" class="p-2 bg-white/5 hover:bg-white/10 rounded-xl transition-all">
+                                    <i data-lucide="upload" class="w-3 h-3"></i>
+                                </button>
+                                <input type="file" id="fd-csv-file" class="hidden" accept=".csv" onchange="importFDCSV(event)">
+                                <button onclick="exportFDCSV()" title="Export CSV" class="p-2 bg-white/5 hover:bg-white/10 rounded-xl transition-all">
+                                    <i data-lucide="download" class="w-3 h-3"></i>
+                                </button>
+                            </div>
+                            <div class="relative z-10 text-center">
+                                <h4 class="text-[10px] font-black uppercase tracking-[0.2rem] mb-4 opacity-60">Maturity Value (Net)</h4>
+                                <div id="fd-out" class="text-5xl font-black mb-4">0</div>
+                                <div class="grid grid-cols-2 gap-4 mt-8 pt-8 border-t border-white/10">
+                                    <div>
+                                        <p class="text-[8px] font-black uppercase opacity-60 mb-2">Total Interest</p>
+                                        <span id="fd-tot-int" class="font-bold text-sm">0</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-[8px] font-black uppercase opacity-60 mb-2 font-mono" id="fd-extra-label">Tax / Infl. Loss</p>
+                                        <span id="fd-tot-tax" class="font-bold text-sm text-red-300">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="fd-highlights" class="flex gap-4 flex-wrap"></div>
+                    </div>
+                </div>
+                
+                <div class="mt-12 space-y-8 animate-fade-in hidden" id="fd-box">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                         <div class="p-6 bg-white dark:bg-gray-900 rounded-3xl border dark:border-gray-800">
+                             <h4 class="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-4">Yield Analysis</h4>
+                             <canvas id="fd-pie-chart" height="200"></canvas>
+                         </div>
+                         <div class="p-6 bg-white dark:bg-gray-900 rounded-3xl border dark:border-gray-800 md:col-span-2">
+                             <h4 class="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-4">Growth Projection</h4>
+                             <canvas id="fd-line-chart" height="200"></canvas>
+                         </div>
+                    </div>
+
+                    <div class="p-8 bg-gray-50 dark:bg-gray-900 rounded-3xl border dark:border-gray-800">
+                        <h4 class="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-6">Yearly Growth Schedule</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead>
+                                    <tr class="text-[8px] font-black text-gray-400 uppercase tracking-widest border-b dark:border-gray-800">
+                                        <th class="p-4">Year</th>
+                                        <th class="p-4 text-right">Opening Balance</th>
+                                        <th class="p-4 text-right">Interest Earned</th>
+                                        <th class="p-4 text-right">Closing Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="fd-tbody" class="text-sm"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+             `;
+             runFDCalc();
+             lucide.createIcons();
+             break;
+
+        case 'loan-comparison':
+             c.innerHTML = `
+                <div class="space-y-12">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-1 space-y-8">
+                            <div class="p-8 bg-gray-50 dark:bg-gray-900 rounded-[2.5rem] border dark:border-gray-800 space-y-6">
+                                <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Base Loan Configuration</h3>
+                                <div class="space-y-4">
+                                    <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Principal Amount Wanted</label>
+                                    <div class="relative">
+                                        <span class="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold">${CURRENCIES[state.currency].symbol}</span>
+                                        <input type="number" id="lc-p" oninput="runLoanComp()" class="w-full p-4 pl-10 bg-white dark:bg-black/20 border rounded-2xl dark:border-gray-700 outline-none font-bold" placeholder="50,000">
+                                    </div>
+                                </div>
+                                <div class="space-y-4">
+                                    <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Tenure (Years)</label>
+                                    <input type="number" id="lc-n" oninput="runLoanComp()" class="w-full p-4 bg-white dark:bg-black/20 border rounded-2xl dark:border-gray-700 outline-none font-bold" placeholder="5">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-2 space-y-8">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Comparative Bank Scenarios</h3>
+                                <div class="flex gap-2">
+                                    <button onclick="document.getElementById('lc-csv-file').click()" title="Import CSV" class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all">
+                                        <i data-lucide="upload" class="w-3 h-3"></i>
+                                    </button>
+                                    <input type="file" id="lc-csv-file" class="hidden" accept=".csv" onchange="importLoanCompCSV(event)">
+                                    <button onclick="exportLoanCompCSV()" title="Export CSV" class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all">
+                                        <i data-lucide="download" class="w-3 h-3"></i>
+                                    </button>
+                                    <button onclick="addLoanScenario()" class="px-4 py-2 bg-gray-900 dark:bg-white dark:text-gray-900 text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl hover:scale-105 transition-all">Add Offer</button>
+                                </div>
+                            </div>
+                            
+                            <div id="lc-scenarios" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Dynamic Scenarios -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="lc-results" class="hidden space-y-10 animate-fade-in">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="p-8 bg-white dark:bg-gray-900 rounded-[2.5rem] border dark:border-gray-800">
+                                <h4 class="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-6">Cost of Capital Comparison</h4>
+                                <canvas id="lc-chart" height="250"></canvas>
+                            </div>
+                             <div class="p-8 bg-gray-900 text-white rounded-[2.5rem] shadow-2xl space-y-8">
+                                <h4 class="text-[10px] font-black uppercase text-white/40 tracking-widest">Optimization Strategy</h4>
+                                <div id="lc-verdict" class="space-y-6"></div>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto rounded-[2.5rem] border dark:border-gray-800">
+                            <table class="w-full text-left bg-white dark:bg-gray-900">
+                                <thead>
+                                    <tr class="bg-gray-50 dark:bg-black/20 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                        <th class="p-6">Bank / Offer</th>
+                                        <th class="p-6">Monthly EMI</th>
+                                        <th class="p-6">Interest Paid</th>
+                                        <th class="p-6">Total Outflow</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lc-tbody" class="text-xs"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+             `;
+             initLoanComp();
+             lucide.createIcons();
+             break;
+
         case 'insurance-estimator':
             c.innerHTML = `
                 <div class="space-y-10">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Risk Protection Oracle</label>
+                        <div class="flex gap-2">
+                             <button onclick="exportInsCSV()" title="Export CSV" class="p-2 bg-gray-50 dark:bg-gray-800 rounded-xl transition-all">
+                                <i data-lucide="download" class="w-3 h-3"></i>
+                             </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div class="space-y-3">
-                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Plan Type</label>
-                            <select id="ins-type" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none" onchange="runInsCalc()">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Plan Type</label>
+                            <select id="ins-type" class="w-full p-4 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none" onchange="runInsCalc()">
                                 <option value="term">Term Life Insurance</option>
                                 <option value="health">Health Insurance</option>
                                 <option value="accident">Accident Cover</option>
                             </select>
                         </div>
                         <div class="space-y-3">
-                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Your Age</label>
-                            <input type="number" id="ins-age" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none" value="25" oninput="runInsCalc()">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Coverage Amount (${cur})</label>
+                            <input type="number" id="ins-cov" class="w-full p-4 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none" value="1000000" oninput="runInsCalc()">
                         </div>
                         <div class="space-y-3">
-                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Coverage Amount (${cur})</label>
-                            <input type="number" id="ins-cov" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none" value="1000000" oninput="runInsCalc()">
-                        </div>
-                        <div class="space-y-3">
-                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Tobacco User?</label>
-                            <div class="flex bg-gray-50 dark:bg-gray-900 p-2 rounded-2xl border dark:border-gray-700">
-                                <button onclick="setInsTobacco(false)" id="ins-t-no" class="flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-blue-600 text-white shadow-lg">No</button>
-                                <button onclick="setInsTobacco(true)" id="ins-t-yes" class="flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all text-gray-400 hover:text-gray-900 dark:hover:text-white">Yes</button>
-                            </div>
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Your Age</label>
+                            <input type="number" id="ins-age" class="w-full p-4 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none" value="25" oninput="runInsCalc()">
                         </div>
                     </div>
-                    <div class="p-10 bg-blue-600 text-white rounded-[2.5rem] text-center shadow-2xl space-y-4">
-                         <span class="text-[10px] font-black text-blue-200 uppercase tracking-[0.4em] block">Estimated Monthly Premium</span>
-                         <div id="ins-out" class="text-6xl font-black">---</div>
-                         <p class="text-[8px] font-bold text-blue-300 uppercase tracking-widest">Actuarial quote based on risk profile</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                             <div class="space-y-4">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block text-center md:text-left">Tobacco / Smoking</label>
+                                <div class="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-2xl">
+                                    <button id="ins-t-no" onclick="setInsTobacco(false)" class="flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-blue-600 text-white shadow-lg">Non-Smoker</button>
+                                    <button id="ins-t-yes" onclick="setInsTobacco(true)" class="flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all text-gray-400 hover:text-gray-900 dark:hover:text-white">Smoker</button>
+                                </div>
+                             </div>
+
+                             <div class="space-y-4">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block text-center md:text-left">Add-on Riders</label>
+                                <div class="grid grid-cols-1 gap-3">
+                                    <label class="flex items-center justify-between p-4 bg-white dark:bg-gray-900 rounded-2xl border dark:border-gray-800 cursor-pointer group hover:border-blue-500/50 transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <i data-lucide="zap" class="w-4 h-4 text-blue-500"></i>
+                                            <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Critical Illness Cover</span>
+                                        </div>
+                                        <input type="checkbox" id="ins-r-ci" onchange="runInsCalc()" class="w-4 h-4 rounded text-blue-600">
+                                    </label>
+                                    <label class="flex items-center justify-between p-4 bg-white dark:bg-gray-900 rounded-2xl border dark:border-gray-800 cursor-pointer group hover:border-blue-500/50 transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <i data-lucide="shield-alert" class="w-4 h-4 text-red-500"></i>
+                                            <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Accidental Disability</span>
+                                        </div>
+                                        <input type="checkbox" id="ins-r-ad" onchange="runInsCalc()" class="w-4 h-4 rounded text-blue-600">
+                                    </label>
+                                </div>
+                             </div>
+                        </div>
+
+                        <div class="flex flex-col space-y-6 justify-center">
+                            <div class="p-10 bg-gray-900 text-white rounded-[3rem] shadow-2xl relative overflow-hidden group">
+                                <div class="absolute inset-0 bg-blue-600 opacity-0 group-hover:opacity-10 transition-opacity pointer-events-none"></div>
+                                <div class="relative z-10 text-center">
+                                    <span class="text-[8px] font-black text-blue-400 uppercase tracking-[0.4em] mb-4 block">Estimated Premium</span>
+                                    <div class="flex items-end justify-center gap-2">
+                                        <div id="ins-out" class="text-6xl font-black">---</div>
+                                        <span class="text-xs font-black text-gray-500 mb-2">/MO</span>
+                                    </div>
+                                    <p class="text-[9px] font-bold text-gray-500 mt-6 uppercase tracking-widest">Industry Standard Actuarial Estimate</p>
+                                </div>
+                            </div>
+                            <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-3xl border border-blue-100 dark:border-blue-900/20 text-center space-y-2">
+                                <h5 class="text-[10px] font-black text-blue-600 uppercase tracking-widest">Safety Quotient</h5>
+                                <div id="ins-safety" class="text-sm font-bold text-gray-600 dark:text-gray-300 tracking-tight">Optimal coverage strategy for your cohort.</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -2648,6 +2984,142 @@ function injectToolFunctionalHTML(id) {
     }
 }
 
+// --- CSV UTILITIES (CSVCore) ---
+const CSVCore = {
+    generateCSV: (data) => {
+        if (!data || !data.length) return "";
+        const headers = Object.keys(data[0]);
+        const rows = data.map(row => 
+            headers.map(header => {
+                let val = row[header];
+                if (val instanceof Decimal) val = val.toFixed(2);
+                if (typeof val === 'string' && val.includes(',')) return `"${val}"`;
+                return val;
+            }).join(",")
+        );
+        return [headers.join(","), ...rows].join("\n");
+    },
+
+    downloadCSV: (filename, content) => {
+        const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    },
+
+    parseCSV: (text) => {
+        const lines = text.split("\n").filter(l => l.trim().length > 0);
+        if (lines.length < 2) return [];
+        const headers = lines[0].split(",").map(h => h.trim().replace(/"/g, ''));
+        return lines.slice(1).map(line => {
+            const values = line.split(",").map(v => v.trim().replace(/"/g, ''));
+            const obj = {};
+            headers.forEach((h, i) => {
+                obj[h] = values[i];
+            });
+            return obj;
+        });
+    }
+};
+
+// --- FINTECH CORE ENGINE (FinancialCore) ---
+const FinancialCore = {
+    /**
+     * Standard Patterns for Rate Handling
+     */
+    getAnnualRate: (rate, inputRate) => new Decimal(rate || inputRate || 0),
+    getMonthlyRate: (annualRate) => new Decimal(annualRate).div(100).div(12),
+
+    /**
+     * Standard EMI (Reducing Balance)
+     * R_eff handles monthly compounding by default.
+     */
+    calculateEMI: (P, annualRate, months, compoundingFreq = 12) => {
+        const r = new Decimal(annualRate).div(100);
+        const m = new Decimal(compoundingFreq);
+        // Effective monthly rate
+        const r_eff = r.div(m).add(1).pow(m.div(12)).sub(1);
+        
+        if (r_eff.isZero()) return P.div(months);
+        
+        const factor = r_eff.add(1).pow(months);
+        return P.mul(r_eff).mul(factor).div(factor.sub(1));
+    },
+
+    /**
+     * SIP Maturity with Step-up support
+     */
+    calculateSIP: (monthly, annualRate, years, stepUpPercent = 0) => {
+        const rate = FinancialCore.getMonthlyRate(annualRate);
+        const step = new Decimal(stepUpPercent).div(100);
+        const months = new Decimal(years).mul(12).toNumber();
+        
+        let maturity = new Decimal(0);
+        let invested = new Decimal(0);
+        let currentMonthly = new Decimal(monthly);
+        let schedule = [];
+
+        for (let t = 1; t <= months; t++) {
+            maturity = maturity.plus(currentMonthly);
+            invested = invested.plus(currentMonthly);
+            maturity = maturity.times(rate.plus(1));
+
+            if (t % 12 === 0) {
+                schedule.push({ year: t/12, invested: new Decimal(invested), maturity: new Decimal(maturity) });
+                if (t < months) currentMonthly = currentMonthly.times(step.plus(1));
+            }
+        }
+        return { maturity, invested, schedule };
+    },
+
+    /**
+     * FD Maturity (Compound Interest)
+     */
+    calculateFD: (P, annualRate, years, freq = 4) => {
+        const r = new Decimal(annualRate).div(100);
+        const n = new Decimal(years);
+        const f = new Decimal(freq);
+        const maturity = P.mul(r.div(f).plus(1).pow(n.mul(f)));
+        return { maturity, interest: maturity.minus(P) };
+    }
+};
+
+// --- ENHANCED UI UTILITIES ---
+const FinUI = {
+    formatCurrency: (v, code) => {
+        const currency = CURRENCIES[code] || CURRENCIES.USD;
+        // Improved Indian Numbering System Support
+        const options = {
+            style: 'currency',
+            currency: code,
+            maximumFractionDigits: currency.decimals !== undefined ? currency.decimals : 0
+        };
+        return new Intl.NumberFormat(currency.locale, options).format(v);
+    },
+
+    getValidInput: (id, fallback = 0) => {
+        const el = document.getElementById(id);
+        if (!el) return new Decimal(fallback);
+        const val = parseFloat(el.value);
+        if (isNaN(val) || val < 0) return new Decimal(fallback);
+        return new Decimal(val);
+    },
+
+    showError: (id, msg) => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.classList.add('border-red-500', 'shake');
+            setTimeout(() => el.classList.remove('border-red-500', 'shake'), 2000);
+        }
+        toast(msg);
+    }
+};
+
 // --- LOGIC FUNCTIONS ---
 window.syncEMIRate = () => {
     const curCode = document.getElementById('emi-currency')?.value || state.currency;
@@ -2662,69 +3134,47 @@ window.syncEMIRate = () => {
 
 window.emiViewMode = 'abs';
 window.runEMICalc = () => {
-    const pVal = document.getElementById('emi-p').value;
-    const rVal = document.getElementById('emi-r').value;
-    const nVal = document.getElementById('emi-n').value;
-    const extraMonthlyVal = document.getElementById('emi-prep')?.value || 0;
-    const lumpSumVal = document.getElementById('emi-lump-sum')?.value || 0;
-    const lumpSumMonth = parseInt(document.getElementById('emi-lump-month')?.value || '1', 10);
+    const P = FinUI.getValidInput('emi-p', 500000);
+    const inputRate = FinUI.getValidInput('emi-r', 8.5);
+    const annualRate = FinancialCore.getAnnualRate(inputRate);
+    const tenureYears = FinUI.getValidInput('emi-n', 15);
+    const feeRate = FinUI.getValidInput('emi-fee', 0).div(100);
+    
+    const extraMonthly = FinUI.getValidInput('emi-prep-m', 0);
+    const lumpSum = FinUI.getValidInput('emi-prep-l', 0);
+    const lumpSumMonth = parseInt(document.getElementById('emi-prep-at')?.value || '1', 10);
     
     const targetCurrency = document.getElementById('emi-currency')?.value || state.currency;
     const compoundingFreq = parseInt(document.getElementById('emi-freq')?.value || '12', 10);
-    const dayCount = document.getElementById('emi-daycount')?.value || '30/360';
-    const exRateVal = document.getElementById('emi-ex-rate')?.value || 1;
+    const exRate = FinUI.getValidInput('emi-ex-rate', 1);
     
     const box = document.getElementById('emi-box');
     const out = document.getElementById('emi-out');
     if (!box) return;
 
-    const P = new Decimal(pVal || 0);
-    const annRateInput = new Decimal(rVal || 0);
-    const tenureYears = new Decimal(nVal || 0);
-    const extraMonthly = new Decimal(extraMonthlyVal || 0);
-    const lumpSum = new Decimal(lumpSumVal || 0);
-    const exRate = new Decimal(exRateVal || 1);
-
-    if (P.lte(0) || annRateInput.lt(0) || tenureYears.lte(0)) {
+    if (P.lte(0) || annualRate.lt(0) || tenureYears.lte(0)) {
         if (!box.classList.contains('hidden')) out.innerText = 'Error';
         return;
     }
 
     const totalMonths = tenureYears.mul(12).round().toNumber();
-    const R = annRateInput.div(100);
+    const processingFee = P.mul(feeRate);
     
-    let r_eff;
-    if (R.isZero()) {
-        r_eff = new Decimal(0);
-    } else {
-        const m = new Decimal(compoundingFreq);
-        r_eff = R.div(m).add(1).pow(m.div(12)).sub(1);
-    }
-
-    let emi;
-    if (r_eff.isZero()) {
-        emi = P.div(totalMonths);
-    } else {
-        const factor = r_eff.add(1).pow(totalMonths);
-        emi = P.mul(r_eff).mul(factor).div(factor.sub(1));
-    }
-    
+    // Core Logic via FinancialCore
+    const emi = FinancialCore.calculateEMI(P, annualRate, totalMonths, compoundingFreq);
     const emiRounded = emi.toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
     
-    let baselineTotalInterest = new Decimal(0);
-    let tempBal = P;
-    for (let i = 1; i <= totalMonths; i++) {
-        let interest = tempBal.mul(r_eff).toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
-        let principal = emiRounded.sub(interest).toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
-        if (i === totalMonths) principal = tempBal;
-        baselineTotalInterest = baselineTotalInterest.add(interest);
-        tempBal = tempBal.sub(principal);
-    }
+    // Effective Rate for Amortization
+    const R = annualRate.div(100);
+    const m = new Decimal(compoundingFreq);
+    const r_eff = R.div(m).add(1).pow(m.div(12)).sub(1);
 
+    // Amortization with Prepayments
     let currentBalance = P;
     let totalInterestPaid = new Decimal(0);
     let scheduleRows = '';
     const scheduleData = [];
+    window.currentEMISchedule = scheduleData; // Export support
     let breakEvenMonth = null;
     let halfPaidMonth = null;
     const halfPrincipal = P.div(2);
@@ -2759,53 +3209,59 @@ window.runEMICalc = () => {
             scheduleRows += `
                 <tr class="border-b dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                     <td class="p-4 font-bold text-gray-500 text-xs">${i}</td>
-                    <td class="p-4 text-right text-green-600 text-xs font-mono">${formatEMICurrency(principalRepayment.times(exRate).toNumber(), targetCurrency)}</td>
-                    <td class="p-4 text-right text-red-500 text-xs font-mono">${formatEMICurrency(interest.times(exRate).toNumber(), targetCurrency)}</td>
-                    <td class="p-4 text-right font-bold text-gray-900 dark:text-gray-100 text-xs font-mono">${formatEMICurrency(currentBalance.times(exRate).toNumber(), targetCurrency)}</td>
+                    <td class="p-4 text-right text-green-600 text-xs font-mono">${FinUI.formatCurrency(principalRepayment.times(exRate).toNumber(), targetCurrency)}</td>
+                    <td class="p-4 text-right text-red-500 text-xs font-mono">${FinUI.formatCurrency(interest.times(exRate).toNumber(), targetCurrency)}</td>
+                    <td class="p-4 text-right font-bold text-gray-900 dark:text-gray-100 text-xs font-mono">${FinUI.formatCurrency(currentBalance.times(exRate).toNumber(), targetCurrency)}</td>
                 </tr>
             `;
         }
     }
 
-    const totalPayment = P.plus(totalInterestPaid);
+    const totalPayment = P.plus(totalInterestPaid).plus(processingFee);
+    const baselineEMI = FinancialCore.calculateEMI(P, annualRate, totalMonths, compoundingFreq);
+    const baselineTotalInterest = baselineEMI.mul(totalMonths).minus(P);
     const savings = baselineTotalInterest.minus(totalInterestPaid);
     const monthsSaved = totalMonths - scheduleData.length;
 
     box.classList.remove('hidden');
-    out.innerText = formatEMICurrency(emiRounded.times(exRate).toNumber(), targetCurrency);
-    document.getElementById('emi-saved').innerText = formatEMICurrency(savings.times(exRate).toNumber(), targetCurrency);
-    document.getElementById('emi-new-tenure').innerText = `${scheduleData.length} Months`;
-    document.getElementById('emi-tot-int').innerText = formatEMICurrency(totalInterestPaid.times(exRate).toNumber(), targetCurrency);
-    document.getElementById('emi-tot-pay').innerText = formatEMICurrency(totalPayment.times(exRate).toNumber(), targetCurrency);
+    out.innerText = FinUI.formatCurrency(emiRounded.times(exRate).toNumber(), targetCurrency);
+    document.getElementById('emi-saved').innerText = FinUI.formatCurrency(savings.times(exRate).toNumber(), targetCurrency);
+    document.getElementById('emi-tenure-save').innerText = `${monthsSaved} Months Off Tenure`;
+    document.getElementById('emi-tot-int').innerText = `Interest Component: ${FinUI.formatCurrency(totalInterestPaid.times(exRate).toNumber(), targetCurrency)}`;
+    document.getElementById('emi-tot-pay').innerText = FinUI.formatCurrency(totalPayment.times(exRate).toNumber(), targetCurrency);
+
+    // Insights and UI updates...
+    const burdenPerc = totalInterestPaid.div(totalPayment).times(100);
+    const burdenLabel = document.getElementById('emi-burden-label');
+    const burdenDot = document.getElementById('emi-burden-dot');
+    if (burdenLabel && burdenDot) {
+        burdenLabel.innerText = `Interest Burden: ${burdenPerc.toFixed(1)}%`;
+        burdenDot.className = `w-2 h-2 rounded-full ${burdenPerc.gt(50) ? 'bg-red-500' : 'bg-blue-600'}`;
+    }
 
     const milestonesArea = document.getElementById('emi-highlights');
     if (milestonesArea) {
         let mHtml = '';
-        if (breakEvenMonth) mHtml += `<div class="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full text-[10px] font-black text-blue-600 flex items-center gap-2 border border-blue-100"><i data-lucide="zap" class="w-3 h-3"></i> Break-even at Month ${breakEvenMonth}</div>`;
-        if (halfPaidMonth) mHtml += `<div class="px-4 py-2 bg-green-50 dark:bg-green-900/20 rounded-full text-[10px] font-black text-green-600 flex items-center gap-2 border border-green-100"><i data-lucide="check" class="w-3 h-3"></i> 50% Principal at Month ${halfPaidMonth}</div>`;
-        if (monthsSaved > 0) mHtml += `<div class="px-4 py-2 bg-amber-50 dark:bg-amber-900/20 rounded-full text-[10px] font-black text-amber-600 flex items-center gap-2 border border-amber-100"><i data-lucide="clock" class="w-3 h-3"></i> Retired ${monthsSaved} Months Early</div>`;
+        if (breakEvenMonth) mHtml += `<div class="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full text-[10px] font-black text-blue-600 flex items-center gap-2 border border-blue-100"><i data-lucide="zap" class="w-3 h-3"></i> Break-even Point M${breakEvenMonth}</div>`;
+        if (halfPaidMonth) mHtml += `<div class="px-4 py-2 bg-green-50 dark:bg-green-900/20 rounded-full text-[10px] font-black text-green-600 flex items-center gap-2 border border-green-100"><i data-lucide="check" class="w-3 h-3"></i> 50% Principal M${halfPaidMonth}</div>`;
+        if (processingFee.gt(0)) mHtml += `<div class="px-4 py-2 bg-slate-50 dark:bg-slate-900/20 rounded-full text-[10px] font-black text-slate-600 flex items-center gap-2 border border-slate-100"><i data-lucide="info" class="w-3 h-3"></i> Fee: ${FinUI.formatCurrency(processingFee.toNumber(), targetCurrency)}</div>`;
         milestonesArea.innerHTML = mHtml;
         lucide.createIcons();
     }
 
-    const insightArea = document.getElementById('emi-insights-area');
+    const insightArea = document.getElementById('emi-insights-list');
     if (insightArea) {
-        const firstYearInterest = scheduleData.slice(0, 12).reduce((sum, s) => sum.plus(s.interest), new Decimal(0));
-        const firstYearPrincipal = scheduleData.slice(0, 12).reduce((sum, s) => sum.plus(s.principal), new Decimal(0));
-        const intRatio = firstYearInterest.div(firstYearInterest.plus(firstYearPrincipal)).times(100);
-        
         const insights = [
-            { icon: 'shield-alert', title: 'Interest Heavy Phase', desc: `Warning: ${intRatio.toFixed(1)}% of your payments in Year 1 are interest. Consider lump-sum payments now to maximize savings.` },
-            { icon: 'trending-down', title: 'Prepayment Efficacy', desc: `Your current strategy saves ${formatEMICurrency(savings.times(exRate).toNumber(), targetCurrency)} in total interest compared to the base tenure.` },
-            { icon: 'activity', title: 'Cost of Capital', desc: `Total interest burden is ${totalInterestPaid.div(P).times(100).toFixed(1)}% of the original principal amount.` }
+            { icon: 'shield-alert', title: 'Debt Efficiency', desc: `Total cost is ${totalPayment.div(P).toFixed(2)}x of principal. ${burdenPerc.gt(40) ? 'High interest burden detected.' : 'Efficient debt structure.'}` },
+            { icon: 'trending-down', title: 'Savings Potential', desc: `Prepayments save you ${FinUI.formatCurrency(savings.times(exRate).toNumber(), targetCurrency)} and retire loan ${monthsSaved} months early.` },
+            { icon: 'activity', title: 'Processing Impact', desc: `Upfront processing fee adds ${feeRate.times(100).toFixed(1)}% to your effective loan cost today.` }
         ];
-
         insightArea.innerHTML = insights.map(i => `
-            <div class="p-4 bg-white dark:bg-black/20 rounded-3xl border dark:border-gray-800 flex gap-4">
-                <div class="text-blue-600"><i data-lucide="${i.icon}" class="w-5 h-5"></i></div>
-                <div>
-                     <h5 class="text-[10px] font-black uppercase text-gray-900 dark:text-white mb-1">${i.title}</h5>
-                     <p class="text-[9px] font-bold text-gray-400 leading-tight">${i.desc}</p>
+            <div class="p-4 bg-white dark:bg-black/20 rounded-2xl border dark:border-gray-800 flex gap-4">
+                <div class="text-blue-600"><i data-lucide="${i.icon}" class="w-4 h-4"></i></div>
+                <div class="space-y-1">
+                    <h5 class="text-[9px] font-black uppercase text-gray-900 dark:text-white leading-none">${i.title}</h5>
+                    <p class="text-[8px] font-bold text-gray-500 dark:text-gray-400 break-words">${i.desc}</p>
                 </div>
             </div>
         `).join('');
@@ -2822,17 +3278,15 @@ window.runEMICalc = () => {
         balance: s.balance.times(exRate).toNumber(),
         basePrincipal: s.principal.toNumber()
     }));
+    // Export Support
+    window.currentEMISchedule = scheduleData;
+    window.currentEMIInputs = { p: P, r: annualRate, n: tenureYears, fee: feeRate, prepayM: extraMonthly, prepayL: lumpSum, currentCurrency: targetCurrency };
+    window.currentEMISummary = { emi: emiRounded, totalInterest: totalInterestPaid, totalPayment: totalPayment, savings: savings };
+
     updateEMICharts(P.times(exRate).toNumber(), totalInterestPaid.times(exRate).toNumber(), chartSchedule, breakEvenMonth, halfPaidMonth, emiRounded.times(exRate).toNumber(), targetCurrency);
 };
 
-const formatEMICurrency = (v, code) => {
-    const currency = CURRENCIES[code] || CURRENCIES.USD;
-    return new Intl.NumberFormat(currency.locale, {
-        style: 'currency',
-        currency: code,
-        maximumFractionDigits: currency.decimals !== undefined ? currency.decimals : 0
-    }).format(v);
-};
+const formatEMICurrency = (v, code) => FinUI.formatCurrency(v, code);
 
 const updateEMICharts = (principal, interest, schedule, breakEven, halfPaid, monthlyInstallment, currencyCode) => {
     const pieCtx = document.getElementById('emi-pie-chart');
@@ -3383,6 +3837,320 @@ window.runAgeCalc = () => {
     if (nextBdayEl) nextBdayEl.innerText = `${daysToBday} Days Until Celebration`;
 };
 
+// --- FD CALCULATOR LOGIC ---
+window.runFDCalc = () => {
+    const P = FinUI.getValidInput('fd-p', 100000);
+    const inputRate = FinUI.getValidInput('fd-r', 6.5);
+    const annualRate = FinancialCore.getAnnualRate(inputRate);
+    const years = FinUI.getValidInput('fd-n', 5);
+    const freq = parseInt(document.getElementById('fd-freq')?.value || '4', 10);
+    const taxRate = FinUI.getValidInput('fd-tax', 10).div(100);
+    const inflation = FinUI.getValidInput('fd-inf', 0).div(100);
+    const currency = state.currency;
+
+    if (P.lte(0) || annualRate.lte(0) || years.lte(0)) return;
+
+    // Standard formula via Core logic
+    const { maturity, interest } = FinancialCore.calculateFD(P, annualRate, years, freq);
+    
+    const taxPaid = interest.mul(taxRate);
+    const netMaturity = maturity.minus(taxPaid);
+    
+    const inflationFactor = inflation.plus(1).pow(years);
+    const realMaturity = netMaturity.div(inflationFactor);
+    const inflationLoss = netMaturity.minus(realMaturity);
+
+    document.getElementById('fd-out').innerText = FinUI.formatCurrency(netMaturity.toNumber(), currency);
+    document.getElementById('fd-tot-int').innerText = FinUI.formatCurrency(interest.toNumber(), currency);
+    document.getElementById('fd-tot-tax').innerText = FinUI.formatCurrency(taxPaid.plus(inflationLoss).toNumber(), currency);
+    
+    const extraLabel = document.getElementById('fd-extra-label');
+    if (extraLabel) {
+        extraLabel.innerText = inflation.gt(0) ? "Tax + Inflation Loss" : "TDS / Tax Paid";
+    }
+
+    const box = document.getElementById('fd-box');
+    if (box) box.classList.remove('hidden');
+    
+    const schedule = [];
+    const labels = [];
+    const dataPoints = [];
+    
+    for (let i = 1; i <= years.toNumber(); i++) {
+        const yearResult = FinancialCore.calculateFD(P, annualRate, i, freq);
+        const opening = i === 1 ? P : schedule[i-2].closing;
+        const interestThisYear = yearResult.maturity.minus(opening);
+        
+        schedule.push({
+            year: i,
+            opening: opening,
+            interest: interestThisYear,
+            closing: yearResult.maturity
+        });
+        
+        labels.push(`Year ${i}`);
+        dataPoints.push(yearResult.maturity.toNumber());
+    }
+
+    // Export Support
+    window.currentFDSchedule = schedule;
+    window.currentFDInputs = { p: P, r: annualRate, n: years, freq, tax: taxRate, inflation: inflation, currency };
+    window.currentFDSummary = { maturity: netMaturity, interest: interest, taxPaid: taxPaid, inflationLoss: inflationLoss };
+
+    const tbody = document.getElementById('fd-tbody');
+    if (tbody) {
+        tbody.innerHTML = schedule.map(s => `
+            <tr class="border-b dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                <td class="p-4 font-bold text-gray-500">${s.year}</td>
+                <td class="p-4 text-right font-mono text-xs">${FinUI.formatCurrency(s.opening.toNumber(), currency)}</td>
+                <td class="p-4 text-right font-mono text-xs text-green-600">+${FinUI.formatCurrency(s.interest.toNumber(), currency)}</td>
+                <td class="p-4 text-right font-black font-mono text-xs">${FinUI.formatCurrency(s.closing.toNumber(), currency)}</td>
+            </tr>
+        `).join('');
+    }
+
+    updateFDCharts(P.toNumber(), interest.toNumber(), labels, dataPoints, currency);
+
+    const highlights = document.getElementById('fd-highlights');
+    if (highlights) {
+        const yieldPerc = interest.div(P).times(100);
+        highlights.innerHTML = `
+            <div class="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full text-[10px] font-black text-blue-600 border border-blue-100">${yieldPerc.toFixed(1)}% Total Yield</div>
+            <div class="px-4 py-2 bg-green-50 dark:bg-green-900/20 rounded-full text-[10px] font-black text-green-600 border border-green-100">Capital Protection: 100%</div>
+        `;
+    }
+};
+
+const updateFDCharts = (principal, interest, labels, data, currency) => {
+    const pieCtx = document.getElementById('fd-pie-chart');
+    const lineCtx = document.getElementById('fd-line-chart');
+    if (!pieCtx || !lineCtx) return;
+
+    if (window.fdCharts) {
+        window.fdCharts.pie?.destroy();
+        window.fdCharts.line?.destroy();
+    } else {
+        window.fdCharts = {};
+    }
+
+    const isDark = document.documentElement.classList.contains('dark');
+    const textColor = isDark ? '#9ca3af' : '#4b5563';
+
+    window.fdCharts.pie = new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Principal', 'Interest'],
+            datasets: [{
+                data: [principal, interest],
+                backgroundColor: ['#3b82f6', '#10b981'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { position: 'bottom', labels: { color: textColor, font: { size: 10, weight: 'bold' } } }
+            }
+        }
+    });
+
+    window.fdCharts.line = new Chart(lineCtx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Maturity Value',
+                data: data,
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            scales: {
+                x: { ticks: { color: textColor, font: { size: 9 } } },
+                y: { ticks: { color: textColor, font: { size: 9 }, callback: v => formatEMICurrency(v, currency).split('.')[0] } }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+};
+
+// --- LOAN COMPARISON LOGIC ---
+let lcScenarios = [
+    { id: 1, name: 'Bank A', rate: 8.5, fee: 1000 },
+    { id: 2, name: 'Bank B', rate: 9.2, fee: 0 }
+];
+
+window.initLoanComp = () => {
+    renderLoanScenarios();
+    runLoanComp();
+};
+
+window.addLoanScenario = () => {
+    if (lcScenarios.length >= 4) return toast("Maximum 4 scenarios allowed for comparison");
+    const nextId = Math.max(...lcScenarios.map(s => s.id)) + 1;
+    lcScenarios.push({ id: nextId, name: `Offer ${String.fromCharCode(64 + nextId)}`, rate: 9.0, fee: 500 });
+    renderLoanScenarios();
+    runLoanComp();
+};
+
+function removeLoanScenario(id) {
+    if (lcScenarios.length <= 2) return toast("At least 2 scenarios are required for comparison");
+    lcScenarios = lcScenarios.filter(s => s.id !== id);
+    renderLoanScenarios();
+    runLoanComp();
+}
+
+function renderLoanScenarios() {
+    const container = document.getElementById('lc-scenarios');
+    if (!container) return;
+    container.innerHTML = lcScenarios.map(s => `
+        <div class="p-6 bg-white dark:bg-gray-900 border dark:border-gray-800 rounded-[2rem] space-y-4 relative group animate-fade-in">
+            <button onclick="removeLoanScenario(${s.id})" class="absolute top-4 right-4 text-gray-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
+                <i data-lucide="x-circle" class="w-4 h-4"></i>
+            </button>
+            <div class="space-y-2">
+                <input type="text" value="${s.name}" oninput="updateLCParam(${s.id}, 'name', this.value)" class="bg-transparent border-none outline-none font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-widest w-full">
+                <div class="h-0.5 w-8 bg-blue-500"></div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-2">
+                    <label class="text-[8px] font-black text-gray-400 uppercase">Rate (%)</label>
+                    <input type="number" value="${s.rate}" step="0.1" oninput="updateLCParam(${s.id}, 'rate', this.value)" class="w-full p-3 bg-gray-50 dark:bg-black/20 border rounded-xl dark:border-gray-700 font-bold text-xs outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[8px] font-black text-gray-400 uppercase">Fee (${CURRENCIES[state.currency].symbol})</label>
+                    <input type="number" value="${s.fee}" oninput="updateLCParam(${s.id}, 'fee', this.value)" class="w-full p-3 bg-gray-50 dark:bg-black/20 border rounded-xl dark:border-gray-700 font-bold text-xs outline-none">
+                </div>
+            </div>
+        </div>
+    `).join('');
+    lucide.createIcons();
+}
+
+window.updateLCParam = (id, key, val) => {
+    const s = lcScenarios.find(sc => sc.id === id);
+    if (!s) return;
+    if (key === 'name') s.name = val;
+    else s[key] = parseFloat(val) || 0;
+    runLoanComp();
+};
+
+window.runLoanComp = () => {
+    const pVal = document.getElementById('lc-p').value;
+    const nVal = document.getElementById('lc-n').value;
+    const P = new Decimal(pVal || 0);
+    const N = new Decimal(nVal || 0);
+    const currency = state.currency;
+
+    if (P.lte(0) || N.lte(0)) return;
+
+    const results = lcScenarios.map(s => {
+        const annualRate = FinancialCore.getAnnualRate(s.rate);
+        const r = annualRate.div(1200);
+        const months = N.mul(12);
+        
+        let emi;
+        if (r.isZero()) emi = P.div(months);
+        else {
+            const factor = r.plus(1).pow(months);
+            emi = P.mul(r).mul(factor).div(factor.sub(1));
+        }
+
+        const totalInterest = emi.mul(months).minus(P);
+        const totalOutflow = totalInterest.plus(P).plus(s.fee);
+
+        return {
+            id: s.id,
+            name: s.name,
+            emi: emi,
+            interest: totalInterest,
+            outflow: totalOutflow,
+            rate: annualRate
+        };
+    });
+
+    results.sort((a, b) => a.outflow.minus(b.outflow).toNumber());
+
+    const resultsBox = document.getElementById('lc-results');
+    resultsBox.classList.remove('hidden');
+
+    const tbody = document.getElementById('lc-tbody');
+    tbody.innerHTML = results.map(r => {
+        const delta = r.outflow.minus(results[0].outflow);
+        return `
+            <tr class="border-b dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                <td class="p-6 font-black uppercase text-gray-500">${r.name} <span class="ml-2 px-2 py-0.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded text-[8px]">${r.rate}%</span></td>
+                <td class="p-6 font-bold font-mono">${formatEMICurrency(r.emi.toNumber(), currency)}</td>
+                <td class="p-6 font-bold font-mono text-red-500">${formatEMICurrency(r.interest.toNumber(), currency)}</td>
+                <td class="p-6 font-black font-mono text-gray-900 dark:text-white">${formatEMICurrency(r.outflow.toNumber(), currency)}</td>
+                <td class="p-6 font-bold font-mono ${delta.gt(0) ? 'text-orange-500' : 'text-green-500'}">${delta.isZero() ? 'CHEAPEST' : '+'+formatEMICurrency(delta.toNumber(), currency)}</td>
+            </tr>
+        `;
+    }).join('');
+
+    // Verdict
+    const savings = results[results.length - 1].outflow.minus(results[0].outflow);
+    const verdict = document.getElementById('lc-verdict');
+    verdict.innerHTML = `
+        <div class="p-6 bg-blue-600 rounded-3xl space-y-2">
+            <h5 class="text-[10px] font-black uppercase text-blue-200">Cheapest Option Detected</h5>
+            <div class="text-3xl font-black">${results[0].name}</div>
+            <p class="text-[9px] font-bold text-blue-100 opacity-80">Choosing this bank over the most expensive option saves you ${formatEMICurrency(savings.toNumber(), currency)} in total capital outflow.</p>
+        </div>
+        <div class="space-y-4">
+             <div class="flex justify-between items-center text-[10px] font-black uppercase">
+                <span class="text-gray-500">Interest / Principal Ratio</span>
+                <span class="text-blue-400">${results[0].interest.div(P).times(100).toFixed(1)}%</span>
+             </div>
+             <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
+                <div class="h-full bg-blue-500" style="width: ${Math.min(100, results[0].interest.div(P).times(100).toNumber())}%"></div>
+             </div>
+        </div>
+    `;
+
+    // Export Support
+    window.currentLCResults = results;
+    window.currentLCInputs = { p: P, n: N, scenarios: lcScenarios, currency };
+
+    updateLCChart(results.map(r => r.name), results.map(r => r.outflow.toNumber()), currency);
+};
+
+const updateLCChart = (labels, data, currency) => {
+    const ctx = document.getElementById('lc-chart');
+    if (!ctx) return;
+
+    if (window.lcChart) window.lcChart.destroy();
+
+    const isDark = document.documentElement.classList.contains('dark');
+    const textColor = isDark ? '#9ca3af' : '#4b5563';
+
+    window.lcChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Total Outflow',
+                data: data,
+                backgroundColor: data.map((v, i) => i === 0 ? '#3b82f6' : '#374151'),
+                borderRadius: 12
+            }]
+        },
+        options: {
+            scales: {
+                x: { grid: { display: false }, ticks: { color: textColor, font: { weight: '800', size: 9 } } },
+                y: { grid: { borderDash: [5, 5] }, ticks: { color: textColor, font: { size: 9 }, callback: v => formatEMICurrency(v, currency).split('.')[0] } }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+};
+
 window.exportNotes = () => {
     const text = document.getElementById('notes-in').value;
     if(!text) return toast("Notes are empty");
@@ -3398,6 +4166,293 @@ window.copyNotes = () => {
     const text = document.getElementById('notes-in').value;
     if(!text) return toast("Nothing to copy");
     window.copyToClipboard(text, "Notes Content");
+};
+
+// --- CSV Logic ---
+
+window.exportEMICSV = () => {
+    if (!window.currentEMISchedule || window.currentEMISchedule.length === 0) {
+        return toast("No calculation data to export");
+    }
+    
+    const inputs = window.currentEMIInputs || {};
+    const summary = window.currentEMISummary || {};
+    const schedule = window.currentEMISchedule;
+
+    const data = [
+        { Section: "INPUTS", Key: "Loan Amount", Value: inputs.p ? inputs.p.toString() : "0" },
+        { Section: "INPUTS", Key: "Interest Rate", Value: inputs.r ? inputs.r.toString() : "0" },
+        { Section: "INPUTS", Key: "Tenure (Years)", Value: inputs.n ? inputs.n.toString() : "0" },
+        { Section: "INPUTS", Key: "Processing Fee (%)", Value: inputs.fee ? inputs.fee.times(100).toString() : "0" },
+        { Section: "SUMMARY", Key: "Monthly EMI", Value: summary.emi ? summary.emi.toString() : "0" },
+        { Section: "SUMMARY", Key: "Total Interest", Value: summary.totalInterest ? summary.totalInterest.toString() : "0" },
+        { Section: "SUMMARY", Key: "Total Payment", Value: summary.totalPayment ? summary.totalPayment.toString() : "0" },
+        { Section: "SUMMARY", Key: "Total Savings", Value: summary.savings ? summary.savings.toString() : "0" },
+        { Section: "SCHEDULE", Key: "Month", Value: "Principal Paid | Interest Paid | Balance" }
+    ];
+
+    schedule.forEach(s => {
+        data.push({ 
+            Section: `Month ${s.month}`, 
+            Key: s.principal instanceof Decimal ? s.principal.toFixed(2) : String(s.principal), 
+            Value: `${s.interest instanceof Decimal ? s.interest.toFixed(2) : String(s.interest)} | ${s.balance instanceof Decimal ? s.balance.toFixed(2) : String(s.balance)}` 
+        });
+    });
+
+    try {
+        const csv = CSVCore.generateCSV(data);
+        CSVCore.downloadCSV(`loan_report_${new Date().getTime()}.csv`, csv);
+        toast("EMI Report exported as CSV");
+    } catch (err) {
+        console.error("Export Error:", err);
+        toast("Export failed. Check parameters.");
+    }
+};
+
+window.importEMICSV = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const text = e.target.result;
+        const rows = CSVCore.parseCSV(text);
+        if (rows.length < 4) return toast("Invalid CSV format");
+        
+        try {
+            const getVal = (key) => rows.find(r => r.Key === key)?.Value;
+            if (document.getElementById('emi-p')) document.getElementById('emi-p').value = getVal("Loan Amount") || 100000;
+            if (document.getElementById('emi-r')) document.getElementById('emi-r').value = getVal("Interest Rate") || 10;
+            if (document.getElementById('emi-n')) document.getElementById('emi-n').value = getVal("Tenure (Years)") || 5;
+            if (document.getElementById('emi-fee')) document.getElementById('emi-fee').value = getVal("Processing Fee") || 0;
+            
+            window.runEMICalc();
+            toast("EMI calculation imported");
+        } catch (err) {
+            toast("Error parsing CSV");
+        }
+    };
+    reader.readAsText(file);
+};
+
+window.exportSIPCSV = () => {
+    if (!window.currentSIPSchedule) return toast("No data to export");
+    const inputs = window.currentSIPInputs;
+    const summary = window.currentSIPSummary;
+    const schedule = window.currentSIPSchedule;
+
+    const data = [
+        { Section: "INPUTS", Key: "Monthly Investment", Value: inputs.monthly },
+        { Section: "INPUTS", Key: "Expected Return", Value: inputs.rate },
+        { Section: "INPUTS", Key: "Tenure", Value: inputs.years },
+        { Section: "INPUTS", Key: "Step Up", Value: inputs.stepUp },
+        { Section: "SUMMARY", Key: "Maturity Value", Value: summary.maturity },
+        { Section: "SUMMARY", Key: "Invested Capital", Value: summary.invested },
+        { Section: "SUMMARY", Key: "Gains", Value: summary.gains },
+        { Section: "SCHEDULE", Key: "Year", Value: "Invested | Maturity" }
+    ];
+
+    schedule.forEach(s => {
+        data.push({ 
+            Section: `Year ${s.year}`, 
+            Key: s.invested.toFixed(2), 
+            Value: s.maturity.toFixed(2)
+        });
+    });
+
+    CSVCore.downloadCSV("sip-growth.csv", CSVCore.generateCSV(data));
+    toast("SIP Projection exported");
+};
+
+window.importSIPCSV = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const text = e.target.result;
+        const rows = CSVCore.parseCSV(text);
+        try {
+            const getVal = (key) => rows.find(r => r.Key === key)?.Value;
+            document.getElementById('sip-m').value = getVal("Monthly Investment");
+            document.getElementById('sip-r').value = getVal("Expected Return");
+            document.getElementById('sip-n').value = getVal("Tenure");
+            document.getElementById('sip-step').value = getVal("Step Up");
+            window.runSIPCalc();
+            toast("SIP calculation imported");
+        } catch(e) { toast("Invalid CSV"); }
+    };
+    reader.readAsText(file);
+};
+
+window.exportFDCSV = () => {
+    if (!window.currentFDSchedule) return toast("No data to export");
+    const inputs = window.currentFDInputs;
+    const summary = window.currentFDSummary;
+    const schedule = window.currentFDSchedule;
+
+    const data = [
+        { Section: "INPUTS", Key: "Principal", Value: inputs.p },
+        { Section: "INPUTS", Key: "Rate", Value: inputs.r },
+        { Section: "INPUTS", Key: "Years", Value: inputs.n },
+        { Section: "SUMMARY", Key: "Net Maturity", Value: summary.maturity },
+        { Section: "SUMMARY", Key: "Total Interest", Value: summary.interest },
+        { Section: "SCHEDULE", Key: "Year", Value: "Opening | Interest | Closing" }
+    ];
+
+    schedule.forEach(s => {
+        data.push({ 
+            Section: `Year ${s.year}`, 
+            Key: s.opening.toFixed(2), 
+            Value: `${s.interest.toFixed(2)} | ${s.closing.toFixed(2)}`
+        });
+    });
+
+    CSVCore.downloadCSV("fd-maturity.csv", CSVCore.generateCSV(data));
+    toast("FD Maturity exported");
+};
+
+window.importFDCSV = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const text = e.target.result;
+        const rows = CSVCore.parseCSV(text);
+        try {
+            const getVal = (key) => rows.find(r => r.Key === key)?.Value;
+            document.getElementById('fd-p').value = getVal("Principal");
+            document.getElementById('fd-r').value = getVal("Rate");
+            document.getElementById('fd-n').value = getVal("Years");
+            window.runFDCalc();
+            toast("FD calculation imported");
+        } catch(e) { toast("Invalid CSV"); }
+    };
+    reader.readAsText(file);
+};
+
+window.exportLoanCompCSV = () => {
+    if (!window.currentLCResults) return toast("No data to export");
+    const inputs = window.currentLCInputs;
+    const results = window.currentLCResults;
+
+    const data = [
+        { Section: "BASE", Key: "Principal", Value: inputs.p },
+        { Section: "BASE", Key: "Tenure", Value: inputs.n },
+        { Section: "RESULTS", Key: "Bank Name", Value: "Rate | EMI | Interest | Total Outflow" }
+    ];
+
+    results.forEach(r => {
+        data.push({ 
+            Section: `Outcome ${r.id}`, 
+            Key: r.name, 
+            Value: `${r.rate}% | ${r.emi.toFixed(2)} | ${r.interest.toFixed(2)} | ${r.outflow.toFixed(2)}`
+        });
+    });
+
+    CSVCore.downloadCSV("loan-comparison.csv", CSVCore.generateCSV(data));
+    toast("Comparison report exported");
+};
+
+window.importLoanCompCSV = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const text = e.target.result;
+        const rows = CSVCore.parseCSV(text);
+        try {
+            const getVal = (key) => rows.find(r => r.Key === key)?.Value;
+            document.getElementById('lc-p').value = getVal("Principal");
+            document.getElementById('lc-n').value = getVal("Tenure");
+            
+            // Reconstruct scenarios if possible (optional but advanced)
+            // Simplified: just update base inputs
+            window.runLoanComp();
+            toast("Loan comparison base imported");
+        } catch(e) { toast("Invalid CSV"); }
+    };
+    reader.readAsText(file);
+};
+
+window.exportCCCSV = () => {
+    if (!window.currentCCInputs) return toast("No data to export");
+    const i = window.currentCCInputs;
+    const s = window.currentCCSummary;
+    const data = [
+        { Section: "INPUTS", Key: "Balance", Value: i.p },
+        { Section: "INPUTS", Key: "APR", Value: i.r },
+        { Section: "INPUTS", Key: "Monthly Payment", Value: i.m },
+        { Section: "SUMMARY", Key: "Total Interest", Value: s.interest },
+        { Section: "SUMMARY", Key: "Time to Target", Value: s.months + " Months" },
+        { Section: "SUMMARY", Key: "Daily Accrual", Value: s.daily }
+    ];
+    CSVCore.downloadCSV("credit-card-debt.csv", CSVCore.generateCSV(data));
+    toast("Debt report exported");
+};
+
+window.importCCCSV = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const rows = CSVCore.parseCSV(e.target.result);
+        try {
+            const getVal = (key) => rows.find(r => r.Key === key)?.Value;
+            document.getElementById('cc-p').value = getVal("Balance");
+            document.getElementById('cc-r').value = getVal("APR");
+            document.getElementById('cc-m').value = getVal("Monthly Payment");
+            window.runCCCalc();
+            toast("Debt data imported");
+        } catch(e) { toast("Invalid CSV"); }
+    };
+    reader.readAsText(file);
+};
+
+window.exportROICSV = () => {
+    if (!window.currentROIInputs) return toast("No data to export");
+    const i = window.currentROIInputs;
+    const s = window.currentROISummary;
+    const data = [
+        { Section: "INPUTS", Key: "Spend", Value: i.spend },
+        { Section: "INPUTS", Key: "Revenue", Value: i.revenue },
+        { Section: "INPUTS", Key: "Days", Value: i.days },
+        { Section: "SUMMARY", Key: "ROI", Value: s.roi.toFixed(2) + "%" },
+        { Section: "SUMMARY", Key: "Profit", Value: s.profit },
+        { Section: "SUMMARY", Key: "ROAS", Value: s.roas.toFixed(2) + "x" }
+    ];
+    CSVCore.downloadCSV("roi-analysis.csv", CSVCore.generateCSV(data));
+    toast("ROI Analysis exported");
+};
+
+window.importROICSV = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const rows = CSVCore.parseCSV(e.target.result);
+        try {
+            const getVal = (key) => rows.find(r => r.Key === key)?.Value;
+            document.getElementById('roi-s').value = getVal("Spend");
+            document.getElementById('roi-r').value = getVal("Revenue");
+            document.getElementById('roi-t').value = getVal("Days");
+            window.runROICalc();
+            toast("ROI data imported");
+        } catch(e) { toast("Invalid CSV"); }
+    };
+    reader.readAsText(file);
+};
+
+window.exportInsCSV = () => {
+    if (!window.currentInsInputs) return toast("No data");
+    const i = window.currentInsInputs;
+    const s = window.currentInsSummary;
+    const data = [
+        { Section: "INPUTS", Key: "Type", Value: i.type },
+        { Section: "INPUTS", Key: "Age", Value: i.age },
+        { Section: "INPUTS", Key: "Coverage", Value: i.cov },
+        { Section: "SUMMARY", Key: "Monthly Premium", Value: s.monthlyPremium },
+        { Section: "SUMMARY", Key: "Annual Premium", Value: s.annualPremium }
+    ];
+    CSVCore.downloadCSV("insurance-quote.csv", CSVCore.generateCSV(data));
 };
 
 window.runQRGen = () => {
@@ -3507,105 +4562,82 @@ window.runStopwatchReset = () => {
 };
 
 window.runSIPCalc = () => {
-    const mInput = document.getElementById('sip-m');
-    const rInput = document.getElementById('sip-r');
-    const nInput = document.getElementById('sip-n');
-    const stepInput = document.getElementById('sip-step');
-    if (!mInput || !rInput || !nInput || !stepInput) return;
-
-    const mBase = new Decimal(mInput.value || 0);
-    const annualRate = new Decimal(rInput.value || 0);
-    const years = new Decimal(nInput.value || 0);
-    const stepPercent = new Decimal(stepInput.value || 0);
+    const monthly = FinUI.getValidInput('sip-m', 5000);
+    const inputRate = FinUI.getValidInput('sip-r', 12);
+    const annualRate = FinancialCore.getAnnualRate(inputRate);
+    const years = FinUI.getValidInput('sip-n', 10);
+    const stepUp = FinUI.getValidInput('sip-step', 10);
+    const inflation = FinUI.getValidInput('sip-inf', 6);
     const currency = state.currency;
 
-    if (mBase.lte(0) || annualRate.lte(0) || years.lte(0)) return;
+    if (monthly.lte(0) || annualRate.lte(0) || years.lte(0)) return;
 
-    const monthlyRate = annualRate.div(12).div(100);
-    const totalMonths = years.times(12).toNumber();
-    const step = stepPercent.div(100);
+    // Core Logic via FinancialCore
+    const { maturity, invested, schedule } = FinancialCore.calculateSIP(monthly, annualRate, years, stepUp);
 
-    let maturity = new Decimal(0);
-    let totalInvested = new Decimal(0);
-    let currentMonthly = mBase;
-    let YearlySchedule = [];
-
-    for (let t = 1; t <= totalMonths; t++) {
-        // Investment happens at start of month (Annuity Due)
-        maturity = maturity.plus(currentMonthly);
-        totalInvested = totalInvested.plus(currentMonthly);
-        
-        // Compound for the month
-        maturity = maturity.times(monthlyRate.plus(1));
-
-        // Year-end report & Step-up
-        if (t % 12 === 0) {
-            YearlySchedule.push({
-                year: t / 12,
-                invested: totalInvested,
-                maturity: maturity,
-                monthlyContribution: currentMonthly
-            });
-            if (t < totalMonths) {
-                currentMonthly = currentMonthly.times(step.plus(1));
-            }
-        }
-    }
-
-    // Rounding for display
     const finalMaturity = maturity.toDecimalPlaces(0, Decimal.ROUND_HALF_UP);
-    const finalInvested = totalInvested.toDecimalPlaces(0, Decimal.ROUND_HALF_UP);
+    const finalInvested = invested.toDecimalPlaces(0, Decimal.ROUND_HALF_UP);
     const finalGains = finalMaturity.minus(finalInvested);
 
-    // Update UI
-    document.getElementById('sip-out').innerText = formatEMICurrency(finalMaturity.toNumber(), currency);
-    document.getElementById('sip-cap').innerText = formatEMICurrency(finalInvested.toNumber(), currency);
-    document.getElementById('sip-gain').innerText = formatEMICurrency(finalGains.toNumber(), currency);
+    // Precise Tax: 12.5% on gains exceeding 1.25 Lakh (Simplified local policy vs global fallback)
+    const exemptionLimit = state.currency === 'INR' ? 125000 : 0; 
+    const taxableGain = Decimal.max(0, finalGains.minus(exemptionLimit));
+    const taxAmount = taxableGain.mul(0.125);
+    const postTaxMaturity = finalMaturity.minus(taxAmount);
 
-    // Dynamic Highlights
+    // Inflation Adjusted (Real) Maturity
+    const realMaturity = postTaxMaturity.div(inflation.div(100).plus(1).pow(years));
+
+    // UI Updates
+    document.getElementById('sip-out').innerText = FinUI.formatCurrency(finalMaturity.toNumber(), currency);
+    document.getElementById('sip-cap').innerText = FinUI.formatCurrency(finalInvested.toNumber(), currency);
+    document.getElementById('sip-gain').innerText = FinUI.formatCurrency(finalGains.toNumber(), currency);
+    
+    // Export Support
+    window.currentSIPSchedule = schedule;
+    window.currentSIPInputs = { monthly, rate: annualRate, years, stepUp, inflation, currency };
+    window.currentSIPSummary = { maturity: finalMaturity, invested: finalInvested, gains: finalGains, postTax: postTaxMaturity, real: realMaturity };
+    
+    const realEl = document.getElementById('sip-real');
+    const taxEl = document.getElementById('sip-taxed');
+    if (realEl) realEl.innerText = FinUI.formatCurrency(realMaturity.toNumber(), currency);
+    if (taxEl) taxEl.innerText = FinUI.formatCurrency(postTaxMaturity.toNumber(), currency);
+
+    // Highlights
     const highlights = document.getElementById('sip-highlights');
     if (highlights) {
-        let hHtml = '';
-        const multiplier = finalMaturity.div(finalInvested).toFixed(1);
-        hHtml += `<div class="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full text-[10px] font-black text-blue-600 border border-blue-100">${multiplier}x Wealth Multiplier</div>`;
-        if (stepPercent.gt(0)) {
-            const finalMonthly = currentMonthly.toDecimalPlaces(0);
-            hHtml += `<div class="px-4 py-2 bg-purple-50 dark:bg-purple-900/20 rounded-full text-[10px] font-black text-purple-600 border border-purple-100">Ends at ${formatEMICurrency(finalMonthly.toNumber(), currency)}/mo</div>`;
-        }
-        highlights.innerHTML = hHtml;
+        const mult = finalMaturity.div(finalInvested).toFixed(1);
+        highlights.innerHTML = `
+            <div class="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full text-[10px] font-black text-blue-600 border border-blue-100">${mult}x Wealth Multiplier</div>
+            <div class="px-4 py-2 bg-green-50 dark:bg-green-900/20 rounded-full text-[10px] font-black text-green-600 border border-green-100">Ends at: ${FinUI.formatCurrency(schedule[schedule.length-1].invested.minus(schedule[schedule.length-2]?.invested || 0).toNumber(), currency)}/mo</div>
+        `;
     }
 
-    // AI Insights
     const insightArea = document.getElementById('sip-insights-area');
     if (insightArea) {
-        const gainRatio = finalGains.div(finalMaturity).times(100);
         const insights = [
-            { icon: 'trending-up', title: 'Wealth Composition', desc: `Market gains account for ${gainRatio.toFixed(1)}% of your estimated maturity value.` },
-            { icon: 'clock', title: 'Compounding Power', desc: `In the final year alone, your wealth grows by ${formatEMICurrency(YearlySchedule[YearlySchedule.length-1].maturity.minus(YearlySchedule[YearlySchedule.length-2]?.maturity || 0).toNumber(), currency)}.` }
+            { icon: 'trending-up', title: 'Portfolio Growth', desc: `Market gains account for ${finalGains.div(finalMaturity).mul(100).toFixed(0)}% of your estimated maturity value.` },
+            { icon: 'shield-check', title: 'Tax Efficiency', desc: `Estimated taxes reduce your final corpus by ${FinUI.formatCurrency(taxAmount.toNumber(), currency)}.` },
+            { icon: 'wind', title: 'Inflation Erosion', desc: `Inflation at ${inflation}%/yr reduces the purchasing power of your wealth by ${FinUI.formatCurrency(postTaxMaturity.minus(realMaturity).toNumber(), currency)}.` }
         ];
-        if (annualRate.gt(15)) insights.push({ icon: 'alert-triangle', title: 'Yield Risk', desc: 'Aggressive yield expected. Ensure your portfolio allocation matches this risk profile.' });
-
         insightArea.innerHTML = insights.map(i => `
-            <div class="p-4 bg-white dark:bg-black/20 rounded-2xl border dark:border-gray-800 flex gap-4">
-                <div class="text-blue-500 shrink-0"><i data-lucide="${i.icon}" class="w-4 h-4"></i></div>
-                <div>
-                     <h5 class="text-[9px] font-black uppercase text-gray-900 dark:text-white mb-1">${i.title}</h5>
-                     <p class="text-[8px] font-bold text-gray-400 leading-tight">${i.desc}</p>
-                </div>
+            <div class="p-6 bg-white dark:bg-black/20 rounded-[2rem] border dark:border-gray-800 space-y-3">
+                <div class="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/40 flex items-center justify-center text-blue-600"><i data-lucide="${i.icon}" class="w-4 h-4"></i></div>
+                <h5 class="text-[10px] font-black uppercase text-gray-900 dark:text-white">${i.title}</h5>
+                <p class="text-[9px] font-bold text-gray-400 leading-relaxed">${i.desc}</p>
             </div>
         `).join('');
         lucide.createIcons();
     }
 
-    // Table
     const tbody = document.getElementById('sip-tbody');
     if (tbody) {
-        tbody.innerHTML = YearlySchedule.map(y => `
-            <tr>
-                <td class="p-4 font-bold text-gray-500">${y.year}</td>
-                <td class="p-4 text-right text-gray-400 font-mono">${formatEMICurrency(y.invested.toNumber(), currency)}</td>
-                <td class="p-4 text-right text-green-600 font-mono">${formatEMICurrency(y.maturity.minus(y.invested).toNumber(), currency)}</td>
-                <td class="p-4 text-right font-black text-gray-900 dark:text-white font-mono">${formatEMICurrency(y.maturity.toNumber(), currency)}</td>
+        tbody.innerHTML = schedule.map(y => `
+            <tr class="border-b dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                <td class="p-6 font-bold text-gray-500">Year ${y.year}</td>
+                <td class="p-6 text-right font-mono text-gray-400">${FinUI.formatCurrency(y.invested.toNumber(), currency)}</td>
+                <td class="p-6 text-right font-mono text-green-600">${FinUI.formatCurrency(y.maturity.minus(y.invested).toNumber(), currency)}</td>
+                <td class="p-6 text-right font-black font-mono">${FinUI.formatCurrency(y.maturity.toNumber(), currency)}</td>
             </tr>
         `).join('');
     }
@@ -4162,15 +5194,15 @@ window.runCCCalc = () => {
     if (!pVal || !rVal || !mVal) return;
 
     const P = new Decimal(pVal || 0);
-    const apr = new Decimal(rVal || 0);
+    const annualRate = FinancialCore.getAnnualRate(rVal);
     const monthlyPayment = new Decimal(mVal || 0);
     const targetBalance = new Decimal(tVal || 0);
     const currency = state.currency;
 
-    if (P.lte(0) || apr.lte(0) || monthlyPayment.lte(0)) return;
+    if (P.lte(0) || annualRate.lte(0) || monthlyPayment.lte(0)) return;
 
-    const monthlyRate = apr.div(12).div(100);
-    const dailyRate = apr.div(365).div(100);
+    const monthlyRate = FinancialCore.getMonthlyRate(annualRate);
+    const dailyRate = annualRate.div(365).div(100);
     
     // Check for negative amortization
     if (monthlyPayment.lte(P.mul(monthlyRate))) {
@@ -4198,9 +5230,14 @@ window.runCCCalc = () => {
     document.getElementById('cc-months').innerText = `${months} Months`;
     document.getElementById('cc-daily').innerText = formatEMICurrency(dailyAccrual.toNumber(), currency);
     
-    document.getElementById('cc-roi').innerText = `-${apr.toFixed(2)}%`;
     const principalPaid = P.minus(targetBalance);
     const ratio = principalPaid.div(principalPaid.plus(finalInterest)).times(100);
+
+    // Export Support
+    window.currentCCInputs = { p: P, r: annualRate, m: monthlyPayment, t: targetBalance, currency };
+    window.currentCCSummary = { interest: finalInterest, months: months, daily: dailyAccrual, principalRatio: ratio };
+
+    document.getElementById('cc-roi').innerText = `-${annualRate.toFixed(2)}%`;
     document.getElementById('cc-ratio').innerText = `${ratio.toFixed(1)}% Principal`;
 
     const insightArea = document.getElementById('cc-insights');
@@ -4281,40 +5318,63 @@ window.runDomEst = () => {
 };
 
 window.runCryCalc = () => {
-    const capVal = document.getElementById('cry-in').value;
-    const buyVal = document.getElementById('cry-buy').value;
-    const sellVal = document.getElementById('cry-sell').value;
-
-    const cap = new Decimal(capVal || 0);
-    const buyPrice = new Decimal(buyVal || 0);
-    const sellPrice = new Decimal(sellVal || 0);
+    const capital = FinUI.getValidInput('cry-in', 0);
+    const buyPrice = FinUI.getValidInput('cry-buy', 0);
+    const sellPrice = FinUI.getValidInput('cry-sell', 0);
+    const feeRate = FinUI.getValidInput('cry-fee', 0).div(100);
+    const taxRate = FinUI.getValidInput('cry-tax', 0).div(100);
     const currency = state.currency;
 
-    if (cap.lte(0) || buyPrice.lte(0)) return;
+    if (capital.lte(0) || buyPrice.lte(0)) return;
 
-    const tokens = cap.div(buyPrice);
-    const finalBalance = tokens.mul(sellPrice);
-    const profit = finalBalance.minus(cap);
-    const percentage = sellPrice.minus(buyPrice).div(buyPrice).times(100);
+    // Buying Phase: Capital -> Tokens (minus entry fee)
+    const entryFee = capital.mul(feeRate);
+    const netCapital = capital.minus(entryFee);
+    const tokens = netCapital.div(buyPrice);
+
+    // Selling Phase: Tokens -> Balance (minus exit fee)
+    const grossBalance = tokens.mul(sellPrice);
+    const exitFee = grossBalance.mul(feeRate);
+    const finalBalance = grossBalance.minus(exitFee);
+
+    const totalFees = entryFee.plus(exitFee);
+    const profitBeforeTax = finalBalance.minus(capital);
+    
+    let taxAmount = new Decimal(0);
+    if (profitBeforeTax.gt(0)) {
+        taxAmount = profitBeforeTax.mul(taxRate);
+    }
+    const finalProfit = profitBeforeTax.minus(taxAmount);
+    const netTakeAway = finalBalance.minus(taxAmount);
+    const percentage = finalProfit.div(capital).times(100);
+
+    // Break-even Buy Price (assuming selling at current sell price)
+    const breakEven = buyPrice.div(new Decimal(1).minus(feeRate).pow(2));
 
     const profitEl = document.getElementById('cry-profit');
-    profitEl.innerText = formatEMICurrency(profit.toNumber(), currency);
-    profitEl.className = `text-4xl font-black mb-2 ${profit.gte(0) ? 'text-green-500' : 'text-red-500'}`;
+    if (profitEl) {
+        profitEl.innerText = FinUI.formatCurrency(finalProfit.toNumber(), currency);
+        profitEl.className = `text-5xl font-black mb-2 ${finalProfit.gte(0) ? 'text-green-500' : 'text-red-500'}`;
+    }
     
     const percEl = document.getElementById('cry-perc');
-    percEl.innerText = (percentage.gte(0) ? '+' : '') + percentage.toFixed(2) + '%';
-    percEl.className = `text-lg font-black ${percentage.gte(0) ? 'text-green-400' : 'text-red-400'}`;
+    if (percEl) {
+        percEl.innerText = (percentage.gte(0) ? '+' : '') + percentage.toFixed(2) + '%';
+        percEl.className = `text-lg font-black ${percentage.gte(0) ? 'text-green-400' : 'text-red-400'}`;
+    }
     
-    document.getElementById('cry-bal').innerText = formatEMICurrency(finalBalance.toNumber(), currency);
+    document.getElementById('cry-bal').innerText = FinUI.formatCurrency(finalBalance.toNumber(), currency);
+    document.getElementById('cry-tokens').innerText = tokens.toFixed(6);
+    document.getElementById('cry-be').innerText = FinUI.formatCurrency(breakEven.toNumber(), currency);
+    document.getElementById('cry-fee-val').innerText = `-${FinUI.formatCurrency(totalFees.toNumber(), currency)}`;
+    document.getElementById('cry-tax-val').innerText = `-${FinUI.formatCurrency(taxAmount.toNumber(), currency)}`;
+    document.getElementById('cry-net').innerText = FinUI.formatCurrency(netTakeAway.toNumber(), currency);
 };
 
 window.runROICalc = () => {
-    const sInput = document.getElementById('roi-s');
-    const rInput = document.getElementById('roi-r');
-    if (!sInput || !rInput) return;
-
-    const spend = new Decimal(sInput.value || 0);
-    const revenue = new Decimal(rInput.value || 0);
+    const spend = FinUI.getValidInput('roi-s', 0);
+    const revenue = FinUI.getValidInput('roi-r', 0);
+    const days = FinUI.getValidInput('roi-t', 365);
     const currency = state.currency;
 
     if (spend.lte(0)) return;
@@ -4323,16 +5383,52 @@ window.runROICalc = () => {
     const roi = profit.div(spend).times(100);
     const roas = revenue.div(spend);
 
+    // Annualized ROI: ((1 + ROI)^(365/days)) - 1
+    let annualized;
+    if (profit.lte(0)) {
+        annualized = roi;
+    } else {
+        const roiFactor = profit.div(spend).plus(1);
+        const timeFactor = new Decimal(365).div(days);
+        annualized = roiFactor.pow(timeFactor).minus(1).times(100);
+    }
+
     const out = document.getElementById('roi-out');
-    out.innerText = roi.toDecimalPlaces(1, Decimal.ROUND_HALF_UP).toString() + '%';
+    if (out) out.innerText = roi.toDecimalPlaces(1, Decimal.ROUND_HALF_UP).toString() + '%';
     
-    document.getElementById('roi-p').innerText = formatEMICurrency(profit.toNumber(), currency);
+    document.getElementById('roi-p').innerText = FinUI.formatCurrency(profit.toNumber(), currency);
     document.getElementById('roi-a').innerText = roas.toFixed(2) + 'x';
+    document.getElementById('roi-ann').innerText = annualized.toFixed(1) + '%';
+
+    // Export Support
+    window.currentROIInputs = { spend, revenue, days, currency };
+    window.currentROISummary = { roi, profit, roas, annualized };
 
     const bar = document.getElementById('roi-bar');
-    const visualPerc = Math.max(0, Math.min(100, roi.div(2).plus(50).toNumber()));
-    bar.style.width = visualPerc + '%';
-    bar.className = roi.gte(0) ? 'h-full bg-white shadow-[0_0_15px_white]' : 'h-full bg-red-400 shadow-[0_0_15px_red]';
+    if (bar) {
+        const visualPerc = Math.max(0, Math.min(100, roi.div(2).plus(50).toNumber()));
+        bar.style.width = visualPerc + '%';
+        bar.className = roi.gte(0) ? 'h-full bg-white shadow-[0_0_15px_white]' : 'h-full bg-red-400 shadow-[0_0_15px_red]';
+    }
+
+    const table = document.getElementById('roi-table');
+    if (table) {
+        const targets = [1, 2, 3, 5, 10];
+        table.innerHTML = targets.map(t => {
+            const targetRev = spend.mul(t);
+            const targetProfit = targetRev.minus(spend);
+            const isReached = roas.gte(t);
+            return `
+                <div class="flex items-center justify-between p-3 rounded-xl border dark:border-gray-800 ${isReached ? 'bg-green-500/10 border-green-500/20' : ''}">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 rounded-full ${isReached ? 'bg-green-500' : 'bg-gray-300'}"></div>
+                        <span class="text-[9px] font-black uppercase text-gray-500">${t}x ROAS Target</span>
+                    </div>
+                    <span class="text-[10px] font-mono font-bold">${FinUI.formatCurrency(targetRev.toNumber(), currency)}</span>
+                </div>
+            `;
+        }).join('');
+    }
 };
 
 window.runInsCalc = () => {
@@ -4340,25 +5436,58 @@ window.runInsCalc = () => {
     const age = parseInt(document.getElementById('ins-age').value) || 25;
     const cov = new Decimal(document.getElementById('ins-cov').value || 0);
     const isTobacco = document.getElementById('ins-t-yes').classList.contains('bg-blue-600');
+    const hasCI = document.getElementById('ins-r-ci')?.checked;
+    const hasAD = document.getElementById('ins-r-ad')?.checked;
     const currency = state.currency;
 
     if (cov.lte(0)) return;
 
-    let baseRate = new Decimal(0);
-    if (type === 'term') baseRate = new Decimal(0.001); // 0.1% base
-    else if (type === 'health') baseRate = new Decimal(0.015); // 1.5% base
-    else baseRate = new Decimal(0.0005); // 0.05% base
+    // Actuarial base rates (Simplified industry standard)
+    let baseRate;
+    if (type === 'term') baseRate = new Decimal(0.0008); // 0.08% base for 25yo
+    else if (type === 'health') baseRate = new Decimal(0.012); // 1.2% base
+    else baseRate = new Decimal(0.0004); // 0.04% base for accident
 
-    // Actuarial Loadings
-    let loading = new Decimal(1);
-    if (age > 40) loading = loading.plus(new Decimal(age).minus(40).div(20));
-    if (isTobacco) loading = loading.times(2);
+    // Age loading (5% increase every 5 years after 25)
+    let ageLoading = new Decimal(1);
+    if (age > 25) {
+        const factor = Math.floor((age - 25) / 5);
+        ageLoading = ageLoading.plus(new Decimal(factor).mul(0.15)); // 15% per 5-year block
+    }
 
-    const annualPremium = cov.mul(baseRate).mul(loading);
+    // Lifestyle loading
+    let lifestyleLoading = new Decimal(1);
+    if (isTobacco) lifestyleLoading = lifestyleLoading.mul(1.6); // 60% hike for smokers
+
+    // Riders
+    let riderLoading = new Decimal(1);
+    if (hasCI) riderLoading = riderLoading.plus(0.2); // 20% for Critical Illness
+    if (hasAD) riderLoading = riderLoading.plus(0.1); // 10% for Accidental Disability
+
+    const annualPremium = cov.mul(baseRate).mul(ageLoading).mul(lifestyleLoading).mul(riderLoading);
     const monthlyPremium = annualPremium.div(12).toDecimalPlaces(0, Decimal.ROUND_HALF_UP);
 
     const out = document.getElementById('ins-out');
     if (out) out.innerText = formatEMICurrency(monthlyPremium.toNumber(), currency);
+
+    // Export Support
+    window.currentInsInputs = { type, age, cov, isTobacco, hasCI, hasAD, currency };
+    window.currentInsSummary = { monthlyPremium, annualPremium };
+
+    // Safety Quotient & Insights
+    const safety = document.getElementById('ins-safety');
+    if (safety) {
+        if (cov.lt(500000) && type === 'term') {
+            safety.innerText = "Under-insured. Industry standard recommends at least 15x your annual income.";
+            safety.className = "text-sm font-bold text-red-500 tracking-tight";
+        } else if (isTobacco && !hasCI) {
+            safety.innerText = "High Risk. Smokers are 4x more likely to need Critical Illness cover.";
+            safety.className = "text-sm font-bold text-orange-500 tracking-tight";
+        } else {
+            safety.innerText = "Optimal coverage strategy detected for your risk profile.";
+            safety.className = "text-sm font-bold text-green-500 tracking-tight";
+        }
+    }
 };
 
 window.setInsTobacco = (val) => {
