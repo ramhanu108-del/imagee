@@ -3071,11 +3071,16 @@ const FinUI = {
         }
     },
 
+    safeNumber: (val) => {
+        const n = parseFloat(val);
+        return isNaN(n) ? 0 : n;
+    },
+
     getValidInput: (id, fallback = 0) => {
         const el = document.getElementById(id);
         if (!el) return new Decimal(fallback);
-        const val = parseFloat(el.value);
-        if (isNaN(val) || val < 0) return new Decimal(fallback);
+        const val = FinUI.safeNumber(el.value);
+        if (val < 0) return new Decimal(fallback);
         return new Decimal(val);
     },
 
@@ -3105,7 +3110,7 @@ window.emiViewMode = 'abs';
 window.runEMICalc = () => {
     const P = FinUI.getValidInput('emi-p', 500000);
     const inputRate = FinUI.getValidInput('emi-r', 8.5);
-    const annualRate = Number(inputRate || 0); // Standardized pattern
+    const annualRate = new Decimal(inputRate || 0); 
     const tenureYears = FinUI.getValidInput('emi-n', 15);
     const feeRate = FinUI.getValidInput('emi-fee', 0).div(100);
     
@@ -3121,7 +3126,7 @@ window.runEMICalc = () => {
     const out = document.getElementById('emi-out');
     if (!box) return;
 
-    if (P.lte(0) || annualRate < 0 || tenureYears.lte(0)) {
+    if (P.lte(0) || annualRate.lt(0) || tenureYears.lte(0)) {
         if (!box.classList.contains('hidden')) out.innerText = 'Error';
         return;
     }
@@ -3808,15 +3813,15 @@ window.runAgeCalc = () => {
 // --- FD CALCULATOR LOGIC ---
 window.runFDCalc = () => {
     const P = FinUI.getValidInput('fd-p', 100000);
-    const inputRate = FinUI.getValidInput('fd-r', 6.5);
-    const annualRate = Number(inputRate || 0);
+    const inputRate = FinUI.getValidInput('fd-r', 7.5);
+    const annualRate = new Decimal(inputRate || 0);
     const years = FinUI.getValidInput('fd-n', 5);
     const freq = parseInt(document.getElementById('fd-freq')?.value || '4', 10);
-    const taxRate = FinUI.getValidInput('fd-tax', 10).div(100);
+    const taxRate = FinUI.getValidInput('fd-tax', 0).div(100);
     const inflation = FinUI.getValidInput('fd-inf', 0).div(100);
     const currency = state.currency;
 
-    if (P.lte(0) || annualRate < 0 || years.lte(0)) return;
+    if (P.lte(0) || annualRate.lt(0) || years.lte(0)) return;
 
     // Standard formula via Core logic
     const { maturity, interest } = FinancialCore.calculateFD(P, annualRate, years, freq);
@@ -4018,7 +4023,7 @@ window.runLoanComp = () => {
 
     const results = lcScenarios.map(s => {
         const annualRate = FinancialCore.getAnnualRate(s.rate);
-        const r = annualRate.div(1200);
+        const r = new Decimal(annualRate).div(1200);
         const months = N.mul(12);
         
         let emi;
@@ -4533,13 +4538,13 @@ window.runStopwatchReset = () => {
 window.runSIPCalc = () => {
     const monthly = FinUI.getValidInput('sip-m', 5000);
     const inputRate = FinUI.getValidInput('sip-r', 12);
-    const annualRate = Number(inputRate || 0);
+    const annualRate = new Decimal(inputRate || 0);
     const years = FinUI.getValidInput('sip-n', 10);
     const stepUp = FinUI.getValidInput('sip-step', 10);
     const inflation = FinUI.getValidInput('sip-inf', 6);
     const currency = state.currency;
 
-    if (monthly.lte(0) || annualRate < 0 || years.lte(0)) return;
+    if (monthly.lte(0) || annualRate.lt(0) || years.lte(0)) return;
 
     // Core Logic via FinancialCore
     const { maturity, invested, schedule } = FinancialCore.calculateSIP(monthly, annualRate, years, stepUp);
@@ -5168,10 +5173,10 @@ window.runCCCalc = () => {
     const targetBalance = new Decimal(tVal || 0);
     const currency = state.currency;
 
-    if (P.lte(0) || annualRate.lte(0) || monthlyPayment.lte(0)) return;
+    if (P.lte(0) || new Decimal(annualRate).lte(0) || monthlyPayment.lte(0)) return;
 
     const monthlyRate = FinancialCore.getMonthlyRate(annualRate);
-    const dailyRate = annualRate.div(365).div(100);
+    const dailyRate = new Decimal(annualRate).div(365).div(100);
     
     // Check for negative amortization
     if (monthlyPayment.lte(P.mul(monthlyRate))) {
