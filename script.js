@@ -841,15 +841,19 @@ function renderFullGrid() {
 function createToolCard(t) {
     const name = TRANSLATIONS[state.lang].tools[t.nameKey];
     return `
-        <div onclick="openToolModal('${t.id}')" class="bg-white dark:bg-gray-900 p-8 rounded-[2.5rem] border-2 border-transparent hover:border-blue-500 group cursor-pointer transition-all hover:shadow-2xl hover:-translate-y-2 relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-10 transition-opacity">
+        <div onclick="openToolModal('${t.id}')" class="fin-card group cursor-pointer relative overflow-hidden backdrop-blur-sm">
+            <div class="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-5 transition-opacity">
                 <i data-lucide="${t.icon}" class="w-24 h-24 stroke-1"></i>
             </div>
-            <div class="w-14 h-14 bg-blue-50 dark:bg-blue-900/10 text-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
-                <i data-lucide="${t.icon}" class="w-6 h-6"></i>
+            <div class="w-12 h-12 bg-blue-600/5 dark:bg-blue-400/5 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center mb-6 shadow-sm group-hover:bg-blue-600 group-hover:text-white transition-all">
+                <i data-lucide="${t.icon}" class="w-5 h-5"></i>
             </div>
-            <h3 class="text-xl font-bold mb-3">${name}</h3>
-            <p class="text-xs text-gray-500 dark:text-gray-400 font-medium leading-relaxed line-clamp-2">${t.desc}</p>
+            <h3 class="text-lg font-black mb-2 tracking-tight">${name}</h3>
+            <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-2 uppercase font-bold tracking-tighter opacity-80">${t.desc}</p>
+            <div class="mt-6 flex items-center gap-2 text-[10px] font-black text-blue-600 opacity-0 group-hover:opacity-100 uppercase tracking-widest transition-all">
+                <span>Launch Tool</span>
+                <i data-lucide="arrow-right" class="w-3 h-3"></i>
+            </div>
         </div>
     `;
 }
@@ -1016,215 +1020,149 @@ function injectToolFunctionalHTML(id) {
     switch(normalizedId) {
         case 'emi-calculator':
             c.innerHTML = `
-                <div class="space-y-10">
-                    <!-- Advanced Controls Grid -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <!-- Left Panel: Market & Logic Settings -->
-                        <div class="p-8 bg-blue-50/30 dark:bg-blue-900/5 border border-blue-100/50 dark:border-blue-900/20 rounded-[2.5rem] space-y-8">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-[10px] font-black text-blue-600 uppercase tracking-widest flex items-center gap-2">
-                                    <i data-lucide="globe" class="w-3 h-3"></i> Market Alignment
-                                </h3>
-                                <span class="px-3 py-1 bg-blue-600/10 text-blue-600 rounded-full text-[9px] font-black uppercase tracking-tighter">Bank Grade</span>
+                <div class="tool-container">
+                    <!-- Left Panel: Input Controls -->
+                    <div class="space-y-6">
+                        <div class="fin-card">
+                            <div class="flex items-center gap-3 mb-8">
+                                <div class="w-8 h-8 rounded-lg bg-blue-600/10 text-blue-600 flex items-center justify-center">
+                                    <i data-lucide="settings-2" class="w-4 h-4"></i>
+                                </div>
+                                <h3 class="fin-label">Loan Configuration</h3>
                             </div>
                             
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                <div class="space-y-2">
-                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">Jurisdiction</label>
-                                    <select id="emi-country" onchange="runEMICalc()" class="w-full p-4 bg-white dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl font-bold outline-none text-sm transition-all shadow-sm">
+                            <div class="fin-input-panel">
+                                <div class="fin-input-group">
+                                    <label class="fin-label">Principal Amount</label>
+                                    <div class="relative">
+                                        <input type="number" id="emi-p" value="500000" oninput="runEMICalc()" class="fin-input pr-16">
+                                        <span class="absolute right-4 top-1/2 -translate-y-1/2 fin-label opacity-40" id="emi-p-sym">USD</span>
+                                    </div>
+                                    <input type="range" min="10000" max="10000000" step="10000" value="500000" oninput="document.getElementById('emi-p').value = this.value; runEMICalc()" class="mt-4 w-full h-1.5 accent-blue-600">
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="fin-input-group">
+                                        <label class="fin-label">Interest (%)</label>
+                                        <input type="number" id="emi-r" value="8.5" step="0.1" oninput="runEMICalc()" class="fin-input">
+                                    </div>
+                                    <div class="fin-input-group">
+                                        <label class="fin-label">Tenure (Yrs)</label>
+                                        <input type="number" id="emi-n" value="15" oninput="runEMICalc()" class="fin-input">
+                                    </div>
+                                </div>
+
+                                <div class="fin-input-group">
+                                    <label class="fin-label">Region & Market</label>
+                                    <select id="emi-country" onchange="runEMICalc()" class="fin-input cursor-pointer">
                                         ${Object.keys(GLOBAL_COUNTRY_CONFIG).map(k => `<option value="${k}" ${k === state.detectedCountry ? 'selected' : ''}>${GLOBAL_COUNTRY_CONFIG[k].name}</option>`).join('')}
                                     </select>
                                 </div>
-                                <div class="space-y-2">
-                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">Currency</label>
-                                    <select id="emi-currency" onchange="syncEMIRate(); runEMICalc()" class="w-full p-4 bg-white dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl font-bold outline-none text-sm transition-all shadow-sm">
-                                        ${Object.keys(CURRENCIES).map(cx => `<option value="${cx}" ${cx === state.currency ? 'selected' : ''}>${cx} (${CURRENCIES[cx].symbol})</option>`).join('')}
-                                    </select>
-                                </div>
-                                <div class="space-y-2">
-                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">Compounding</label>
-                                    <select id="emi-freq" onchange="runEMICalc()" class="w-full p-4 bg-white dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl font-bold outline-none text-sm transition-all shadow-sm">
-                                        <option value="12">Monthly (Standard)</option>
-                                        <option value="4">Quarterly</option>
-                                        <option value="2">Semi-Annually</option>
-                                        <option value="1">Annually</option>
-                                        <option value="365">Daily</option>
-                                    </select>
-                                </div>
-                                <div class="space-y-2">
-                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">Processing Fee (%)</label>
-                                    <input type="number" id="emi-fee" value="1" step="0.1" min="0" max="10" oninput="runEMICalc()" class="w-full p-4 bg-white dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl font-bold outline-none text-sm transition-all shadow-sm">
-                                </div>
                             </div>
                         </div>
 
-                        <!-- Right Panel: Core Inputs -->
-                        <div class="p-8 bg-gray-50/50 dark:bg-gray-900 rounded-[2.5rem] border dark:border-gray-800 space-y-8">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                    <i data-lucide="calculator" class="w-3 h-3"></i> Principal Parameters
-                                </h3>
-                                <div class="flex gap-2">
-                                    <input type="number" id="emi-ex-rate" value="1" step="0.0001" class="hidden">
-                                </div>
+                        <div class="fin-card bg-green-50/30 dark:bg-green-900/5 border-green-100/50 dark:border-green-900/20">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="fin-label text-green-600">Prepayment Strategy</h3>
+                                <button onclick="document.getElementById('emi-prep-extra').classList.toggle('hidden'); lucide.createIcons()" class="p-2 rounded-lg bg-green-600/10 text-green-600 hover:bg-green-600/20 transition-all">
+                                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                                </button>
                             </div>
-                            
-                            <div class="space-y-6">
-                                <div class="space-y-3">
-                                    <div class="flex justify-between items-center px-1">
-                                        <label class="text-[11px] font-black text-gray-400 uppercase tracking-widest">Loan Amount</label>
-                                        <div class="flex items-center gap-2 bg-white dark:bg-gray-800 px-3 py-1 rounded-full border dark:border-gray-700">
-                                            <span class="text-[10px] font-bold text-blue-600" id="emi-p-sym">$</span>
-                                            <input type="number" id="emi-p" value="500000" oninput="runEMICalc()" class="w-24 bg-transparent border-none outline-none text-xs font-black text-right">
-                                        </div>
-                                    </div>
-                                    <input type="range" min="10000" max="10000000" step="10000" value="500000" oninput="document.getElementById('emi-p').value = this.value; runEMICalc()" class="w-full accent-blue-600">
+                            <div id="emi-prep-extra" class="hidden space-y-6 animate-fade-in pt-4 border-t border-green-100 dark:border-green-800">
+                                <div class="fin-input-group">
+                                    <label class="fin-label flex justify-between">Extra Monthly <span class="text-green-600" id="emi-prep-m-v">$0</span></label>
+                                    <input type="range" id="emi-prep-m" min="0" max="100000" step="500" value="0" oninput="document.getElementById('emi-prep-m-v').innerText = formatToolCurrency(this.value); runEMICalc()" class="w-full h-1.5 accent-green-600">
                                 </div>
-
-                                <div class="grid grid-cols-2 gap-6">
-                                    <div class="space-y-3">
-                                        <label class="text-[11px] font-black text-gray-400 uppercase tracking-widest block pl-1">Interest Rate (%)</label>
-                                        <input type="number" id="emi-r" value="8.5" step="0.1" oninput="runEMICalc()" class="w-full p-4 bg-white dark:bg-gray-800 border rounded-2xl font-black outline-none focus:ring-4 focus:ring-blue-500/10">
-                                    </div>
-                                    <div class="space-y-3">
-                                        <label class="text-[11px] font-black text-gray-400 uppercase tracking-widest block pl-1">Tenure (Years)</label>
-                                        <input type="number" id="emi-n" value="15" oninput="runEMICalc()" class="w-full p-4 bg-white dark:bg-gray-800 border rounded-2xl font-black outline-none focus:ring-4 focus:ring-blue-500/10">
+                                <div class="fin-input-group">
+                                    <label class="fin-label">One-Time Lump Sum</label>
+                                    <div class="flex gap-2">
+                                        <input type="number" id="emi-prep-l" value="0" oninput="runEMICalc()" class="fin-input flex-grow">
+                                        <select id="emi-prep-at" onchange="runEMICalc()" class="fin-input w-28 text-[10px]">
+                                            <option value="1">Month 1</option>
+                                            <option value="12">Year 1</option>
+                                            <option value="60">Year 5</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Prepayment Workshop -->
-                    <div class="p-8 bg-green-50/20 dark:bg-green-900/5 border border-green-100/50 dark:border-green-900/20 rounded-[2.5rem] space-y-6">
-                        <div class="flex items-center justify-between">
-                            <div class="flex flex-col">
-                                <h3 class="text-[10px] font-black text-green-600 uppercase tracking-widest flex items-center gap-2">
-                                    <i data-lucide="trending-down" class="w-3 h-3"></i> Prepayment Strategy Workshop
-                                </h3>
-                                <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 mt-1 uppercase tracking-tighter">Accelerate debt clearance through periodic logic</p>
-                            </div>
-                            <button onclick="document.getElementById('emi-prep-extra').classList.toggle('hidden'); lucide.createIcons()" class="text-[9px] font-black text-green-600 uppercase bg-green-600/10 px-4 py-2 rounded-full hover:bg-green-600/20 transition-all flex items-center gap-2">
-                                <i data-lucide="plus-circle" class="w-3 h-3"></i> Configuration
-                            </button>
-                        </div>
-
-                        <div id="emi-prep-extra" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in pt-4 border-t border-green-100 dark:border-green-900/30">
-                            <div class="space-y-3">
-                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest flex justify-between">
-                                    Extra Monthly Payment
-                                    <span class="text-green-600" id="emi-prep-m-v">$0</span>
-                                </label>
-                                <input type="range" id="emi-prep-m" min="0" max="100000" step="500" value="0" oninput="document.getElementById('emi-prep-m-v').innerText = formatToolCurrency(this.value); runEMICalc()" class="w-full h-1.5 bg-green-100 rounded-lg appearance-none cursor-pointer accent-green-600">
-                            </div>
-                            <div class="space-y-3">
-                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest flex justify-between">
-                                    Lump Sum (One-Time)
-                                    <span class="text-green-600" id="emi-prep-l-v">$0</span>
-                                </label>
-                                <div class="flex gap-3">
-                                    <input type="number" id="emi-prep-l" value="0" oninput="runEMICalc()" class="flex-grow p-4 bg-white dark:bg-gray-800 border rounded-2xl font-black text-sm outline-none">
-                                    <select id="emi-prep-at" onchange="runEMICalc()" class="p-4 bg-white dark:bg-gray-800 border rounded-2xl font-bold text-[10px] uppercase">
-                                        <option value="1">Month 1</option>
-                                        <option value="12">Year 1</option>
-                                        <option value="24">Year 2</option>
-                                        <option value="60">Year 5</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Financial Intelligence Dashboard -->
-                    <div id="emi-box" class="hidden animate-fade-in space-y-8 pt-10 border-t dark:border-gray-800">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="p-10 bg-white dark:bg-gray-900 border-2 border-blue-600/10 rounded-[3rem] text-center shadow-2xl shadow-blue-500/5 relative overflow-hidden group">
-                                <div class="absolute top-0 left-0 w-full h-1.5 bg-blue-600"></div>
-                                <span class="text-[10px] font-black text-blue-600 uppercase tracking-[0.4em] mb-4 block opacity-60">Base Installment</span>
-                                <div class="text-5xl font-black text-gray-900 dark:text-white" id="emi-out">--</div>
-                                <div class="mt-4 flex items-center justify-center gap-2">
-                                     <span id="emi-burden-dot" class="w-2 h-2 rounded-full bg-blue-600"></span>
-                                     <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest" id="emi-burden-label">Interest Burden: 0%</span>
+                    <!-- Right Panel: Financial Intelligence Dashboard -->
+                    <div class="fin-result-panel" id="emi-box">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="fin-card border-l-4 border-l-blue-600 flex flex-col justify-between">
+                                <span class="fin-label">Monthly EMI</span>
+                                <div class="fin-value text-blue-600" id="emi-out">--</div>
+                                <div class="mt-4 flex items-center gap-2">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
+                                    <span class="text-[10px] font-black opacity-50 uppercase tracking-widest" id="emi-burden-label">Interest: 0%</span>
                                 </div>
                             </div>
 
-                            <div class="p-10 bg-green-500/5 border-2 border-green-500/20 rounded-[3rem] text-center relative overflow-hidden group">
-                                <div class="absolute top-0 left-0 w-full h-1.5 bg-green-500"></div>
-                                <span class="text-[10px] font-black text-green-600 uppercase tracking-[0.4em] mb-4 block opacity-60">Interest Savings</span>
-                                <div class="text-5xl font-black text-gray-900 dark:text-white" id="emi-saved">--</div>
+                            <div class="fin-card border-l-4 border-l-green-500 bg-green-50/20 dark:bg-green-900/5 flex flex-col justify-between">
+                                <span class="fin-label text-green-600">Total Savings</span>
+                                <div class="fin-value" id="emi-saved">--</div>
                                 <div class="mt-4 text-[10px] font-black text-green-600 uppercase tracking-widest animate-pulse" id="emi-tenure-save">0 Months Off</div>
                             </div>
 
-                            <div class="p-10 bg-gray-50/50 dark:bg-white/5 border-2 border-gray-100 dark:border-gray-800 rounded-[3rem] text-center">
-                                <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-4 block opacity-60">Total Cost</span>
-                                <div class="text-5xl font-black text-gray-900 dark:text-white" id="emi-tot-pay">--</div>
-                                <div class="mt-4 text-[10px] font-black text-red-500 uppercase tracking-widest" id="emi-tot-int">Interest Component: --</div>
+                            <div class="fin-card md:col-span-2 flex flex-col justify-between">
+                                <div class="flex justify-between items-start mb-6">
+                                    <span class="fin-label">Total Repayment Amount</span>
+                                    <span class="text-[10px] font-black text-red-500 uppercase tracking-widest" id="emi-tot-int">Interest: --</span>
+                                </div>
+                                <div class="fin-value" id="emi-tot-pay">--</div>
+                                <div class="mt-6 w-full bg-gray-100 dark:bg-gray-800 h-2.5 rounded-full overflow-hidden flex">
+                                    <div id="emi-prog-p" class="h-full bg-blue-600 transition-all duration-700" style="width: 50%"></div>
+                                    <div id="emi-prog-i" class="h-full bg-blue-400 transition-all duration-700" style="width: 50%"></div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Smart Milestones -->
-                        <div id="emi-highlights" class="flex flex-wrap justify-center gap-3">
-                            <!-- Dynamic Milestones injected here -->
+                        <!-- Highlights & Insights -->
+                        <div id="emi-highlights" class="flex flex-wrap gap-2"></div>
+                        
+                        <div id="emi-insights-area" class="fin-card border-dashed bg-blue-50/30 dark:bg-blue-900/10">
+                            <div class="flex items-center gap-3 mb-6">
+                                <i data-lucide="sparkles" class="w-4 h-4 text-blue-600"></i>
+                                <h3 class="fin-label">AI Insights</h3>
+                            </div>
+                            <div id="emi-insights-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-semibold"></div>
                         </div>
 
                         <!-- Schedule Toggle -->
-                        <div class="space-y-6">
-                            <div class="flex items-center justify-between">
-                                <button onclick="document.getElementById('emi-schedule-area').classList.toggle('hidden'); lucide.createIcons()" class="mx-auto flex items-center gap-3 py-4 px-8 bg-gray-900 dark:bg-white dark:text-gray-900 text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-xl active:scale-[0.98] transition-all group">
-                                    <i data-lucide="list-checks" class="w-4 h-4 group-hover:rotate-12 transition-transform"></i>
-                                    Explore Amortization Timeline
-                                </button>
-                            </div>
-
-                            <div id="emi-schedule-area" class="hidden animate-slide-up bg-white dark:bg-gray-900 border-2 dark:border-gray-800 rounded-[2.5rem] overflow-hidden shadow-2xl">
-                                <div class="flex items-center justify-between p-6 bg-gray-50 dark:bg-gray-800/50 border-b dark:border-gray-700">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white"><i data-lucide="calendar" class="w-4 h-4"></i></div>
-                                        <span class="text-xs font-black uppercase tracking-widest">Full Amortization Forecast</span>
-                                    </div>
-                                    <div class="flex items-center gap-3">
-                                        <button onclick="document.getElementById('emi-csv-file').click()" class="flex items-center gap-2 py-2 px-4 bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-blue-600 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all shadow-sm active:scale-95">
-                                            <i data-lucide="upload" class="w-3 h-3"></i> Import
-                                        </button>
-                                        <input type="file" id="emi-csv-file" class="hidden" accept=".csv" onchange="importEMICSV(event)">
-                                        <button onclick="exportEMICSV()" class="flex items-center gap-2 py-2 px-4 bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 active:scale-95">
-                                            <i data-lucide="download" class="w-3 h-3"></i> Export Result
-                                        </button>
-                                    </div>
+                        <div class="fin-card">
+                            <button onclick="document.getElementById('emi-schedule-area').classList.toggle('hidden'); lucide.createIcons()" class="w-full flex items-center justify-between text-left">
+                                <span class="fin-label">Amortization Schedule</span>
+                                <i data-lucide="table-2" class="w-4 h-4 opacity-40"></i>
+                            </button>
+                            
+                            <div id="emi-schedule-area" class="hidden mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
+                                <div class="flex flex-wrap gap-2 mb-6">
+                                    <button onclick="exportEMICSV()" class="flex-grow py-3 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all">
+                                        Export CSV
+                                    </button>
                                 </div>
-                                <div class="max-h-[500px] overflow-y-auto custom-scrollbar overflow-x-auto">
-                                    <table class="w-full text-left text-sm whitespace-nowrap">
-                                        <thead class="sticky top-0 bg-gray-50 dark:bg-gray-900 shadow-sm z-10">
-                                            <tr class="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                                                <th class="p-6">Month</th>
-                                                <th class="p-6 text-right">Principal Paid</th>
-                                                <th class="p-6 text-right">Interest Paid</th>
-                                                <th class="p-6 text-right">Remaining Balance</th>
+                                <div class="max-h-[300px] overflow-y-auto custom-scrollbar overflow-x-auto text-[10px]">
+                                    <table class="w-full text-left whitespace-nowrap">
+                                        <thead class="sticky top-0 bg-white dark:bg-gray-800 z-10 fin-label">
+                                            <tr>
+                                                <th class="py-3 pr-4">Month</th>
+                                                <th class="py-3 px-4 text-right">Principal</th>
+                                                <th class="py-3 px-4 text-right">Interest</th>
+                                                <th class="py-3 pl-4 text-right">Balance</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="emi-tbody" class="font-mono pt-2 text-gray-700 dark:text-gray-300">
-                                            <!-- Dynamic Rows -->
-                                        </tbody>
+                                        <tbody id="emi-tbody" class="font-mono pt-4 text-gray-500"></tbody>
                                     </table>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- AI Intelligence Insights -->
-                        <div id="emi-insights-area" class="p-10 bg-blue-600/5 border-2 border-dashed border-blue-600/20 rounded-[3rem] space-y-6">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-blue-500/20 animate-pulse">
-                                    <i data-lucide="sparkles" class="w-5 h-5"></i>
-                                </div>
-                                <h3 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-widest">Financial Intelligence Report</h3>
-                            </div>
-                            <div id="emi-insights-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <!-- Data driven insights -->
                             </div>
                         </div>
                     </div>
                 </div>
             `;
+            lucide.createIcons();
+            break;
             lucide.createIcons();
             break;
 
@@ -1460,27 +1398,25 @@ function injectToolFunctionalHTML(id) {
              c.innerHTML = `
                 <div class="space-y-8">
                     <div class="flex gap-4">
-                        <input type="text" id="todo-in" class="flex-grow p-5 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none focus:ring-4 focus:ring-blue-500/10" placeholder="Task description...">
-                        <button onclick="runAddTodo()" class="px-8 bg-blue-600 text-white rounded-2xl font-black shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-all"><i data-lucide="plus"></i></button>
+                        <input type="text" id="todo-in" class="flex-grow p-4 bg-gray-50 dark:bg-gray-900 border rounded-xl dark:border-gray-700 font-bold outline-none" placeholder="Add a new task...">
+                        <button onclick="runAddTodo()" class="px-6 bg-blue-600 text-white rounded-xl font-bold">Add</button>
                     </div>
-                    <div id="todo-list-v" class="space-y-4 max-h-72 overflow-y-auto custom-scrollbar pr-2">
-                        <!-- Tasks -->
-                    </div>
+                    <div id="todo-list-v" class="space-y-3 max-h-72 overflow-y-auto"></div>
                 </div>
-             `;
-             refreshTodoList();
-             lucide.createIcons();
-             break;
+            `;
+            refreshTodoList();
+            lucide.createIcons();
+            break;
 
         case 'base64-converter':
             c.innerHTML = `
                 <div class="space-y-6">
-                    <textarea id="b64-in" class="w-full h-40 p-6 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-medium outline-none focus:ring-2 focus:ring-blue-500" placeholder="Input string..."></textarea>
+                    <textarea id="b64-in" class="w-full h-32 p-4 bg-gray-50 dark:bg-gray-900 border rounded-xl dark:border-gray-700 outline-none" placeholder="Input string..."></textarea>
                     <div class="grid grid-cols-2 gap-4">
-                        <button onclick="runB64('enc')" class="py-4 bg-blue-600 text-white rounded-2xl font-black shadow-lg transition-all">Encode</button>
-                        <button onclick="runB64('dec')" class="py-4 bg-gray-100 dark:bg-gray-800 rounded-2xl font-black transition-all">Decode</button>
+                        <button onclick="runB64('enc')" class="py-3 bg-blue-600 text-white rounded-xl font-bold">Encode</button>
+                        <button onclick="runB64('dec')" class="py-3 bg-gray-800 text-white rounded-xl font-bold">Decode</button>
                     </div>
-                    <textarea id="b64-out" readonly class="w-full h-40 p-6 bg-blue-50/50 dark:bg-blue-900/10 border-2 border-blue-100 dark:border-blue-900/20 rounded-2xl font-mono text-sm outline-none" placeholder="Result..."></textarea>
+                    <textarea id="b64-out" readonly class="w-full h-32 p-4 bg-blue-50/50 dark:bg-blue-900/10 border rounded-xl outline-none" placeholder="Result..."></textarea>
                 </div>
             `;
             break;
@@ -1490,10 +1426,10 @@ function injectToolFunctionalHTML(id) {
                 <div class="space-y-10 py-6 text-center">
                     <div class="text-7xl font-black tracking-tighter" id="sw-time">00:00:00</div>
                     <div class="flex justify-center gap-6">
-                        <button id="sw-btn" onclick="runStopwatchToggle()" class="w-20 h-20 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-2xl shadow-blue-500/30 hover:scale-110 active:scale-95 transition-all">
+                        <button id="sw-btn" onclick="runStopwatchToggle()" class="w-20 h-20 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-xl">
                              <i data-lucide="play" class="w-8 h-8 ml-1"></i>
                         </button>
-                        <button onclick="runStopwatchReset()" class="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+                        <button onclick="runStopwatchReset()" class="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 flex items-center justify-center">
                              <i data-lucide="refresh-cw" class="w-8 h-8"></i>
                         </button>
                     </div>
@@ -1503,228 +1439,224 @@ function injectToolFunctionalHTML(id) {
             break;
 
         case 'sip-calculator':
-             c.innerHTML = `
-                <div class="space-y-12">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                        <div class="space-y-8">
-                            <div class="grid grid-cols-2 gap-6 p-8 bg-gray-50 dark:bg-gray-900 rounded-[2.5rem] border dark:border-gray-800">
-                                <div class="space-y-4 col-span-2">
-                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Monthly Investment</label>
-                                    <div class="relative group">
-                                        <span class="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold group-focus-within:text-blue-500 transition-colors">${CURRENCIES[state.currency].symbol}</span>
-                                        <input type="number" id="sip-m" oninput="runSIPCalc()" class="w-full p-6 pl-12 bg-white dark:bg-black/20 border rounded-3xl dark:border-gray-700 outline-none font-black text-xl focus:border-blue-500 transition-all" value="5000">
-                                    </div>
+            c.innerHTML = `
+                <div class="tool-container">
+                    <div class="space-y-6">
+                        <div class="fin-card">
+                            <div class="flex items-center gap-3 mb-8">
+                                <div class="w-8 h-8 rounded-lg bg-blue-600/10 text-blue-600 flex items-center justify-center">
+                                    <i data-lucide="trending-up" class="w-4 h-4"></i>
                                 </div>
-                                <div class="space-y-4">
-                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Expected Return (%)</label>
-                                    <input type="number" id="sip-r" step="0.1" oninput="runSIPCalc()" class="w-full p-6 bg-white dark:bg-black/20 border rounded-3xl dark:border-gray-700 outline-none font-black text-xl" value="12">
-                                </div>
-                                <div class="space-y-4">
-                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tenure (Years)</label>
-                                    <input type="number" id="sip-n" oninput="runSIPCalc()" class="w-full p-6 bg-white dark:bg-black/20 border rounded-3xl dark:border-gray-700 outline-none font-black text-xl" value="10">
-                                </div>
-                                <div class="space-y-4">
-                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Yearly Step-Up (%)</label>
-                                    <input type="number" id="sip-step" oninput="runSIPCalc()" class="w-full p-6 bg-white dark:bg-black/20 border rounded-3xl dark:border-gray-700 outline-none font-black text-xl" value="10">
-                                </div>
-                                <div class="space-y-4">
-                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Inflation Rate (%)</label>
-                                    <input type="number" id="sip-inf" oninput="runSIPCalc()" class="w-full p-6 bg-white dark:bg-black/20 border rounded-3xl dark:border-gray-700 outline-none font-black text-xl" value="6">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col space-y-6">
-                            <div class="p-12 bg-gray-900 text-white rounded-[3rem] shadow-2xl relative overflow-hidden group">
-                                <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-blue-600/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
-                                <div class="absolute top-4 right-4 flex gap-3">
-                                    <button onclick="document.getElementById('sip-csv-file').click()" title="Import CSV" class="p-2 bg-white/5 hover:bg-white/10 rounded-xl transition-all">
-                                        <i data-lucide="upload" class="w-3 h-3"></i>
-                                    </button>
-                                    <input type="file" id="sip-csv-file" class="hidden" accept=".csv" onchange="importSIPCSV(event)">
-                                    <button onclick="exportSIPCSV()" title="Export CSV" class="p-2 bg-white/5 hover:bg-white/10 rounded-xl transition-all">
-                                        <i data-lucide="download" class="w-3 h-3"></i>
-                                    </button>
-                                </div>
-                                <div class="relative z-10 text-center">
-                                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] mb-6 opacity-60">Estimated Wealth Maturity</h4>
-                                    <div id="sip-out" class="text-6xl font-black mb-8 tabular-nums">0</div>
-                                    <div class="grid grid-cols-2 gap-8 pt-8 border-t border-white/5">
-                                        <div class="text-center">
-                                            <p class="text-[8px] font-black uppercase opacity-40 mb-2 tracking-widest">Total Invested</p>
-                                            <span id="sip-cap" class="text-lg font-bold">0</span>
-                                        </div>
-                                        <div class="text-center">
-                                            <p class="text-[8px] font-black uppercase opacity-40 mb-2 tracking-widest">Wealth Gained</p>
-                                            <span id="sip-gain" class="text-lg font-bold text-green-400">0</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-[2rem] border border-blue-100 dark:border-blue-900/20 text-center">
-                                    <h5 class="text-[8px] font-black text-blue-600 uppercase tracking-widest mb-1">Inflation Adjusted</h5>
-                                    <div id="sip-real" class="text-xl font-black text-blue-800 dark:text-blue-300">---</div>
-                                </div>
-                                <div class="p-6 bg-purple-50 dark:bg-purple-900/10 rounded-[2rem] border border-purple-100 dark:border-purple-900/20 text-center">
-                                    <h5 class="text-[8px] font-black text-purple-600 uppercase tracking-widest mb-1">Post-Tax (12.5% Est)</h5>
-                                    <div id="sip-taxed" class="text-xl font-black text-purple-800 dark:text-purple-300">---</div>
-                                </div>
-                            </div>
-                            <div id="sip-highlights" class="flex flex-wrap gap-4 justify-center"></div>
-                        </div>
-                    </div>
-
-                    <div id="sip-insights-area" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-
-                    <div class="overflow-hidden rounded-[3rem] border dark:border-gray-800 bg-white dark:bg-gray-900">
-                         <div class="p-8 border-b dark:border-gray-800 flex items-center justify-between">
-                            <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Projection Schedule</h4>
-                            <div class="text-[10px] font-black text-blue-500 uppercase">Step-up Enabled</div>
-                         </div>
-                         <div class="overflow-x-auto">
-                            <table class="w-full text-left">
-                                <thead class="bg-gray-50/50 dark:bg-black/20 text-[8px] font-black text-gray-400 uppercase tracking-widest">
-                                    <tr>
-                                        <th class="p-6">Year</th>
-                                        <th class="p-6 text-right">Investment</th>
-                                        <th class="p-6 text-right">Interest</th>
-                                        <th class="p-6 text-right">Maturity</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="sip-tbody" class="text-xs"></tbody>
-                            </table>
-                         </div>
-                    </div>
-                </div>
-             `;
-             runSIPCalc();
-             lucide.createIcons();
-             break;
-
-        case 'tax-calculator':
-             c.innerHTML = `
-                <div class="space-y-10">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- Jurisdiction Grid -->
-                        <div class="p-8 bg-blue-50/20 dark:bg-blue-900/5 border border-blue-100 dark:border-blue-900/20 rounded-[3rem] space-y-6">
-                            <h3 class="text-[10px] font-black text-blue-600 uppercase tracking-widest flex items-center gap-2">
-                                <i data-lucide="landmark" class="w-3 h-3"></i> Tax Jurisdiction
-                            </h3>
-                            <select id="tax-country" onchange="window.setManualCountry(this.value)" class="w-full p-5 bg-white dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl font-black outline-none text-sm transition-all shadow-xl">
-                                ${Object.keys(GLOBAL_COUNTRY_CONFIG).map(k => `<option value="${k}" ${k === state.detectedCountry ? 'selected' : ''}>${GLOBAL_COUNTRY_CONFIG[k].name}</option>`).join('')}
-                            </select>
-                            <div id="tax-detection-msg" class="${state.isManualCountry ? 'hidden' : ''} mt-2 flex items-center gap-2">
-                                <span class="text-[9px] font-bold text-blue-500 uppercase tracking-widest bg-blue-50 dark:bg-blue-900/20 px-3 py-1 rounded-full border border-blue-100 dark:border-blue-800">
-                                    ${state.detectedCountry === 'GEN' ? 'Using Global Financial Mode 🌐' : `Detected location: ${GLOBAL_COUNTRY_CONFIG[state.detectedCountry].name} ${COUNTRY_FLAGS[state.detectedCountry] || '📍'}`}
-                                </span>
-                                <button onclick="this.parentElement.remove()" class="text-[9px] font-black text-gray-400 hover:text-gray-600 uppercase transition-colors underline">Change</button>
-                            </div>
-                        </div>
-
-                        <!-- Income Input Area -->
-                        <div class="p-8 bg-gray-50/50 dark:bg-gray-900 rounded-[3rem] border dark:border-gray-800 space-y-6">
-                             <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                <i data-lucide="wallet" class="w-3 h-3"></i> Annual Gross Income
-                            </h3>
-                            <div class="relative">
-                                <div class="absolute left-6 top-1/2 -translate-y-1/2 text-2xl font-black text-gray-300" id="tax-currency-sym">$</div>
-                                <input type="number" id="tax-in" value="1200000" oninput="runTaxCalc()" class="w-full p-8 pl-16 bg-white dark:bg-gray-800 border-2 border-transparent focus:border-blue-500/20 rounded-2xl font-black text-4xl outline-none transition-all shadow-inner">
-                            </div>
-                            <div id="tax-us-addon" class="hidden animate-fade-in space-y-4">
-                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">Monthly Local/State Tax (%)</label>
-                                <input type="number" id="tax-state-rate" value="5" step="0.1" oninput="runTaxCalc()" class="w-full p-4 bg-white dark:bg-gray-800 border-2 border-transparent rounded-2xl font-bold outline-none">
-                            </div>
-                        </div>
-                    </div>
-
-                    <button onclick="runTaxCalc()" class="w-full py-7 bg-blue-600 hover:bg-blue-700 text-white rounded-[3rem] font-black shadow-2xl shadow-blue-600/30 active:scale-[0.98] transition-all uppercase tracking-widest text-[11px] flex items-center justify-center gap-2">
-                        <i data-lucide="coins" class="w-4 h-4"></i> Run Compliance Engine
-                    </button>
-
-                    <!-- Tax Dashboard -->
-                    <div id="tax-box" class="hidden animate-fade-in space-y-10">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                             <div class="p-10 bg-white dark:bg-gray-900 border-2 border-red-600/10 rounded-[3rem] text-center shadow-2xl relative overflow-hidden group">
-                                <div class="absolute top-0 left-0 w-full h-1.5 bg-red-600"></div>
-                                <span class="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] mb-4 block opacity-60">Total Tax Liability</span>
-                                <div class="text-5xl font-black text-gray-900 dark:text-white" id="tax-out">--</div>
-                                <div class="mt-4 text-[10px] font-black text-gray-400 uppercase tracking-widest" id="tax-rate">Effective Rate: 0%</div>
+                                <h3 class="fin-label">Investment Profile</h3>
                             </div>
                             
-                            <div class="p-10 bg-green-500/5 border-2 border-green-500/20 rounded-[3rem] text-center">
-                                <div class="absolute top-0 left-0 w-full h-1.5 bg-green-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                <span class="text-[10px] font-black text-green-600 uppercase tracking-[0.4em] mb-4 block opacity-60">Monthly In-Hand</span>
-                                <div class="text-5xl font-black text-gray-900 dark:text-white" id="tax-inhand">--</div>
-                                <div class="mt-4 text-[10px] font-black text-green-600 uppercase tracking-widest">Post-Deductions</div>
-                            </div>
+                            <div class="fin-input-panel">
+                                <div class="fin-input-group">
+                                    <label class="fin-label">Monthly Investment</label>
+                                    <div class="relative">
+                                        <input type="number" id="sip-m" oninput="runSIPCalc()" class="fin-input pr-12" value="5000">
+                                        <span class="absolute right-4 top-1/2 -translate-y-1/2 fin-label opacity-40">${CURRENCIES[state.currency].symbol}</span>
+                                    </div>
+                                    <input type="range" min="500" max="100000" step="500" value="5000" oninput="document.getElementById('sip-m').value = this.value; runSIPCalc()" class="mt-4 w-full h-1.5 accent-blue-600">
+                                </div>
 
-                            <div class="p-10 bg-gray-50/50 dark:bg-white/5 border-2 border-gray-100 dark:border-gray-800 rounded-[3rem] flex flex-col justify-center">
-                                <div class="space-y-4">
-                                     <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                                        <span class="text-gray-400">Std. Deduction</span>
-                                        <span class="text-blue-600" id="tax-ded-val">--</span>
-                                     </div>
-                                     <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                                        <span class="text-gray-400">Total Deductibles</span>
-                                        <span class="text-gray-900 dark:text-white" id="tax-tot-ded">--</span>
-                                     </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="fin-input-group">
+                                        <label class="fin-label">Returns (%)</label>
+                                        <input type="number" id="sip-r" step="0.1" oninput="runSIPCalc()" class="fin-input" value="12">
+                                    </div>
+                                    <div class="fin-input-group">
+                                        <label class="fin-label">Years</label>
+                                        <input type="number" id="sip-n" oninput="runSIPCalc()" class="fin-input" value="10">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="fin-input-group">
+                                        <label class="fin-label">Step-up (%)</label>
+                                        <input type="number" id="sip-step" oninput="runSIPCalc()" class="fin-input" value="10">
+                                    </div>
+                                    <div class="fin-input-group">
+                                        <label class="fin-label">Inflation (%)</label>
+                                        <input type="number" id="sip-inf" oninput="runSIPCalc()" class="fin-input" value="6">
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- India Compliance Table (Specialized) -->
-                        <div id="tax-india-compliance" class="hidden animate-slide-up space-y-6">
-                            <div class="flex items-center gap-4">
-                                <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest">Income Tax Slab Breakdown (FY 24-25)</h3>
-                                <div class="h-px bg-gray-100 dark:bg-gray-800 flex-grow"></div>
+                        <div class="fin-card bg-blue-50/20 dark:bg-blue-900/5">
+                            <div class="flex items-center gap-3 mb-4">
+                                <i data-lucide="cloud-download" class="w-4 h-4 text-blue-600"></i>
+                                <span class="fin-label">Data Management</span>
                             </div>
-                            <div class="bg-white dark:bg-gray-900 border-2 dark:border-gray-800 rounded-[2.5rem] overflow-hidden shadow-2xl">
-                                <table class="w-full text-left text-sm">
-                                    <thead class="bg-gray-50 dark:bg-gray-800">
-                                        <tr class="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                                            <th class="p-6">Income Slab</th>
-                                            <th class="p-6 text-center">Tax Rate</th>
-                                            <th class="p-6 text-right">Tax Amount</th>
+                            <div class="flex gap-2">
+                                <button onclick="document.getElementById('sip-csv-file').click()" class="flex-grow py-3 bg-gray-100 dark:bg-gray-800 rounded-xl fin-label hover:bg-gray-200 transition-all">Import</button>
+                                <button onclick="exportSIPCSV()" class="flex-grow py-3 bg-white dark:bg-gray-800 rounded-xl fin-label border border-gray-100 dark:border-gray-700 hover:bg-gray-50 transition-all">Export</button>
+                                <input type="file" id="sip-csv-file" class="hidden" accept=".csv" onchange="importSIPCSV(event)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fin-result-panel">
+                        <div class="fin-card bg-gray-900 text-white border-none min-h-[240px] flex flex-col justify-between overflow-hidden relative">
+                            <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-600/20 blur-3xl rounded-full"></div>
+                            <span class="fin-label opacity-60 relative z-10">Wealth at Maturity</span>
+                            <div id="sip-out" class="fin-value text-blue-400 relative z-10">0</div>
+                            <div class="grid grid-cols-2 gap-6 pt-6 border-t border-white/10 mt-6 relative z-10">
+                                <div>
+                                    <p class="fin-label opacity-40 mb-1">Invested</p>
+                                    <span id="sip-cap" class="text-lg font-black tracking-tight">0</span>
+                                </div>
+                                <div>
+                                    <p class="fin-label opacity-40 mb-1">Gains</p>
+                                    <span id="sip-gain" class="text-lg font-black text-green-400 tracking-tight">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="fin-card bg-blue-50 border-blue-100 dark:bg-blue-900/10 dark:border-blue-900/20">
+                                <span class="fin-label text-blue-600">Inflation Adj.</span>
+                                <div id="sip-real" class="text-xl font-black mt-2">---</div>
+                            </div>
+                            <div class="fin-card bg-purple-50 border-purple-100 dark:bg-purple-900/10 dark:border-purple-900/20">
+                                <span class="fin-label text-purple-600">Post-Tax</span>
+                                <div id="sip-taxed" class="text-xl font-black mt-2">---</div>
+                            </div>
+                        </div>
+
+                        <div id="sip-highlights" class="flex flex-wrap gap-2"></div>
+                        <div id="sip-insights-area" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+                        <div class="fin-card">
+                            <button onclick="document.getElementById('sip-schedule-area').classList.toggle('hidden'); lucide.createIcons()" class="w-full flex items-center justify-between">
+                                <span class="fin-label">Full Projection Table</span>
+                                <i data-lucide="chevron-down" class="w-4 h-4 opacity-40"></i>
+                            </button>
+                            <div id="sip-schedule-area" class="hidden mt-6 overflow-x-auto">
+                                <table class="w-full text-left text-[10px]">
+                                    <thead class="fin-label border-b dark:border-gray-800">
+                                        <tr>
+                                            <th class="py-2 pr-4">Year</th>
+                                            <th class="py-2 px-4 text-right">Invested</th>
+                                            <th class="py-2 px-4 text-right">Interest</th>
+                                            <th class="py-2 pl-4 text-right">Wealth</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tax-tbody" class="font-bold divide-y dark:divide-gray-800">
-                                        <!-- Indian Slabs -->
-                                    </tbody>
-                                    <tfoot class="bg-gray-100/50 dark:bg-black/20">
+                                    <tbody id="sip-tbody" class="font-mono text-gray-500"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            runSIPCalc();
+            lucide.createIcons();
+            break;
+
+        case 'tax-calculator':
+            c.innerHTML = `
+                <div class="tool-container">
+                    <div class="space-y-6">
+                        <div class="fin-card">
+                            <div class="flex items-center gap-3 mb-8">
+                                <div class="w-8 h-8 rounded-lg bg-blue-600/10 text-blue-600 flex items-center justify-center">
+                                    <i data-lucide="landmark" class="w-4 h-4"></i>
+                                </div>
+                                <h3 class="fin-label">Income Configuration</h3>
+                            </div>
+                            
+                            <div class="fin-input-panel">
+                                <div class="fin-input-group">
+                                    <label class="fin-label">Annual Gross Income</label>
+                                    <div class="relative">
+                                        <input type="number" id="tax-in" value="1200000" oninput="runTaxCalc()" class="fin-input pr-16 bg-blue-50/50 border-blue-100 dark:bg-blue-900/10 dark:border-blue-900/20">
+                                        <span class="absolute right-4 top-1/2 -translate-y-1/2 fin-label opacity-40" id="tax-currency-sym">USD</span>
+                                    </div>
+                                </div>
+
+                                <div class="fin-input-group">
+                                    <label class="fin-label">Jurisdiction</label>
+                                    <select id="tax-country" onchange="window.setManualCountry(this.value)" class="fin-input cursor-pointer">
+                                        ${Object.keys(GLOBAL_COUNTRY_CONFIG).map(k => `<option value="${k}" ${k === state.detectedCountry ? 'selected' : ''}>${GLOBAL_COUNTRY_CONFIG[k].name}</option>`).join('')}
+                                    </select>
+                                </div>
+
+                                <div id="tax-us-addon" class="hidden fin-input-group">
+                                    <label class="fin-label">State Tax (%)</label>
+                                    <input type="number" id="tax-state-rate" value="5" step="0.1" oninput="runTaxCalc()" class="fin-input">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="fin-card bg-orange-50/20 border-orange-100 dark:bg-orange-900/5 dark:border-orange-900/20">
+                            <h4 class="fin-label text-orange-600 mb-4">Compliance Status</h4>
+                            <div id="tax-detection-msg" class="text-[10px] font-bold text-gray-500 uppercase leading-relaxed">
+                                ${state.detectedCountry === 'GEN' ? 'Running in Global Mode' : `Analyzing for ${GLOBAL_COUNTRY_CONFIG[state.detectedCountry].name}`}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fin-result-panel">
+                        <div class="fin-card border-l-4 border-l-red-500 bg-red-50/10 dark:bg-red-900/5">
+                            <span class="fin-label text-red-600">Total Tax Liability</span>
+                            <div id="tax-out" class="fin-value text-red-600">--</div>
+                            <div class="mt-4 fin-label opacity-50" id="tax-rate">Effective Rate: 0%</div>
+                        </div>
+
+                        <div class="fin-card border-l-4 border-l-green-500 bg-green-50/10 dark:bg-green-900/5">
+                            <span class="fin-label text-green-600">Monthly In-Hand</span>
+                            <div id="tax-inhand" class="fin-value text-green-600">--</div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="fin-card">
+                                <span class="fin-label">Std. Deduction</span>
+                                <div id="tax-ded-val" class="text-lg font-black mt-1">--</div>
+                            </div>
+                            <div class="fin-card">
+                                <span class="fin-label">Total Deductibles</span>
+                                <div id="tax-tot-ded" class="text-lg font-black mt-1">--</div>
+                            </div>
+                        </div>
+
+                        <div id="tax-insights-area" class="fin-card border-dashed bg-indigo-50/30 dark:bg-indigo-900/10">
+                            <div class="flex items-center gap-3 mb-6">
+                                <i data-lucide="shield-check" class="w-4 h-4 text-indigo-600"></i>
+                                <h3 class="fin-label">Compliance Auditor Insights</h3>
+                            </div>
+                            <div id="tax-insights-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-semibold"></div>
+                        </div>
+
+                        <div id="tax-india-compliance" class="hidden fin-card">
+                            <h3 class="fin-label mb-6">Tax Slab Analysis (FY 24-25)</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-[10px]">
+                                    <thead class="fin-label border-b dark:border-gray-800">
                                         <tr>
-                                            <td colspan="2" class="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Cess (4% Health & Edu)</td>
-                                            <td class="p-6 text-right font-mono font-black" id="tax-cess">--</td>
+                                            <th class="py-2 pr-4">Slab</th>
+                                            <th class="py-2 px-4 text-center">Rate</th>
+                                            <th class="py-2 pl-4 text-right">Tax</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tax-tbody" class="font-bold py-2 text-gray-500"></tbody>
+                                    <tfoot>
+                                        <tr class="border-t dark:border-gray-800">
+                                            <td colspan="2" class="py-2 fin-label pt-4">Cess (4%)</td>
+                                            <td class="py-2 text-right pt-4 font-mono font-black" id="tax-cess">--</td>
                                         </tr>
                                     </tfoot>
                                 </table>
                             </div>
                         </div>
 
-                        <!-- Generic Breakdown -->
-                        <div id="tax-generic-breakdown" class="hidden space-y-6">
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="tax-gen-slabs">
-                                <!-- Generic slabs -->
-                            </div>
-                        </div>
-
-                         <!-- AI Intelligence Insights -->
-                        <div id="tax-insights-area" class="p-10 bg-indigo-600/5 border-2 border-dashed border-indigo-600/20 rounded-[3rem] space-y-6">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
-                                    <i data-lucide="shield-check" class="w-5 h-5"></i>
-                                </div>
-                                <h3 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-widest">Tax Compliance Auditor Insights</h3>
-                            </div>
-                            <div id="tax-insights-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <!-- Data driven insights -->
-                            </div>
-                        </div>
+                        <div id="tax-generic-breakdown" class="hidden grid grid-cols-2 gap-4"></div>
                     </div>
                 </div>
-             `;
-             lucide.createIcons();
-             break;
+            `;
+            runTaxCalc();
+            lucide.createIcons();
+            break;
 
         case 'credit-card-interest':
             c.innerHTML = `
@@ -1970,184 +1902,198 @@ function injectToolFunctionalHTML(id) {
                         </div>
                     </div>
                 </div>
-             `;
-             runCryCalc();
-             lucide.createIcons();
-             break;
+            `;
+            runCryCalc();
+            lucide.createIcons();
+            break;
+            c.innerHTML = `
+                <div class="tool-container">
+                    <div class="space-y-6">
+                        <div class="fin-card">
+                            <div class="flex items-center gap-3 mb-8">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-600/10 text-indigo-600 flex items-center justify-center">
+                                    <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+                                </div>
+                                <h3 class="fin-label">Investment Parameters</h3>
+                            </div>
+                            
+                            <div class="fin-input-panel">
+                                <div class="fin-input-group">
+                                    <label class="fin-label">Initial Capital</label>
+                                    <div class="relative">
+                                        <input type="number" id="roi-s" value="5000" oninput="runROICalc()" class="fin-input pr-12">
+                                        <span class="absolute right-4 top-1/2 -translate-y-1/2 fin-label opacity-40">${CURRENCIES[state.currency].symbol}</span>
+                                    </div>
+                                </div>
 
-        case 'roi-calculator':
-             c.innerHTML = `
-                <div class="space-y-10">
-                    <div class="flex items-center justify-between">
-                         <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Yield Performance Metrics</label>
-                         <div class="flex gap-2">
-                             <button onclick="document.getElementById('roi-csv-file').click()" title="Import CSV" class="p-2 bg-gray-50 dark:bg-gray-800 rounded-xl transition-all">
-                                <i data-lucide="upload" class="w-3 h-3"></i>
-                             </button>
-                             <input type="file" id="roi-csv-file" class="hidden" accept=".csv" onchange="importROICSV(event)">
-                             <button onclick="exportROICSV()" title="Export CSV" class="p-2 bg-gray-50 dark:bg-gray-800 rounded-xl transition-all">
-                                <i data-lucide="download" class="w-3 h-3"></i>
-                             </button>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="space-y-3">
-                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Investment (${cur})</label>
-                            <input type="number" id="roi-s" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none transition-all" value="5000" oninput="runROICalc()">
-                        </div>
-                        <div class="space-y-3">
-                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Returns (${cur})</label>
-                            <input type="number" id="roi-r" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none transition-all" value="12000" oninput="runROICalc()">
-                        </div>
-                        <div class="space-y-3">
-                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Time Period (Days)</label>
-                            <input type="number" id="roi-t" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none transition-all" value="365" oninput="runROICalc()">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="lg:col-span-2 p-10 bg-blue-600 text-white rounded-[2.5rem] text-center shadow-2xl flex flex-col justify-center relative overflow-hidden">
-                             <div class="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
-                             <span class="text-[10px] font-black text-blue-200 uppercase tracking-[0.4em] mb-4 block relative z-10">Performance ROI</span>
-                             <div id="roi-out" class="text-7xl font-black mb-4 relative z-10 animate-pulse-slow">140%</div>
-                             <div class="h-1.5 w-full bg-blue-800 rounded-full overflow-hidden mb-8 relative z-10">
-                                <div id="roi-bar" class="h-full bg-white shadow-[0_0_15px_white]" style="width: 70%"></div>
-                             </div>
-                             <div class="grid grid-cols-3 gap-2 relative z-10">
-                                <div class="text-center border-r border-white/10">
-                                    <span class="text-[8px] font-black text-blue-200 uppercase tracking-widest block mb-1">Net Profit</span>
-                                    <span id="roi-p" class="text-lg font-black text-white">---</span>
+                                <div class="fin-input-group">
+                                    <label class="fin-label">Final Value</label>
+                                    <div class="relative">
+                                        <input type="number" id="roi-r" value="12000" oninput="runROICalc()" class="fin-input pr-12">
+                                        <span class="absolute right-4 top-1/2 -translate-y-1/2 fin-label opacity-40">${CURRENCIES[state.currency].symbol}</span>
+                                    </div>
                                 </div>
-                                <div class="text-center border-r border-white/10">
-                                    <span class="text-[8px] font-black text-blue-200 uppercase tracking-widest block mb-1">ROAS</span>
-                                    <span id="roi-a" class="text-lg font-black text-white">---</span>
+
+                                <div class="fin-input-group">
+                                    <label class="fin-label">Duration (Days)</label>
+                                    <input type="number" id="roi-t" value="365" oninput="runROICalc()" class="fin-input">
                                 </div>
-                                <div class="text-center">
-                                    <span class="text-[8px] font-black text-blue-200 uppercase tracking-widest block mb-1">Annualized</span>
-                                    <span id="roi-ann" class="text-lg font-black text-white">---</span>
-                                </div>
-                             </div>
+                            </div>
                         </div>
-                        <div class="p-8 bg-gray-50 dark:bg-gray-900 rounded-[2.5rem] border dark:border-gray-800 space-y-4">
-                            <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Efficiency Analysis</h4>
-                            <div id="roi-table" class="space-y-4">
-                                <!-- Dynamic Breakdown -->
+
+                        <div class="fin-card bg-indigo-50/20 dark:bg-indigo-900/5">
+                            <div class="flex items-center gap-3 mb-4">
+                                <i data-lucide="database" class="w-4 h-4 text-indigo-600"></i>
+                                <span class="fin-label text-indigo-600">Persistence Engine</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="document.getElementById('roi-csv-file').click()" class="flex-grow py-3 bg-gray-100 dark:bg-gray-800 rounded-xl fin-label transition-all">Import</button>
+                                <button onclick="exportROICSV()" class="flex-grow py-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 fin-label hover:bg-gray-50 transition-all">Export</button>
+                                <input type="file" id="roi-csv-file" class="hidden" accept=".csv" onchange="importROICSV(event)">
                             </div>
                         </div>
                     </div>
+
+                    <div class="fin-result-panel">
+                        <div class="fin-card bg-indigo-600 text-white border-none min-h-[200px] flex flex-col justify-center items-center text-center overflow-hidden relative">
+                            <div class="absolute inset-0 bg-gradient-to-br from-indigo-500 to-indigo-700 opacity-50"></div>
+                            <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 blur-3xl rounded-full"></div>
+                            <span class="fin-label text-indigo-100 mb-2 relative z-10">Net ROI</span>
+                            <div id="roi-out" class="text-6xl font-black relative z-10">0%</div>
+                            <div class="w-full max-w-[200px] h-1 bg-white/20 rounded-full mt-6 overflow-hidden relative z-10">
+                                <div id="roi-bar" class="h-full bg-white shadow-[0_0_15px_white] transition-all duration-1000" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="fin-card">
+                                <span class="fin-label opacity-60">Net Profit</span>
+                                <div id="roi-p" class="text-lg font-black mt-1">--</div>
+                            </div>
+                            <div class="fin-card">
+                                <span class="fin-label opacity-60">ROAS</span>
+                                <div id="roi-a" class="text-lg font-black mt-1">--</div>
+                            </div>
+                            <div class="fin-card">
+                                <span class="fin-label opacity-60">Annualized</span>
+                                <div id="roi-ann" class="text-lg font-black mt-1">--</div>
+                            </div>
+                        </div>
+
+                        <div class="fin-card border-dashed">
+                            <h4 class="fin-label mb-6">Efficiency Breakdown</h4>
+                            <div id="roi-table" class="space-y-4"></div>
+                        </div>
+                    </div>
                 </div>
-             `;
-             runROICalc();
-             lucide.createIcons();
-             break;
+            `;
+            runROICalc();
+            lucide.createIcons();
+            break;
 
         case 'fd-calculator':
-             c.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                    <div class="space-y-8">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="space-y-4 col-span-2">
-                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Principal Amount (Deposit)</label>
-                                <div class="relative">
-                                    <span class="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 font-bold">${CURRENCIES[state.currency].symbol}</span>
-                                    <input type="number" id="fd-p" oninput="runFDCalc()" class="w-full p-6 pl-12 bg-gray-50 dark:bg-gray-900 border rounded-[2rem] dark:border-gray-700 outline-none font-bold text-lg" placeholder="100,000" value="100000">
+            c.innerHTML = `
+                <div class="tool-container">
+                    <div class="space-y-6">
+                        <div class="fin-card">
+                            <div class="flex items-center gap-3 mb-8">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-600/10 text-emerald-600 flex items-center justify-center">
+                                    <i data-lucide="piggy-bank" class="w-4 h-4"></i>
+                                </div>
+                                <h3 class="fin-label">Deposit Parameters</h3>
+                            </div>
+                            
+                            <div class="fin-input-panel">
+                                <div class="fin-input-group">
+                                    <label class="fin-label">Deposit Amount</label>
+                                    <div class="relative">
+                                        <input type="number" id="fd-p" value="100000" oninput="runFDCalc()" class="fin-input pr-12 bg-emerald-50/50 border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-900/20">
+                                        <span class="absolute right-4 top-1/2 -translate-y-1/2 fin-label opacity-40">${CURRENCIES[state.currency].symbol}</span>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="fin-input-group">
+                                        <label class="fin-label">Interest Rate (%)</label>
+                                        <input type="number" id="fd-r" step="0.1" value="7.5" oninput="runFDCalc()" class="fin-input">
+                                    </div>
+                                    <div class="fin-input-group">
+                                        <label class="fin-label">Tenure (Years)</label>
+                                        <input type="number" id="fd-n" value="5" oninput="runFDCalc()" class="fin-input">
+                                    </div>
+                                </div>
+
+                                <div class="fin-input-group">
+                                    <label class="fin-label">Compounding Frequency</label>
+                                    <select id="fd-freq" onchange="runFDCalc()" class="fin-input cursor-pointer">
+                                        <option value="4">Quarterly (Compounded)</option>
+                                        <option value="12">Monthly</option>
+                                        <option value="2">Half-Yearly</option>
+                                        <option value="1">Annually</option>
+                                    </select>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="fin-input-group">
+                                        <label class="fin-label">Tax Bracket (%)</label>
+                                        <input type="number" id="fd-tax" value="0" oninput="runFDCalc()" class="fin-input">
+                                    </div>
+                                    <div class="fin-input-group">
+                                        <label class="fin-label">Inflation (%)</label>
+                                        <input type="number" id="fd-inf" value="0" oninput="runFDCalc()" class="fin-input">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="space-y-4">
-                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Rate of Interest (%)</label>
-                                <input type="number" id="fd-r" step="0.1" oninput="runFDCalc()" class="w-full p-6 bg-gray-50 dark:bg-gray-900 border rounded-[2rem] dark:border-gray-700 outline-none font-bold text-lg" placeholder="7.5" value="7.5">
-                            </div>
-                            <div class="space-y-4">
-                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tenure (Years)</label>
-                                <input type="number" id="fd-n" oninput="runFDCalc()" class="w-full p-6 bg-gray-50 dark:bg-gray-900 border rounded-[2rem] dark:border-gray-700 outline-none font-bold text-lg" placeholder="5" value="5">
-                            </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="space-y-4">
-                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Compounding Freq.</label>
-                                <select id="fd-freq" onchange="runFDCalc()" class="w-full p-6 bg-gray-50 dark:bg-gray-900 border rounded-[2rem] dark:border-gray-700 outline-none font-bold text-sm">
-                                    <option value="4">Quarterly (Standard)</option>
-                                    <option value="12">Monthly</option>
-                                    <option value="2">Half-Yearly</option>
-                                    <option value="1">Annually</option>
-                                </select>
+
+                        <div class="fin-card bg-emerald-50/20 dark:bg-emerald-900/5">
+                            <div class="flex items-center gap-3 mb-4">
+                                <i data-lucide="share-2" class="w-4 h-4 text-emerald-600"></i>
+                                <span class="fin-label text-emerald-600">Persistence Services</span>
                             </div>
-                            <div class="space-y-4">
-                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tax Bracket (%)</label>
-                                <input type="number" id="fd-tax" oninput="runFDCalc()" class="w-full p-6 bg-gray-50 dark:bg-gray-900 border rounded-[2rem] dark:border-gray-700 outline-none font-bold text-lg" placeholder="0" value="0">
-                            </div>
-                            <div class="space-y-4 col-span-2">
-                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Inflation Adjust (%)</label>
-                                <input type="number" id="fd-inf" oninput="runFDCalc()" class="w-full p-6 bg-gray-50 dark:bg-gray-900 border rounded-[2rem] dark:border-gray-700 outline-none font-bold text-lg" placeholder="0" value="0">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex flex-col space-y-6">
-                        <div class="p-10 bg-gray-900 dark:bg-blue-600 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group">
-                            <div class="absolute top-4 right-4 flex gap-3">
-                                <button onclick="document.getElementById('fd-csv-file').click()" title="Import CSV" class="p-2 bg-white/5 hover:bg-white/10 rounded-xl transition-all">
-                                    <i data-lucide="upload" class="w-3 h-3"></i>
-                                </button>
+                            <div class="flex gap-2">
+                                <button onclick="document.getElementById('fd-csv-file').click()" class="flex-grow py-3 bg-gray-100 dark:bg-gray-800 rounded-xl fin-label transition-all">Import</button>
+                                <button onclick="exportFDCSV()" class="flex-grow py-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 fin-label hover:bg-gray-50 transition-all">Export</button>
                                 <input type="file" id="fd-csv-file" class="hidden" accept=".csv" onchange="importFDCSV(event)">
-                                <button onclick="exportFDCSV()" title="Export CSV" class="p-2 bg-white/5 hover:bg-white/10 rounded-xl transition-all">
-                                    <i data-lucide="download" class="w-3 h-3"></i>
-                                </button>
-                            </div>
-                            <div class="relative z-10 text-center">
-                                <h4 class="text-[10px] font-black uppercase tracking-[0.2rem] mb-4 opacity-60">Maturity Value (Net)</h4>
-                                <div id="fd-out" class="text-5xl font-black mb-4">0</div>
-                                <div class="grid grid-cols-2 gap-4 mt-8 pt-8 border-t border-white/10">
-                                    <div>
-                                        <p class="text-[8px] font-black uppercase opacity-60 mb-2">Total Interest</p>
-                                        <span id="fd-tot-int" class="font-bold text-sm">0</span>
-                                    </div>
-                                    <div>
-                                        <p class="text-[8px] font-black uppercase opacity-60 mb-2 font-mono" id="fd-extra-label">Tax / Infl. Loss</p>
-                                        <span id="fd-tot-tax" class="font-bold text-sm text-red-300">0</span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
-                        <div id="fd-highlights" class="flex gap-4 flex-wrap"></div>
-                    </div>
-                </div>
-                
-                <div class="mt-12 space-y-8 animate-fade-in hidden" id="fd-box">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                         <div class="p-6 bg-white dark:bg-gray-900 rounded-3xl border dark:border-gray-800">
-                             <h4 class="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-4">Yield Analysis</h4>
-                             <canvas id="fd-pie-chart" height="200"></canvas>
-                         </div>
-                         <div class="p-6 bg-white dark:bg-gray-900 rounded-3xl border dark:border-gray-800 md:col-span-2">
-                             <h4 class="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-4">Growth Projection</h4>
-                             <canvas id="fd-line-chart" height="200"></canvas>
-                         </div>
                     </div>
 
-                    <div class="p-8 bg-gray-50 dark:bg-gray-900 rounded-3xl border dark:border-gray-800">
-                        <h4 class="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-6">Yearly Growth Schedule</h4>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left">
-                                <thead>
-                                    <tr class="text-[8px] font-black text-gray-400 uppercase tracking-widest border-b dark:border-gray-800">
-                                        <th class="p-4">Year</th>
-                                        <th class="p-4 text-right">Opening Balance</th>
-                                        <th class="p-4 text-right">Interest Earned</th>
-                                        <th class="p-4 text-right">Closing Balance</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="fd-tbody" class="text-sm"></tbody>
-                            </table>
+                    <div class="fin-result-panel">
+                        <div class="fin-card bg-gray-900 text-white border-none min-h-[220px] flex flex-col justify-between overflow-hidden relative">
+                            <div class="absolute -right-10 -top-10 w-40 h-40 bg-emerald-600/20 blur-3xl rounded-full"></div>
+                            <span class="fin-label opacity-60 relative z-10">Maturity Value (Net)</span>
+                            <div id="fd-out" class="fin-value text-emerald-400 relative z-10">0</div>
+                            <div class="grid grid-cols-2 gap-6 pt-6 border-t border-white/10 mt-6 relative z-10">
+                                <div>
+                                    <p class="fin-label opacity-40 mb-1">Interest Earned</p>
+                                    <span id="fd-tot-int" class="text-lg font-black text-emerald-400 tracking-tight">0</span>
+                                </div>
+                                <div>
+                                    <p class="fin-label opacity-40 mb-1" id="fd-extra-label">Tax & Infl. Loss</p>
+                                    <span id="fd-tot-tax" class="text-lg font-black text-red-400 tracking-tight">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="fd-highlights" class="flex flex-wrap gap-3"></div>
+
+                        <div id="fd-box" class="hidden fin-card animate-fade-in">
+                            <h4 class="fin-label mb-8">Yield Analysis</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                                <canvas id="fd-pie-chart" height="200"></canvas>
+                                <div id="fd-insights" class="space-y-4"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-             `;
-             runFDCalc();
-             lucide.createIcons();
-             break;
+            `;
+            runFDCalc();
+            lucide.createIcons();
+            break;
 
         case 'loan-comparison':
-             c.innerHTML = `
-                <div class="space-y-12">
+            c.innerHTML = `
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div class="lg:col-span-1 space-y-8">
                             <div class="p-8 bg-gray-50 dark:bg-gray-900 rounded-[2.5rem] border dark:border-gray-800 space-y-6">
@@ -2461,12 +2407,12 @@ function injectToolFunctionalHTML(id) {
                                     <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Format Conversion</label>
                                     <select id="comp-format" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border-2 border-transparent dark:border-gray-800 rounded-2xl font-bold outline-none focus:border-blue-500/20 focus:ring-4 focus:ring-blue-500/5 transition-all text-sm cursor-pointer appearance-none">
                                         <option value="original">Keep Original Format</option>
-                                        <option value="image/jpeg">Convert to JPEG (Ideal for Photos)</option>
-                                        <option value="image/webp">Convert to WEBP (Best for Performance)</option>
-                                        <option value="image/png">Convert to PNG (Lossless/Icons)</option>
-                                        <option value="image/avif">Convert to AVIF (Next-Gen Compression)</option>
-                                        <option value="image/bmp">Convert to BMP (Uncompressed Legacy)</option>
-                                        <option value="image/gif">Convert to GIF (Static Image)</option>
+                                        <option value="image/webp">WebP (Modern Web Format)</option>
+                                        <option value="image/jpeg">JPEG (Efficient Compression)</option>
+                                        <option value="image/png">PNG (Lossless / Transparent)</option>
+                                        <option value="image/avif">AVIF (Next-Gen High Quality)</option>
+                                        <option value="image/bmp">BMP (Classic Uncompressed)</option>
+                                        <option value="image/gif">GIF (Static Banner)</option>
                                     </select>
                                 </div>
                                 <div class="space-y-4">
@@ -2751,9 +2697,12 @@ function injectToolFunctionalHTML(id) {
                                 <div class="space-y-2">
                                     <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Export Format</label>
                                     <select id="res-format" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none text-xs">
-                                        <option value="image/png">PNG (Lossless / Transparent)</option>
-                                        <option value="image/jpeg">JPEG (High Quality Compression)</option>
                                         <option value="image/webp">WEBP (Modern Web Format)</option>
+                                        <option value="image/jpeg">JPEG (High Quality Compression)</option>
+                                        <option value="image/png">PNG (Lossless / Transparent)</option>
+                                        <option value="image/avif">AVIF (Ultra High Comp)</option>
+                                        <option value="image/bmp">BMP (Classic Lossless)</option>
+                                        <option value="image/gif">GIF (Legacy Standard)</option>
                                     </select>
                                 </div>
                                 <button onclick="runFileSim()" class="w-full h-16 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black shadow-2xl shadow-blue-600/30 transition-all uppercase tracking-widest text-[10px]">
@@ -2942,6 +2891,9 @@ function injectToolFunctionalHTML(id) {
                                     <option value="png">PNG (Transparent)</option>
                                     <option value="webp">WebP (Efficient)</option>
                                     <option value="jpeg">JPEG (Compressed)</option>
+                                    <option value="avif">AVIF (Next-Gen)</option>
+                                    <option value="bmp">BMP (Classic)</option>
+                                    <option value="gif">GIF (Standard)</option>
                                 </select>
                             </div>
                             <div class="space-y-3">
@@ -3033,7 +2985,7 @@ const FinancialCore = {
      * Standard Patterns for Rate Handling
      */
     getAnnualRate: (rate, inputRate) => new Decimal(rate || inputRate || 0),
-    getMonthlyRate: (annualRate) => new Decimal(annualRate).div(100).div(12),
+    getMonthlyRate: (annualRate) => new Decimal(annualRate).div(1200),
 
     /**
      * Standard EMI (Reducing Balance)
@@ -3099,7 +3051,24 @@ const FinUI = {
             currency: code,
             maximumFractionDigits: currency.decimals !== undefined ? currency.decimals : 0
         };
-        return new Intl.NumberFormat(currency.locale, options).format(v);
+        try {
+            return new Intl.NumberFormat(currency.locale, options).format(v);
+        } catch (e) {
+            return new Intl.NumberFormat('en-US', options).format(v);
+        }
+    },
+
+    formatCompact: (v, code) => {
+        const currency = CURRENCIES[code] || CURRENCIES.USD;
+        try {
+            return new Intl.NumberFormat(currency.locale, {
+                notation: 'compact',
+                compactDisplay: 'short',
+                maximumFractionDigits: 1
+            }).format(v);
+        } catch (e) {
+            return v.toString();
+        }
     },
 
     getValidInput: (id, fallback = 0) => {
@@ -3136,7 +3105,7 @@ window.emiViewMode = 'abs';
 window.runEMICalc = () => {
     const P = FinUI.getValidInput('emi-p', 500000);
     const inputRate = FinUI.getValidInput('emi-r', 8.5);
-    const annualRate = FinancialCore.getAnnualRate(inputRate);
+    const annualRate = Number(inputRate || 0); // Standardized pattern
     const tenureYears = FinUI.getValidInput('emi-n', 15);
     const feeRate = FinUI.getValidInput('emi-fee', 0).div(100);
     
@@ -3152,7 +3121,7 @@ window.runEMICalc = () => {
     const out = document.getElementById('emi-out');
     if (!box) return;
 
-    if (P.lte(0) || annualRate.lt(0) || tenureYears.lte(0)) {
+    if (P.lte(0) || annualRate < 0 || tenureYears.lte(0)) {
         if (!box.classList.contains('hidden')) out.innerText = 'Error';
         return;
     }
@@ -3160,7 +3129,6 @@ window.runEMICalc = () => {
     const totalMonths = tenureYears.mul(12).round().toNumber();
     const processingFee = P.mul(feeRate);
     
-    // Core Logic via FinancialCore
     const emi = FinancialCore.calculateEMI(P, annualRate, totalMonths, compoundingFreq);
     const emiRounded = emi.toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
     
@@ -3841,14 +3809,14 @@ window.runAgeCalc = () => {
 window.runFDCalc = () => {
     const P = FinUI.getValidInput('fd-p', 100000);
     const inputRate = FinUI.getValidInput('fd-r', 6.5);
-    const annualRate = FinancialCore.getAnnualRate(inputRate);
+    const annualRate = Number(inputRate || 0);
     const years = FinUI.getValidInput('fd-n', 5);
     const freq = parseInt(document.getElementById('fd-freq')?.value || '4', 10);
     const taxRate = FinUI.getValidInput('fd-tax', 10).div(100);
     const inflation = FinUI.getValidInput('fd-inf', 0).div(100);
     const currency = state.currency;
 
-    if (P.lte(0) || annualRate.lte(0) || years.lte(0)) return;
+    if (P.lte(0) || annualRate < 0 || years.lte(0)) return;
 
     // Standard formula via Core logic
     const { maturity, interest } = FinancialCore.calculateFD(P, annualRate, years, freq);
@@ -4180,32 +4148,33 @@ window.exportEMICSV = () => {
     const schedule = window.currentEMISchedule;
 
     const data = [
-        { Section: "INPUTS", Key: "Loan Amount", Value: inputs.p ? inputs.p.toString() : "0" },
-        { Section: "INPUTS", Key: "Interest Rate", Value: inputs.r ? inputs.r.toString() : "0" },
-        { Section: "INPUTS", Key: "Tenure (Years)", Value: inputs.n ? inputs.n.toString() : "0" },
-        { Section: "INPUTS", Key: "Processing Fee (%)", Value: inputs.fee ? inputs.fee.times(100).toString() : "0" },
-        { Section: "SUMMARY", Key: "Monthly EMI", Value: summary.emi ? summary.emi.toString() : "0" },
-        { Section: "SUMMARY", Key: "Total Interest", Value: summary.totalInterest ? summary.totalInterest.toString() : "0" },
-        { Section: "SUMMARY", Key: "Total Payment", Value: summary.totalPayment ? summary.totalPayment.toString() : "0" },
-        { Section: "SUMMARY", Key: "Total Savings", Value: summary.savings ? summary.savings.toString() : "0" },
-        { Section: "SCHEDULE", Key: "Month", Value: "Principal Paid | Interest Paid | Balance" }
+        { Section: "REPORT_TYPE", Key: "Loan Amortization Schedule", Value: `Generated: ${new Date().toLocaleString()}` },
+        { Section: "INPUTS", Key: "Principal", Value: inputs.p ? inputs.p.toFixed(2) : "0" },
+        { Section: "INPUTS", Key: "Annual Interest Rate (%)", Value: inputs.r ? String(inputs.r) : "0" },
+        { Section: "INPUTS", Key: "Tenure (Years)", Value: inputs.n ? String(inputs.n) : "0" },
+        { Section: "INPUTS", Key: "Processing Fee (%)", Value: inputs.fee ? inputs.fee.times(100).toFixed(2) : "0" },
+        { Section: "SUMMARY", Key: "Monthly EMI", Value: summary.emi ? summary.emi.toFixed(2) : "0" },
+        { Section: "SUMMARY", Key: "Total Interest", Value: summary.totalInterest ? summary.totalInterest.toFixed(2) : "0" },
+        { Section: "SUMMARY", Key: "Total Payment", Value: summary.totalPayment ? summary.totalPayment.toFixed(2) : "0" },
+        { Section: "SUMMARY", Key: "Effective Savings", Value: summary.savings ? summary.savings.toFixed(2) : "0" },
+        { Section: "COLUMNS", Key: "Month", Value: "Principal Paid | Interest Paid | Remaining Balance" }
     ];
 
     schedule.forEach(s => {
         data.push({ 
-            Section: `Month ${s.month}`, 
-            Key: s.principal instanceof Decimal ? s.principal.toFixed(2) : String(s.principal), 
-            Value: `${s.interest instanceof Decimal ? s.interest.toFixed(2) : String(s.interest)} | ${s.balance instanceof Decimal ? s.balance.toFixed(2) : String(s.balance)}` 
+            Section: `MONTH_DATA`, 
+            Key: `Month ${s.month}`, 
+            Value: `${FinUI.getDecimal(s.principal).toFixed(2)}, ${FinUI.getDecimal(s.interest).toFixed(2)}, ${FinUI.getDecimal(s.balance).toFixed(2)}` 
         });
     });
 
     try {
         const csv = CSVCore.generateCSV(data);
-        CSVCore.downloadCSV(`loan_report_${new Date().getTime()}.csv`, csv);
-        toast("EMI Report exported as CSV");
+        CSVCore.downloadCSV(`loan_amortization_${new Date().getTime()}.csv`, csv);
+        toast("Financial Data exported successfully to your PC");
     } catch (err) {
         console.error("Export Error:", err);
-        toast("Export failed. Check parameters.");
+        toast("Export failed. Check logic.");
     }
 };
 
@@ -4564,13 +4533,13 @@ window.runStopwatchReset = () => {
 window.runSIPCalc = () => {
     const monthly = FinUI.getValidInput('sip-m', 5000);
     const inputRate = FinUI.getValidInput('sip-r', 12);
-    const annualRate = FinancialCore.getAnnualRate(inputRate);
+    const annualRate = Number(inputRate || 0);
     const years = FinUI.getValidInput('sip-n', 10);
     const stepUp = FinUI.getValidInput('sip-step', 10);
     const inflation = FinUI.getValidInput('sip-inf', 6);
     const currency = state.currency;
 
-    if (monthly.lte(0) || annualRate.lte(0) || years.lte(0)) return;
+    if (monthly.lte(0) || annualRate < 0 || years.lte(0)) return;
 
     // Core Logic via FinancialCore
     const { maturity, invested, schedule } = FinancialCore.calculateSIP(monthly, annualRate, years, stepUp);
@@ -5246,7 +5215,7 @@ window.runCCCalc = () => {
             { icon: 'alert-circle', title: 'Interest Trap', desc: `You will pay ${formatEMICurrency(finalInterest.toNumber(), currency)} in interest alone just to reach your target.` },
             { icon: 'trending-up', title: 'Daily Leak', desc: `Every 24 hours, ${formatEMICurrency(dailyAccrual.toNumber(), currency)} in interest is added to your balance.` }
         ];
-        if (apr.gt(20)) insights.push({ icon: 'zap', title: 'Aggressive Debt', desc: 'Extremely high APR detected. Consider balance transfer or personal loan consolidation.' });
+        if (annualRate.gt(20)) insights.push({ icon: 'zap', title: 'Aggressive Debt', desc: 'Extremely high APR detected. Consider balance transfer or personal loan consolidation.' });
 
         insightArea.innerHTML = insights.map(i => `
             <div class="p-4 bg-white dark:bg-black/20 rounded-2xl border dark:border-gray-800 flex gap-4">
