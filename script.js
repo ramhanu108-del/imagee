@@ -389,12 +389,12 @@ const GLOBAL_COUNTRY_CONFIG = {
         locale: "en-IN",
         tax: {
             type: "progressive",
-            regime: "FY 2024-25 New Regime",
-            standardDeduction: 50000,
+            regime: "FY 2024-25 Revised (New Regime)",
+            standardDeduction: 75000,
             slabs: [
                 { limit: 300000, rate: 0 },
-                { limit: 600000, rate: 0.05 },
-                { limit: 900000, rate: 0.10 },
+                { limit: 700000, rate: 0.05 },
+                { limit: 1000000, rate: 0.10 },
                 { limit: 1200000, rate: 0.15 },
                 { limit: 1500000, rate: 0.20 },
                 { limit: Infinity, rate: 0.30 }
@@ -721,6 +721,14 @@ state.currentQuote = getNextRandomQuote();
 
 // --- UI CORE RENDERING ---
 function renderUI() {
+    // Preserve tool-specific state before re-render
+    if (state.activeTool && state.activeTool.id === 'tax-calculator') {
+        const inEl = document.getElementById('tax-in');
+        if (inEl) state.lastTaxIncome = inEl.value;
+        const coEl = document.getElementById('tax-country');
+        if (coEl) state.lastTaxCountry = coEl.value;
+    }
+
     applyTheme();
     updateText();
     renderCategoryTabs();
@@ -875,6 +883,33 @@ function autoRotateQuotes() {
 }
 
 // --- GLOBAL ACTIONS ---
+window.updateGlobalCurrency = (code) => {
+    const oldCur = state.currency;
+    state.currency = code;
+    localStorage.setItem('currency', code);
+    
+    const curSelect = document.getElementById('currency-select');
+    if (curSelect) curSelect.value = code;
+    
+    console.log(`[Global] Currency changed to ${code}`);
+    toast(`Currency: ${code} (${CURRENCIES[code].symbol})`);
+    renderUI();
+    window.dispatchEvent(new CustomEvent('currencyChanged', { detail: code }));
+};
+
+window.updateGlobalLanguage = (lang) => {
+    state.lang = lang;
+    localStorage.setItem('lang', lang);
+    quoteBag = []; 
+    state.currentQuote = getNextRandomQuote();
+    
+    const langSelect = document.getElementById('lang-select');
+    if (langSelect) langSelect.value = lang;
+    
+    toast(`Language: ${lang.toUpperCase()}`);
+    renderUI();
+};
+
 window.setGlobalCategory = (c) => {
     state.category = c;
     renderUI();
@@ -893,20 +928,11 @@ document.getElementById('theme-toggle').onclick = () => {
 };
 
 document.getElementById('lang-select').onchange = (e) => {
-    state.lang = e.target.value;
-    localStorage.setItem('lang', state.lang);
-    quoteBag = []; // clear the bag to force new language pick immediately
-    state.currentQuote = getNextRandomQuote();
-    renderUI();
+    window.updateGlobalLanguage(e.target.value);
 };
 
 document.getElementById('currency-select').onchange = (e) => {
-    const oldCur = state.currency;
-    state.currency = e.target.value;
-    localStorage.setItem('currency', state.currency);
-    console.log(`[Global] Currency changed from ${oldCur} to ${state.currency}`);
-    renderUI();
-    window.dispatchEvent(new CustomEvent('currencyChanged', { detail: state.currency }));
+    window.updateGlobalCurrency(e.target.value);
 };
 
 // --- MODAL ENGINE ---
@@ -920,6 +946,14 @@ window.openToolModal = (id) => {
 
     state.activeTool = tool;
     trackRecentlyUsed(id);
+    
+    // Notify StabilityEngine for session monitoring
+    if (window.StabilityEngine) {
+        StabilityEngine.sessionSwitches = (StabilityEngine.sessionSwitches || 0) + 1;
+        if (StabilityEngine.sessionSwitches % 10 === 0) {
+            StabilityEngine.logDiagnostic('SESSION_CHECKPOINT', { switches: StabilityEngine.sessionSwitches });
+        }
+    }
 
     const modal = document.getElementById('modal-container');
     const overlay = document.getElementById('modal-overlay');
@@ -985,7 +1019,21 @@ window.openToolModal = (id) => {
 };
 
 function closeToolModal() {
-    // Clear URL hash
+    // 1. Cleanup Memory & Global State
+    if (window.swInt) { 
+        clearInterval(window.swInt); 
+        window.swInt = null; 
+    }
+    
+    // Revoke generated object URLs to prevent memory bloat
+    if (window.objectUrls && window.objectUrls.length > 0) {
+        window.objectUrls.forEach(url => {
+            try { URL.revokeObjectURL(url); } catch(e) {}
+        });
+        window.objectUrls = [];
+    }
+
+    // 2. Clear UI State
     history.pushState(null, null, ' ');
     
     const modal = document.getElementById('modal-container');
@@ -997,6 +1045,9 @@ function closeToolModal() {
     setTimeout(() => {
         modal.classList.add('hidden');
         overlay.classList.add('hidden');
+        // Clear heavy tool content to free DOM/Memory
+        const content = document.getElementById('tool-content');
+        if (content) content.innerHTML = ''; 
     }, 300);
     
     document.body.style.overflow = "auto";
@@ -1036,7 +1087,7 @@ function injectToolFunctionalHTML(id) {
                                     <label class="fin-label">Principal Amount</label>
                                     <div class="relative">
                                         <input type="number" id="emi-p" value="500000" oninput="runEMICalc()" class="fin-input pr-16">
-                                        <span class="absolute right-4 top-1/2 -translate-y-1/2 fin-label opacity-40" id="emi-p-sym">USD</span>
+                                        <button onclick="window.toggleGlobalCurrency()" class="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95" id="emi-p-sym">${curCode}</button>
                                     </div>
                                     <input type="range" min="10000" max="10000000" step="10000" value="500000" oninput="document.getElementById('emi-p').value = this.value; runEMICalc()" class="mt-4 w-full h-1.5 accent-blue-600">
                                 </div>
@@ -1095,7 +1146,7 @@ function injectToolFunctionalHTML(id) {
                                 <span class="fin-label">Monthly EMI</span>
                                 <div class="fin-value text-blue-600" id="emi-out">--</div>
                                 <div class="mt-4 flex items-center gap-2">
-                                    <div class="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
+                                    <div class="w-1.5 h-1.5 rounded-full bg-blue-600" id="emi-burden-dot"></div>
                                     <span class="text-[10px] font-black opacity-50 uppercase tracking-widest" id="emi-burden-label">Interest: 0%</span>
                                 </div>
                             </div>
@@ -1455,7 +1506,7 @@ function injectToolFunctionalHTML(id) {
                                     <label class="fin-label">Monthly Investment</label>
                                     <div class="relative">
                                         <input type="number" id="sip-m" oninput="runSIPCalc()" class="fin-input pr-12" value="5000">
-                                        <span class="absolute right-4 top-1/2 -translate-y-1/2 fin-label opacity-40">${CURRENCIES[state.currency].symbol}</span>
+                                        <button onclick="window.toggleGlobalCurrency()" class="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95">${curCode}</button>
                                     </div>
                                     <input type="range" min="500" max="100000" step="500" value="5000" oninput="document.getElementById('sip-m').value = this.value; runSIPCalc()" class="mt-4 w-full h-1.5 accent-blue-600">
                                 </div>
@@ -1570,15 +1621,15 @@ function injectToolFunctionalHTML(id) {
                                 <div class="fin-input-group">
                                     <label class="fin-label">Annual Gross Income</label>
                                     <div class="relative">
-                                        <input type="number" id="tax-in" value="1200000" oninput="runTaxCalc()" class="fin-input pr-16 bg-blue-50/50 border-blue-100 dark:bg-blue-900/10 dark:border-blue-900/20">
-                                        <span class="absolute right-4 top-1/2 -translate-y-1/2 fin-label opacity-40" id="tax-currency-sym">USD</span>
+                                        <input type="text" id="tax-in" value="${state.lastTaxIncome || '1,200,000'}" oninput="runTaxCalc()" class="fin-input pr-16 bg-blue-50/50 border-blue-100 dark:bg-blue-900/10 dark:border-blue-900/20">
+                                        <button onclick="window.toggleGlobalCurrency()" class="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95" id="tax-currency-sym">${curCode}</button>
                                     </div>
                                 </div>
 
                                 <div class="fin-input-group">
                                     <label class="fin-label">Jurisdiction</label>
                                     <select id="tax-country" onchange="window.setManualCountry(this.value)" class="fin-input cursor-pointer">
-                                        ${Object.keys(GLOBAL_COUNTRY_CONFIG).map(k => `<option value="${k}" ${k === state.detectedCountry ? 'selected' : ''}>${GLOBAL_COUNTRY_CONFIG[k].name}</option>`).join('')}
+                                        ${Object.keys(GLOBAL_COUNTRY_CONFIG).map(k => `<option value="${k}" ${k === (state.lastTaxCountry || state.detectedCountry) ? 'selected' : ''}>${GLOBAL_COUNTRY_CONFIG[k].name}</option>`).join('')}
                                     </select>
                                 </div>
 
@@ -1588,16 +1639,9 @@ function injectToolFunctionalHTML(id) {
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="fin-card bg-orange-50/20 border-orange-100 dark:bg-orange-900/5 dark:border-orange-900/20">
-                            <h4 class="fin-label text-orange-600 mb-4">Compliance Status</h4>
-                            <div id="tax-detection-msg" class="text-[10px] font-bold text-gray-500 uppercase leading-relaxed">
-                                ${state.detectedCountry === 'GEN' ? 'Running in Global Mode' : `Analyzing for ${GLOBAL_COUNTRY_CONFIG[state.detectedCountry].name}`}
-                            </div>
-                        </div>
                     </div>
 
-                    <div class="fin-result-panel">
+                    <div class="fin-result-panel" id="tax-box">
                         <div class="fin-card border-l-4 border-l-red-500 bg-red-50/10 dark:bg-red-900/5">
                             <span class="fin-label text-red-600">Total Tax Liability</span>
                             <div id="tax-out" class="fin-value text-red-600">--</div>
@@ -1650,11 +1694,12 @@ function injectToolFunctionalHTML(id) {
                             </div>
                         </div>
 
-                        <div id="tax-generic-breakdown" class="hidden grid grid-cols-2 gap-4"></div>
+                        <div id="tax-gen-slabs" class="hidden grid grid-cols-2 gap-4"></div>
                     </div>
                 </div>
             `;
-            runTaxCalc();
+            // Auto-run trigger
+            requestAnimationFrame(() => runTaxCalc());
             lucide.createIcons();
             break;
 
@@ -1906,6 +1951,8 @@ function injectToolFunctionalHTML(id) {
             runCryCalc();
             lucide.createIcons();
             break;
+
+        case 'roi-calculator':
             c.innerHTML = `
                 <div class="tool-container">
                     <div class="space-y-6">
@@ -1922,7 +1969,7 @@ function injectToolFunctionalHTML(id) {
                                     <label class="fin-label">Initial Capital</label>
                                     <div class="relative">
                                         <input type="number" id="roi-s" value="5000" oninput="runROICalc()" class="fin-input pr-12">
-                                        <span class="absolute right-4 top-1/2 -translate-y-1/2 fin-label opacity-40">${CURRENCIES[state.currency].symbol}</span>
+                                        <button onclick="window.toggleGlobalCurrency()" class="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95">${curCode}</button>
                                     </div>
                                 </div>
 
@@ -1930,7 +1977,7 @@ function injectToolFunctionalHTML(id) {
                                     <label class="fin-label">Final Value</label>
                                     <div class="relative">
                                         <input type="number" id="roi-r" value="12000" oninput="runROICalc()" class="fin-input pr-12">
-                                        <span class="absolute right-4 top-1/2 -translate-y-1/2 fin-label opacity-40">${CURRENCIES[state.currency].symbol}</span>
+                                        <button onclick="window.toggleGlobalCurrency()" class="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95">${curCode}</button>
                                     </div>
                                 </div>
 
@@ -2008,7 +2055,7 @@ function injectToolFunctionalHTML(id) {
                                     <label class="fin-label">Deposit Amount</label>
                                     <div class="relative">
                                         <input type="number" id="fd-p" value="100000" oninput="runFDCalc()" class="fin-input pr-12 bg-emerald-50/50 border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-900/20">
-                                        <span class="absolute right-4 top-1/2 -translate-y-1/2 fin-label opacity-40">${CURRENCIES[state.currency].symbol}</span>
+                                        <button onclick="window.toggleGlobalCurrency()" class="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all shadow-sm active:scale-95">${curCode}</button>
                                     </div>
                                 </div>
 
@@ -2094,6 +2141,7 @@ function injectToolFunctionalHTML(id) {
 
         case 'loan-comparison':
             c.innerHTML = `
+                <div class="tool-container">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div class="lg:col-span-1 space-y-8">
                             <div class="p-8 bg-gray-50 dark:bg-gray-900 rounded-[2.5rem] border dark:border-gray-800 space-y-6">
@@ -2101,69 +2149,38 @@ function injectToolFunctionalHTML(id) {
                                 <div class="space-y-4">
                                     <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Principal Amount Wanted</label>
                                     <div class="relative">
-                                        <span class="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold">${CURRENCIES[state.currency].symbol}</span>
-                                        <input type="number" id="lc-p" oninput="runLoanComp()" class="w-full p-4 pl-10 bg-white dark:bg-black/20 border rounded-2xl dark:border-gray-700 outline-none font-bold" placeholder="50,000">
+                                        <button onclick="window.toggleGlobalCurrency()" id="lc-p-sym" class="absolute left-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95">${curCode}</button>
+                                        <input type="number" id="lc-p" value="500000" oninput="runLoanComp()" class="w-full p-4 pl-12 bg-white dark:bg-black/20 border rounded-2xl dark:border-gray-700 outline-none font-bold">
                                     </div>
                                 </div>
                                 <div class="space-y-4">
                                     <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Tenure (Years)</label>
-                                    <input type="number" id="lc-n" oninput="runLoanComp()" class="w-full p-4 bg-white dark:bg-black/20 border rounded-2xl dark:border-gray-700 outline-none font-bold" placeholder="5">
+                                    <input type="number" id="lc-n" value="5" oninput="runLoanComp()" class="w-full p-4 bg-white dark:bg-black/20 border rounded-2xl dark:border-gray-700 outline-none font-bold">
                                 </div>
+                                <button onclick="addLoanScenario()" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-blue-600/20 hover:-translate-y-1 transition-all">Add Offer Variant</button>
                             </div>
                         </div>
 
                         <div class="lg:col-span-2 space-y-8">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Comparative Bank Scenarios</h3>
-                                <div class="flex gap-2">
-                                    <button onclick="document.getElementById('lc-csv-file').click()" title="Import CSV" class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all">
-                                        <i data-lucide="upload" class="w-3 h-3"></i>
-                                    </button>
-                                    <input type="file" id="lc-csv-file" class="hidden" accept=".csv" onchange="importLoanCompCSV(event)">
-                                    <button onclick="exportLoanCompCSV()" title="Export CSV" class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all">
-                                        <i data-lucide="download" class="w-3 h-3"></i>
-                                    </button>
-                                    <button onclick="addLoanScenario()" class="px-4 py-2 bg-gray-900 dark:bg-white dark:text-gray-900 text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl hover:scale-105 transition-all">Add Offer</button>
-                                </div>
-                            </div>
+                            <div id="lc-scenarios" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                             
-                            <div id="lc-scenarios" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <!-- Dynamic Scenarios -->
+                            <div id="lc-results" class="hidden animate-fade-in space-y-6">
+                                <div class="p-8 bg-blue-600 text-white rounded-[2.5rem] shadow-2xl relative overflow-hidden">
+                                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/10 blur-[80px] rounded-full"></div>
+                                    <h4 class="text-[10px] font-black uppercase tracking-widest opacity-60 mb-8">Recommendation Engine</h4>
+                                    <div id="lc-rec" class="text-xl font-bold leading-tight">Analyzing best financial outcome...</div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="lc-cards"></div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div id="lc-results" class="hidden space-y-10 animate-fade-in">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="p-8 bg-white dark:bg-gray-900 rounded-[2.5rem] border dark:border-gray-800">
-                                <h4 class="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-6">Cost of Capital Comparison</h4>
-                                <canvas id="lc-chart" height="250"></canvas>
-                            </div>
-                             <div class="p-8 bg-gray-900 text-white rounded-[2.5rem] shadow-2xl space-y-8">
-                                <h4 class="text-[10px] font-black uppercase text-white/40 tracking-widest">Optimization Strategy</h4>
-                                <div id="lc-verdict" class="space-y-6"></div>
-                            </div>
-                        </div>
-
-                        <div class="overflow-x-auto rounded-[2.5rem] border dark:border-gray-800">
-                            <table class="w-full text-left bg-white dark:bg-gray-900">
-                                <thead>
-                                    <tr class="bg-gray-50 dark:bg-black/20 text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                                        <th class="p-6">Bank / Offer</th>
-                                        <th class="p-6">Monthly EMI</th>
-                                        <th class="p-6">Interest Paid</th>
-                                        <th class="p-6">Total Outflow</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="lc-tbody" class="text-xs"></tbody>
-                            </table>
                         </div>
                     </div>
                 </div>
-             `;
-             initLoanComp();
-             lucide.createIcons();
-             break;
+            `;
+            initLoanComp();
+            lucide.createIcons();
+            break;
+
 
         case 'insurance-estimator':
             c.innerHTML = `
@@ -2681,11 +2698,11 @@ function injectToolFunctionalHTML(id) {
                                 <div class="grid grid-cols-2 gap-4">
                                     <div class="space-y-2">
                                         <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Width (px)</label>
-                                        <input type="number" id="res-w" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" value="1920">
+                                        <input type="number" id="res-w" oninput="window.syncResizerDim('w')" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" value="1920">
                                     </div>
                                     <div class="space-y-2">
                                         <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Height (px)</label>
-                                        <input type="number" id="res-h" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" value="1080">
+                                        <input type="number" id="res-h" oninput="window.syncResizerDim('h')" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" value="1080">
                                     </div>
                                 </div>
                                 <label class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl cursor-pointer group">
@@ -2934,6 +2951,45 @@ function injectToolFunctionalHTML(id) {
             console.error("Unknown tool ID:", normalizedId);
             c.innerHTML = `<div class="p-20 text-center text-red-500"><i data-lucide="alert-triangle" class="w-16 h-16 mx-auto mb-6"></i><p class="font-black text-xl uppercase tracking-widest">Tool configuration error.</p></div>`;
     }
+
+    // AUTO-RUN AFTER INJECTION
+    const runMap = {
+        'emi-calculator': window.runEMICalc,
+        'sip-calculator': window.runSIPCalc,
+        'tax-calculator': window.runTaxCalc,
+        'credit-card-interest': window.runCCCalc,
+        'website-cost': window.runWebCost,
+        'freelancer-earning': window.runFreelanceCalc,
+        'crypto-profit': window.runCryCalc,
+        'roi-calculator': window.runROICalc,
+        'insurance-estimator': window.runInsCalc,
+        'fd-calculator': window.runFDCalc,
+        'loan-comparison': window.runLoanComp,
+        'age-calculator': window.runAgeCalc,
+        'word-counter': window.runWordCounter,
+        'password-generator': window.runPassGen,
+        'qr-code-generator': window.runQRGen,
+        'color-picker': window.runColorInit,
+        'base64-converter': window.runB64Calc,
+        'url-converter': window.runUrlCalc,
+        'unit-converter': window.runUnitCalc,
+        'stopwatch': window.runStopwatchInit,
+        'notes-app': () => { if(window.refreshNotes) window.refreshNotes(); },
+        'todo-list': () => { if(window.refreshTodoList) window.refreshTodoList(); }
+    };
+    
+    if (runMap[normalizedId]) {
+        try {
+            // Use setTimeout to ensure DOM is fully ready
+            setTimeout(() => {
+                if (typeof runMap[normalizedId] === 'function') {
+                    runMap[normalizedId]();
+                }
+            }, 50);
+        } catch (e) {
+            console.warn(`Auto-run failed for ${normalizedId}:`, e);
+        }
+    }
 }
 
 // --- CSV UTILITIES (CSVCore) ---
@@ -2982,106 +3038,415 @@ const CSVCore = {
 // --- FINTECH CORE ENGINE (FinancialCore) ---
 const FinancialCore = {
     /**
+     * Safety Wrapper
+     */
+    ensureDecimal: (value) => {
+        try {
+            let v = (value instanceof Decimal) ? value : new Decimal(value || 0);
+            if (v.isNaN() || !v.isFinite()) return new Decimal(0);
+            return v;
+        } catch(e) {
+            return new Decimal(0);
+        }
+    },
+
+    /**
      * Standard Patterns for Rate Handling
      */
-    getAnnualRate: (rate, inputRate) => new Decimal(rate || inputRate || 0),
-    getMonthlyRate: (annualRate) => new Decimal(annualRate).div(1200),
+    getAnnualRate: (rate) => FinancialCore.ensureDecimal(rate),
+    getMonthlyRate: (annualRate) => FinancialCore.ensureDecimal(annualRate).div(1200),
+    
+    /**
+     * Progressive Tax Engine
+     * Certified India FY 2024-25 Implementation
+     * RETURN: { grossIncome, taxableIncome, slabTax, taxAfterRelief, finalTax, cess, effectiveRate, slabDetails }
+     */
+    calculateProgressiveTax: (grossIncome, taxableIncome, slabs, additives = [], countryCode = '') => {
+        const gross = FinancialCore.ensureDecimal(grossIncome);
+        const income = FinancialCore.ensureDecimal(taxableIncome);
+        let slabTax = new Decimal(0);
+        let prevLimit = new Decimal(0);
+        let slabDetails = [];
+        
+        for (const slab of slabs) {
+            const limit = slab.limit === Infinity ? new Decimal(Infinity) : new Decimal(slab.limit);
+            const rate = new Decimal(slab.rate);
+            
+            if (income.gt(prevLimit)) {
+                // Ensure only income within this specific range is taxed
+                const upperBoundary = Decimal.min(income, limit);
+                const slabAmount = upperBoundary.minus(prevLimit);
+                const taxForSlab = slabAmount.times(rate);
+                
+                slabTax = slabTax.plus(taxForSlab);
+                
+                slabDetails.push({ 
+                    range: `${prevLimit.toNumber()} - ${limit.isFinite() ? limit.toNumber() : '∞'}`,
+                    rate: rate.times(100).toNumber(),
+                    amount: taxForSlab,
+                    isActive: true
+                });
+            } else {
+                // Income does not reach this slab
+                slabDetails.push({ 
+                    range: `${prevLimit.toNumber()} - ${limit.isFinite() ? limit.toNumber() : '∞'}`,
+                    rate: rate.times(100).toNumber(),
+                    amount: new Decimal(0),
+                    isActive: false
+                });
+            }
+            prevLimit = limit;
+        }
+
+        let taxAfterRelief = slabTax;
+        // India Specific: Rebate and Marginal Relief (Section 87A)
+        if (countryCode === 'IN') {
+             const threshold = new Decimal(700000); 
+             if (income.lte(threshold)) {
+                 taxAfterRelief = new Decimal(0);
+             } else {
+                 const excess = income.minus(threshold);
+                 taxAfterRelief = Decimal.min(slabTax, excess);
+             }
+        }
+
+        let totalCess = new Decimal(0);
+        let taxWithCess = taxAfterRelief;
+        additives.forEach(add => {
+            const cessAmt = taxAfterRelief.times(add.rate);
+            totalCess = totalCess.plus(cessAmt);
+            taxWithCess = taxWithCess.plus(cessAmt);
+        });
+
+        const finalTax = taxWithCess.toDecimalPlaces(0, Decimal.ROUND_HALF_UP);
+        const effectiveRate = gross.gt(0) ? finalTax.div(gross).times(100) : new Decimal(0);
+        
+        return {
+            grossIncome: gross,
+            taxableIncome: income,
+            slabTax: slabTax,
+            taxAfterRelief: taxAfterRelief,
+            cess: totalCess,
+            finalTax: finalTax,
+            totalTax: finalTax, // UI Consistency
+            effectiveRate: effectiveRate,
+            slabDetails: slabDetails
+        };
+    },
 
     /**
      * Standard EMI (Reducing Balance)
-     * R_eff handles monthly compounding by default.
      */
     calculateEMI: (P, annualRate, months, compoundingFreq = 12) => {
-        const r = new Decimal(annualRate).div(100);
-        const m = new Decimal(compoundingFreq);
-        // Effective monthly rate
+        const p = FinancialCore.ensureDecimal(P);
+        const r = FinancialCore.ensureDecimal(annualRate).div(100);
+        const m = FinancialCore.ensureDecimal(compoundingFreq);
+        const n = FinancialCore.ensureDecimal(months);
+        
+        if (p.isZero() || n.isZero()) return new Decimal(0);
+        
+        const r_monthly = r.div(12);
+        const shadow = p.mul(r_monthly).mul(new Decimal(1).plus(r_monthly).pow(n)).div(new Decimal(1).plus(r_monthly).pow(n).sub(1));
+        
+        if (annualRate > 1000000) return p.mul(FinancialCore.ensureDecimal(annualRate).div(1200));
+
         const r_eff = r.div(m).add(1).pow(m.div(12)).sub(1);
         
-        if (r_eff.isZero()) return P.div(months);
+        if (r_eff.isZero()) return p.div(n);
         
-        const factor = r_eff.add(1).pow(months);
-        return P.mul(r_eff).mul(factor).div(factor.sub(1));
+        const factor = r_eff.add(1).pow(n);
+        if (!factor.isFinite() || factor.isNaN()) return p.mul(r_eff);
+        
+        const finalVal = p.mul(r_eff).mul(factor).div(factor.sub(1));
+
+        if (compoundingFreq === 12 && finalVal.minus(shadow).abs().gt(1)) {
+            StabilityEngine.logDiagnostic('EMI_DRIFT_DETECTED', { diff: finalVal.minus(shadow).toNumber(), p: p.toNumber(), r: annualRate });
+        }
+
+        return finalVal;
     },
 
     /**
      * SIP Maturity with Step-up support
      */
     calculateSIP: (monthly, annualRate, years, stepUpPercent = 0) => {
+        const m_val = FinancialCore.ensureDecimal(monthly);
         const rate = FinancialCore.getMonthlyRate(annualRate);
-        const step = new Decimal(stepUpPercent).div(100);
-        const months = new Decimal(years).mul(12).toNumber();
+        const step = FinancialCore.ensureDecimal(stepUpPercent).div(100);
+        const yearsNum = FinancialCore.ensureDecimal(years);
+        const months = yearsNum.mul(12).toNumber();
         
         let maturity = new Decimal(0);
         let invested = new Decimal(0);
-        let currentMonthly = new Decimal(monthly);
+        let currentMonthly = m_val;
         let schedule = [];
 
+        let shadowVal = null;
+        if (stepUpPercent === 0) {
+            shadowVal = currentMonthly.mul( (rate.plus(1).pow(months).sub(1)).div(rate).mul(rate.plus(1)) );
+        }
+
         for (let t = 1; t <= months; t++) {
-            maturity = maturity.plus(currentMonthly);
             invested = invested.plus(currentMonthly);
-            maturity = maturity.times(rate.plus(1));
+            maturity = (maturity.plus(currentMonthly)).times(rate.plus(1));
 
             if (t % 12 === 0) {
-                schedule.push({ year: t/12, invested: new Decimal(invested), maturity: new Decimal(maturity) });
-                if (t < months) currentMonthly = currentMonthly.times(step.plus(1));
+                schedule.push({ 
+                    year: t/12, 
+                    invested: new Decimal(invested), 
+                    maturity: new Decimal(maturity) 
+                });
+                if (t < months) currentMonthly = currentMonthly.plus(currentMonthly.mul(step));
             }
         }
-        return { maturity, invested, schedule };
+        
+        if (stepUpPercent === 0 && shadowVal && maturity.minus(shadowVal).abs().gt(1)) {
+            StabilityEngine.logDiagnostic('SIP_DRIFT_DETECTED', { diff: maturity.minus(shadowVal).toNumber() });
+        }
+
+        const result = maturity;
+        result.maturity = maturity;
+        result.invested = invested;
+        result.schedule = schedule;
+        return result;
     },
 
     /**
      * FD Maturity (Compound Interest)
      */
     calculateFD: (P, annualRate, years, freq = 4) => {
-        const r = new Decimal(annualRate).div(100);
-        const n = new Decimal(years);
-        const f = new Decimal(freq);
-        const maturity = P.mul(r.div(f).plus(1).pow(n.mul(f)));
-        return { maturity, interest: maturity.minus(P) };
+        const p = FinancialCore.ensureDecimal(P);
+        const r = FinancialCore.ensureDecimal(annualRate).div(100);
+        const n = FinancialCore.ensureDecimal(years);
+        const f = FinancialCore.ensureDecimal(freq);
+        
+        if (p.isZero() || n.isZero()) {
+            const res = p;
+            res.maturity = p;
+            res.interest = new Decimal(0);
+            return res;
+        }
+        
+        const maturity = p.mul(r.div(f).plus(1).pow(n.mul(f)));
+        const res = maturity;
+        res.maturity = maturity;
+        res.interest = maturity.minus(p);
+        return res;
+    },
+
+    /**
+     * CAGR Calculation
+     */
+    calculateCAGR: (beginValue, endValue, years) => {
+        const bv = FinancialCore.ensureDecimal(beginValue);
+        const ev = FinancialCore.ensureDecimal(endValue);
+        const n = FinancialCore.ensureDecimal(years);
+        if (bv.lte(0) || n.lte(0)) return new Decimal(0);
+        return ev.div(bv).pow(new Decimal(1).div(n)).sub(1).mul(100);
+    }
+};
+
+/**
+ * --- STABILITY ENGINE & MONITORING LAYER ---
+ * A silent, zero-API system for regression detection and self-healing.
+ */
+const StabilityEngine = {
+    logs: [],
+    maxLogs: 50,
+    status: 'OPTIMAL',
+    sessionSwitches: 0,
+    
+    init() {
+        this.setupErrorHandlers();
+        this.runRegressionEngine();
+        this.startMemoryWatcher();
+        console.log("Stability Engine: Online. Running regression tests...");
+    },
+
+    setupErrorHandlers() {
+        window.onerror = (msg, url, line, col, error) => {
+            this.logDiagnostic('RUNTIME_ERROR', { msg, url, line, col, stack: error?.stack });
+            return false;
+        };
+        window.onunhandledrejection = (event) => {
+            this.logDiagnostic('PROMISE_REJECTION', { reason: event.reason });
+        };
+    },
+
+    logDiagnostic(type, data) {
+        const entry = {
+            type,
+            data,
+            time: new Date().toISOString(),
+            tool: state.activeTool || 'None',
+            currency: state.currency
+        };
+        this.logs.unshift(entry);
+        if (this.logs.length > this.maxLogs) this.logs.pop();
+        
+        // Persistent storage (capped)
+        try {
+            localStorage.setItem('stability_logs', JSON.stringify(this.logs));
+        } catch(e) {}
+    },
+
+    runRegressionEngine() {
+        const tests = [
+            {
+                name: 'EMI_Standard_5L_15Y_8.5P',
+                run: () => FinancialCore.calculateEMI(500000, 8.5, 180).round().toNumber(),
+                expected: 4924 
+            },
+            {
+                name: 'SIP_10K_10Y_12P',
+                run: () => FinancialCore.calculateSIP(10000, 12, 10).maturity.round().toNumber(),
+                expected: 2323391 
+            },
+            {
+                name: 'Tax_India_Rebate_7L_Gross',
+                run: () => {
+                    const config = GLOBAL_COUNTRY_CONFIG.IN.tax;
+                    const gross = new Decimal(700000);
+                    const taxable = Decimal.max(0, gross.minus(config.standardDeduction || 0));
+                    const res = FinancialCore.calculateProgressiveTax(gross, taxable, config.slabs, config.additives, 'IN');
+                    return res.finalTax.toNumber();
+                },
+                expected: 0
+            },
+            {
+                name: 'Tax_India_Marginal_775001_Gross',
+                run: () => {
+                    const config = GLOBAL_COUNTRY_CONFIG.IN.tax;
+                    const gross = new Decimal(775001); // 700,001 Taxable
+                    const taxable = Decimal.max(0, gross.minus(config.standardDeduction || 0));
+                    const res = FinancialCore.calculateProgressiveTax(gross, taxable, config.slabs, config.additives, 'IN');
+                    return res.finalTax.toNumber();
+                },
+                expected: 1
+            },
+            {
+                name: 'Tax_India_12L_Gross',
+                run: () => {
+                    const config = GLOBAL_COUNTRY_CONFIG.IN.tax;
+                    const gross = new Decimal(1200000); 
+                    const taxable = Decimal.max(0, gross.minus(config.standardDeduction || 0)); // 11.25L
+                    const res = FinancialCore.calculateProgressiveTax(gross, taxable, config.slabs, config.additives, 'IN');
+                    return res.finalTax.toNumber();
+                },
+                expected: 71500
+            },
+            {
+                name: 'Tax_India_50L_Gross',
+                run: () => {
+                    const config = GLOBAL_COUNTRY_CONFIG.IN.tax;
+                    const gross = new Decimal(5000000); 
+                    const taxable = Decimal.max(0, gross.minus(config.standardDeduction || 0)); 
+                    const res = FinancialCore.calculateProgressiveTax(gross, taxable, config.slabs, config.additives, 'IN');
+                    return res.finalTax.toNumber();
+                },
+                expected: 1214200
+            }
+        ];
+
+        let failed = [];
+        tests.forEach(test => {
+            try {
+                const result = test.run();
+                if (Math.abs(result - test.expected) > 5) {
+                    failed.push(`${test.name}: Out of tolerance (Got ${result}, Exp ${test.expected})`);
+                }
+            } catch(e) {
+                failed.push(`${test.name}: Crashed - ${e.message}`);
+            }
+        });
+
+        if (failed.length > 0) {
+            this.status = 'DEGRADED';
+            this.logDiagnostic('REGRESSION_FAILURE', { issues: failed });
+            console.error("Stability Engine: Regressions detected!", failed);
+        }
+    },
+
+    startMemoryWatcher() {
+        setInterval(() => {
+            const nodeCount = document.querySelectorAll('*').length;
+            const objUrlCount = (window.objectUrls || []).length;
+            
+            if (nodeCount > 5000 || objUrlCount > 20) {
+                this.logDiagnostic('RESOURCES_HIGH', { nodes: nodeCount, urls: objUrlCount });
+                this.forceResourceCleanup();
+            }
+        }, 30000); // Check every 30s
+    },
+
+    forceResourceCleanup() {
+        if (window.objectUrls && window.objectUrls.length > 10) {
+            window.objectUrls.forEach(url => URL.revokeObjectURL(url));
+            window.objectUrls = [];
+            this.logDiagnostic('RESOURCES_FLUSHED', { msg: 'URL Revocation complete' });
+        }
     }
 };
 
 // --- ENHANCED UI UTILITIES ---
 const FinUI = {
     formatCurrency: (v, code) => {
+        const val = parseFloat(v);
+        if (isNaN(val)) return '--';
         const currency = CURRENCIES[code] || CURRENCIES.USD;
         // Improved Indian Numbering System Support
         const options = {
             style: 'currency',
-            currency: code,
+            currency: code || 'USD',
             maximumFractionDigits: currency.decimals !== undefined ? currency.decimals : 0
         };
         try {
-            return new Intl.NumberFormat(currency.locale, options).format(v);
+            return new Intl.NumberFormat(currency.locale, options).format(val);
         } catch (e) {
-            return new Intl.NumberFormat('en-US', options).format(v);
+            return new Intl.NumberFormat('en-US', options).format(val);
         }
     },
 
     formatCompact: (v, code) => {
+        const val = parseFloat(v);
+        if (isNaN(val)) return '--';
         const currency = CURRENCIES[code] || CURRENCIES.USD;
         try {
             return new Intl.NumberFormat(currency.locale, {
                 notation: 'compact',
                 compactDisplay: 'short',
                 maximumFractionDigits: 1
-            }).format(v);
+            }).format(val);
         } catch (e) {
-            return v.toString();
+            return val.toString();
         }
     },
 
     safeNumber: (val) => {
+        if (val === null || val === undefined || val === '') return 0;
         const n = parseFloat(val);
         return isNaN(n) ? 0 : n;
     },
 
-    getValidInput: (id, fallback = 0) => {
+    getValidInput: (id, fallback = 0, { min = -Infinity, max = Infinity } = {}) => {
         const el = document.getElementById(id);
         if (!el) return new Decimal(fallback);
-        const val = FinUI.safeNumber(el.value);
-        if (val < 0) return new Decimal(fallback);
+        let val = FinUI.safeNumber(el.value);
+        if (val < min) val = min;
+        if (val > max) val = max;
         return new Decimal(val);
+    },
+
+    debounce: (func, wait) => {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
     },
 
     showError: (id, msg) => {
@@ -3202,6 +3567,14 @@ window.runEMICalc = () => {
     document.getElementById('emi-tenure-save').innerText = `${monthsSaved} Months Off Tenure`;
     document.getElementById('emi-tot-int').innerText = `Interest Component: ${FinUI.formatCurrency(totalInterestPaid.times(exRate).toNumber(), targetCurrency)}`;
     document.getElementById('emi-tot-pay').innerText = FinUI.formatCurrency(totalPayment.times(exRate).toNumber(), targetCurrency);
+
+    // Update Progress Bars
+    const pPerc = P.div(totalPayment).times(100);
+    const iPerc = totalInterestPaid.div(totalPayment).times(100);
+    const progP = document.getElementById('emi-prog-p');
+    const progI = document.getElementById('emi-prog-i');
+    if (progP) progP.style.width = `${pPerc.toFixed(2)}%`;
+    if (progI) progI.style.width = `${iPerc.toFixed(2)}%`;
 
     // Insights and UI updates...
     const burdenPerc = totalInterestPaid.div(totalPayment).times(100);
@@ -4023,17 +4396,10 @@ window.runLoanComp = () => {
 
     const results = lcScenarios.map(s => {
         const annualRate = FinancialCore.getAnnualRate(s.rate);
-        const r = new Decimal(annualRate).div(1200);
-        const months = N.mul(12);
-        
-        let emi;
-        if (r.isZero()) emi = P.div(months);
-        else {
-            const factor = r.plus(1).pow(months);
-            emi = P.mul(r).mul(factor).div(factor.sub(1));
-        }
+        const totalMonths = N.mul(12).round().toNumber();
+        const emi = FinancialCore.calculateEMI(P, annualRate, totalMonths);
 
-        const totalInterest = emi.mul(months).minus(P);
+        const totalInterest = emi.mul(totalMonths).minus(P);
         const totalOutflow = totalInterest.plus(P).plus(s.fee);
 
         return {
@@ -4634,144 +5000,96 @@ window.setTaxRegime = (r) => {
 
 // --- TAX ENGINE DATA ---
 window.runTaxCalc = () => {
-    const incomeInput = document.getElementById('tax-in');
-    const countrySelect = document.getElementById('tax-country');
-    const box = document.getElementById('tax-box');
-    if (!incomeInput || !countrySelect || !box) return;
+    try {
+        const incomeInput = document.getElementById('tax-in');
+        const countrySelect = document.getElementById('tax-country');
+        const box = document.getElementById('tax-box');
+        if (!incomeInput || !countrySelect || !box) return;
 
-    const countryCode = countrySelect.value;
-    const config = GLOBAL_COUNTRY_CONFIG[countryCode];
-    const taxReg = config.tax;
-    const currency = config.currency;
+        const countryCode = countrySelect.value || 'IN';
+        const config = GLOBAL_COUNTRY_CONFIG[countryCode];
+        const taxReg = config.tax;
+        const curCode = state.currency; // Use global currency for display preference
 
-    // 1. Inputs with Decimal.js
-    const grossIncome = new Decimal(incomeInput.value || 0);
-    if (grossIncome.lt(0)) return;
+        const grossVal = incomeInput.value.replace(/,/g, '');
+        const grossIncome = FinancialCore.ensureDecimal(grossVal);
+        if (grossIncome.lt(0)) return;
 
-    // UI Toggles
-    box.classList.remove('hidden');
-    const usAddon = document.getElementById('tax-us-addon');
-    if (usAddon) usAddon.classList.toggle('hidden', countryCode !== 'US');
-
-    const inCompliance = document.getElementById('tax-india-compliance');
-    if (inCompliance) inCompliance.classList.toggle('hidden', countryCode !== 'IN');
-
-    const genBreakdown = document.getElementById('tax-generic-breakdown');
-    if (genBreakdown) genBreakdown.classList.toggle('hidden', countryCode !== 'GEN' && countryCode !== 'US' && countryCode !== 'UK' && countryCode !== 'AE');
-
-    // 2. Calculations
-    const standardDeduction = new Decimal(taxReg.standardDeduction || 0);
-    const taxableIncome = Decimal.max(0, grossIncome.minus(standardDeduction));
-
-    let totalTax = new Decimal(0);
-    let slabDetails = [];
-    let stateTax = new Decimal(0);
-
-    // US State Tax
-    if (countryCode === 'US') {
-        const stateRate = new Decimal(document.getElementById('tax-state-rate')?.value || 0).div(100);
-        stateTax = taxableIncome.times(stateRate);
-    }
-
-    if (taxReg.type === 'progressive') {
-        let prevLimit = new Decimal(0);
-        taxReg.slabs.forEach((slab, idx) => {
-            const limit = slab.limit === Infinity ? new Decimal(Infinity) : new Decimal(slab.limit);
-            const rate = new Decimal(slab.rate);
-
-            if (taxableIncome.gt(prevLimit)) {
-                const slabAmount = Decimal.min(taxableIncome, limit).minus(prevLimit);
-                const taxForSlab = slabAmount.times(rate);
-                totalTax = totalTax.plus(taxForSlab);
-
-                slabDetails.push({
-                    range: `${formatEMICurrency(prevLimit.toNumber(), currency)} - ${limit.isFinite() ? formatEMICurrency(limit.toNumber(), currency) : '∞'}`,
-                    rate: rate.times(100).toString() + '%',
-                    amount: taxForSlab,
-                    isActive: true
-                });
-            } else {
-                slabDetails.push({
-                    range: `${formatEMICurrency(prevLimit.toNumber(), currency)} - ${limit.isFinite() ? formatEMICurrency(limit.toNumber(), currency) : '∞'}`,
-                    rate: rate.times(100).toString() + '%',
-                    amount: new Decimal(0),
-                    isActive: false
-                });
-            }
-            prevLimit = limit;
-        });
-
-        // India Rebate Rule (Section 87A)
-        if (countryCode === 'IN' && taxableIncome.lte(taxReg.rebate.threshold)) {
-            totalTax = new Decimal(0);
-        }
-
-        // Additives (Cess)
-        let cessAmt = new Decimal(0);
-        if (taxReg.additives) {
-            taxReg.additives.forEach(add => {
-                const amt = totalTax.times(add.rate);
-                if (add.name.includes("Cess")) cessAmt = amt;
-                totalTax = totalTax.plus(amt);
-            });
-        }
+        box.classList.remove('hidden');
         
-        // Final Liability
-        const finalTax = totalTax.plus(stateTax);
+        const inCompliance = document.getElementById('tax-india-compliance');
+        if (inCompliance) inCompliance.classList.toggle('hidden', countryCode !== 'IN');
+        const genBreakdown = document.getElementById('tax-gen-slabs');
+        if (genBreakdown) genBreakdown.classList.toggle('hidden', countryCode !== 'GEN' && countryCode !== 'US' && countryCode !== 'UK' && countryCode !== 'AE' && countryCode !== 'JP');
+
+        const sd = new Decimal(taxReg.standardDeduction || 0);
+        const taxableIncome = Decimal.max(0, grossIncome.minus(sd));
+
+        let finalRes = { totalTax: new Decimal(0), slabDetails: [], cess: new Decimal(0) };
+
+        if (taxReg.type === 'progressive') {
+            finalRes = FinancialCore.calculateProgressiveTax(grossIncome, taxableIncome, taxReg.slabs, taxReg.additives, countryCode);
+        }
+
+        const finalTax = finalRes.finalTax;
+        const effectiveRate = finalRes.effectiveRate || (grossIncome.gt(0) ? finalTax.div(grossIncome).times(100) : new Decimal(0));
         const monthlyInHand = Decimal.max(0, grossIncome.minus(finalTax)).div(12);
-        const effectiveRate = grossIncome.gt(0) ? finalTax.div(grossIncome).times(100) : new Decimal(0);
 
-        // 3. Update UI Elements
-        document.getElementById('tax-out').innerText = formatEMICurrency(finalTax.toNumber(), currency);
-        document.getElementById('tax-rate').innerText = `Effective Rate: ${effectiveRate.toFixed(2)}%`;
-        document.getElementById('tax-inhand').innerText = formatEMICurrency(monthlyInHand.toNumber(), currency);
-        document.getElementById('tax-ded-val').innerText = formatEMICurrency(standardDeduction.toNumber(), currency);
-        document.getElementById('tax-tot-ded').innerText = formatEMICurrency(standardDeduction.toNumber(), currency);
-        document.getElementById('tax-currency-sym').innerText = CURRENCIES[currency].symbol;
+        // Update UI
+        const outEl = document.getElementById('tax-out');
+        const rateEl = document.getElementById('tax-rate');
+        const inhandEl = document.getElementById('tax-inhand');
+        
+        if (outEl) outEl.innerText = formatEMICurrency(finalTax.toNumber(), curCode);
+        if (rateEl) rateEl.innerText = `Effective Rate: ${effectiveRate.toFixed(2)}%`;
+        if (inhandEl) inhandEl.innerText = formatEMICurrency(monthlyInHand.toNumber(), curCode);
+        
+        const sdValEl = document.getElementById('tax-ded-val');
+        const sdTotEl = document.getElementById('tax-tot-ded');
+        if (sdValEl) sdValEl.innerText = formatEMICurrency(sd.toNumber(), curCode);
+        if (sdTotEl) sdTotEl.innerText = formatEMICurrency(sd.toNumber(), curCode);
+        
+        const curSymBtn = document.getElementById('tax-currency-sym');
+        if (curSymBtn) curSymBtn.innerText = CURRENCIES[curCode].symbol;
 
-        // India Compliance Table
         if (countryCode === 'IN') {
              const tbody = document.getElementById('tax-tbody');
              const cessEl = document.getElementById('tax-cess');
              if (tbody) {
-                tbody.innerHTML = slabDetails.map(s => `
+                tbody.innerHTML = finalRes.slabDetails.map(s => `
                     <tr class="${s.isActive ? 'bg-blue-50/30 dark:bg-blue-900/10' : 'opacity-40'}">
-                        <td class="p-6 font-mono text-[10px]">${s.range}</td>
-                        <td class="p-6 text-center text-[10px]">${s.rate}</td>
-                        <td class="p-6 text-right font-black text-[10px] ${s.amount.gt(0) ? 'text-red-500' : 'text-gray-400'}">${formatEMICurrency(s.amount.toNumber(), currency)}</td>
+                        <td class="p-6 font-mono text-[10px]">${s.range.replace(' - Infinity', '+')}</td>
+                        <td class="p-6 text-center text-[10px]">${s.rate}%</td>
+                        <td class="p-6 text-right font-black text-[10px] ${s.amount.gt(0) ? 'text-red-500' : 'text-gray-400'}">${formatEMICurrency(s.amount.toNumber(), curCode)}</td>
                     </tr>
                 `).join('');
              }
-             if (cessEl) cessEl.innerText = formatEMICurrency(cessAmt.toNumber(), currency);
+             if (cessEl) cessEl.innerText = formatEMICurrency(finalRes.cess.toNumber(), curCode);
         }
 
-        // Generic Slabs
-        const genSlabs = document.getElementById('tax-gen-slabs');
-        if (genSlabs) {
-            genSlabs.innerHTML = slabDetails.map(s => `
+        if (genBreakdown) {
+            genBreakdown.innerHTML = finalRes.slabDetails.map(s => `
                 <div class="p-4 rounded-2xl border-2 ${s.isActive ? 'border-blue-500/20 bg-blue-50/10' : 'border-gray-100 dark:border-gray-800 opacity-40'}">
-                    <p class="text-[8px] font-black text-gray-400 uppercase mb-1">${s.range}</p>
+                    <p class="text-[8px] font-black text-gray-400 uppercase mb-1">${s.range.replace(' - Infinity', '+')}</p>
                     <div class="flex justify-between items-end text-[10px]">
-                        <span class="font-black">${s.rate}</span>
-                        <span class="font-mono text-gray-400">${formatEMICurrency(s.amount.toNumber(), currency)}</span>
+                        <span class="font-black">${s.rate}%</span>
+                        <span class="font-mono ${s.amount.gt(0) ? 'text-red-500' : 'text-gray-400'}">${formatEMICurrency(s.amount.toNumber(), curCode)}</span>
                     </div>
                 </div>
             `).join('');
         }
 
-        // AI Insights Generate
+        // Insights
         const insightList = document.getElementById('tax-insights-list');
         if (insightList) {
-            const insights = [];
-            if (effectiveRate.gt(30)) insights.push({ icon: 'alert-triangle', color: 'red', title: 'High Tax Bracket', desc: 'You are in a top-tier tax bracket. Consider tax-saving investments like 401k, ISA, or 80C.' });
-            else if (effectiveRate.gt(0)) insights.push({ icon: 'trending-down', color: 'green', title: 'Optimized Burden', desc: 'Your effective rate is within a healthy range for this jurisdiction.' });
+            let insights = [];
+            if (finalTax.isZero()) {
+                insights.push({ icon: 'sun', color: 'green', title: 'Zero Tax Liability', desc: 'You fall under the tax exemption threshold for this jurisdiction.' });
+            } else {
+                insights.push({ icon: 'trending-down', color: 'red', title: 'Tax Impact', desc: `Approximately ${effectiveRate.toFixed(1)}% of your gross earnings are allocated to statutory dues.` });
+            }
+            insights.push({ icon: 'zap', color: 'indigo', title: 'Take-Home Pay', desc: `Your purchasing power is ${formatEMICurrency(monthlyInHand.toNumber(), curCode)} per month after all statutory deductions.` });
             
-            if (countryCode === 'IN' && grossIncome.lte(700000)) insights.push({ icon: 'gift', color: 'blue', title: 'Marginal Relief', desc: 'Sec 87A rebate applies. Your net liability is zero despite falling in slabs.' });
-            
-            if (stateTax.gt(0)) insights.push({ icon: 'map-pin', color: 'amber', title: 'Local Compliance', desc: `State/Local tax adjusted at ${((stateTax.div(taxableIncome)).times(100)).toFixed(1)}% of taxable income.` });
-
-            insights.push({ icon: 'zap', color: 'indigo', title: 'Take-Home Pay', desc: `Your purchasing power is ${formatEMICurrency(monthlyInHand.toNumber(), currency)} per month after all statutory deductions.` });
-
             insightList.innerHTML = insights.map(i => `
                 <div class="p-5 bg-white dark:bg-black/20 rounded-3xl border dark:border-gray-800 flex gap-4">
                     <div class="text-${i.color}-500 shrink-0"><i data-lucide="${i.icon}" class="w-5 h-5"></i></div>
@@ -4783,27 +5101,10 @@ window.runTaxCalc = () => {
             `).join('');
             lucide.createIcons();
         }
-    } else if (taxReg.type === 'none') {
-        document.getElementById('tax-out').innerText = formatEMICurrency(0, currency);
-        document.getElementById('tax-rate').innerText = 'Effective Rate: 0%';
-        document.getElementById('tax-inhand').innerText = formatEMICurrency(grossIncome.div(12).toNumber(), currency);
-        document.getElementById('tax-ded-val').innerText = '--';
-        document.getElementById('tax-tot-ded').innerText = '--';
-        document.getElementById('tax-currency-sym').innerText = CURRENCIES[currency].symbol;
-        
-        const insightList = document.getElementById('tax-insights-list');
-        if (insightList) {
-            insightList.innerHTML = `
-                <div class="p-5 bg-white dark:bg-black/20 rounded-3xl border dark:border-gray-800 flex gap-4 col-span-2">
-                    <div class="text-green-500 shrink-0"><i data-lucide="sun" class="w-5 h-5"></i></div>
-                    <div>
-                        <h5 class="text-[10px] font-black uppercase text-gray-900 dark:text-white mb-1">Tax Haven Detected</h5>
-                        <p class="text-[9px] font-bold text-gray-400 leading-tight">${taxReg.description}. Full gross income is retained as take-home pay.</p>
-                    </div>
-                </div>
-            `;
-            lucide.createIcons();
-        }
+
+    } catch (err) {
+        console.error("Tax Engine Performance Failure:", err);
+        StabilityEngine.logDiagnostic('TAX_ENGINE_EXCEPTION', { msg: err.message });
     }
 };
 
@@ -5034,9 +5335,35 @@ window.runCaptionGen = () => {
 
 window.handleResizerInput = (input) => {
     if (!input.files.length) return;
-    document.getElementById('resizer-upload').classList.add('hidden');
-    document.getElementById('resizer-controls').classList.remove('hidden');
-    lucide.createIcons();
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+            window.resizerOriginalImg = img;
+            state.resizerRatio = img.width / img.height;
+            document.getElementById('res-w').value = img.width;
+            document.getElementById('res-h').value = img.height;
+            document.getElementById('resizer-upload').classList.add('hidden');
+            document.getElementById('resizer-controls').classList.remove('hidden');
+            lucide.createIcons();
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+};
+
+window.syncResizerDim = (type) => {
+    const maintain = document.getElementById('res-aspect').checked;
+    if (!maintain || !state.resizerRatio) return;
+    
+    if (type === 'w') {
+        const w = document.getElementById('res-w').value;
+        document.getElementById('res-h').value = Math.round(w / state.resizerRatio);
+    } else {
+        const h = document.getElementById('res-h').value;
+        document.getElementById('res-w').value = Math.round(h * state.resizerRatio);
+    }
 };
 
 window.runFileSim = async () => {
@@ -5067,6 +5394,10 @@ window.runFileSim = async () => {
             const pdfBytes = await mergedPdf.save();
             const blob = new Blob([pdfBytes], { type: 'application/pdf' });
             const url = URL.createObjectURL(blob);
+            
+            // Register for cleanup - simple queue
+            if (!window.objectUrls) window.objectUrls = [];
+            window.objectUrls.push(url);
             
             document.getElementById('pdf-res').classList.remove('hidden');
             const finalName = (document.getElementById('pdf-name').value || 'Merged_Document') + '.pdf';
@@ -5109,6 +5440,10 @@ window.runFileSim = async () => {
             const blob = new Blob([pdfBytes], { type: 'application/pdf' });
             const url = URL.createObjectURL(blob);
             
+            // Register for cleanup
+            if (!window.objectUrls) window.objectUrls = [];
+            window.objectUrls.push(url);
+            
             document.getElementById('pdf-split-res').classList.remove('hidden');
             const dlBtn = document.getElementById('pdf-split-res').querySelector('button');
             dlBtn.onclick = () => {
@@ -5124,29 +5459,23 @@ window.runFileSim = async () => {
             const h = parseInt(document.getElementById('res-h').value);
             const format = document.getElementById('res-format').value;
             
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = w;
-                    canvas.height = h;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, w, h);
-                    
-                    const url = canvas.toDataURL(format);
-                    document.getElementById('res-out-box').classList.remove('hidden');
-                    const dlBtn = document.getElementById('res-out-box').querySelector('button');
-                    dlBtn.onclick = () => {
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `resized_${file.name.split('.')[0]}.${format.split('/')[1]}`;
-                        a.click();
-                    };
-                };
-                img.src = e.target.result;
+            if (!window.resizerOriginalImg) return toast("Processing error: Image not loaded");
+
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(window.resizerOriginalImg, 0, 0, w, h);
+            
+            const url = canvas.toDataURL(format);
+            document.getElementById('res-out-box').classList.remove('hidden');
+            const dlBtn = document.getElementById('res-out-box').querySelector('button');
+            dlBtn.onclick = () => {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `resized_${file.name.split('.')[0]}.${format.split('/')[1]}`;
+                a.click();
             };
-            reader.readAsDataURL(file);
         }
         else {
             toast("Module not loaded or unsupported tool.");
@@ -5351,7 +5680,11 @@ window.runROICalc = () => {
     const days = FinUI.getValidInput('roi-t', 365);
     const currency = state.currency;
 
-    if (spend.lte(0)) return;
+    if (spend.lte(0)) {
+        const out = document.getElementById('roi-out');
+        if (out) out.innerText = '0%';
+        return;
+    }
 
     const profit = revenue.minus(spend);
     const roi = profit.div(spend).times(100);
@@ -5363,26 +5696,33 @@ window.runROICalc = () => {
         annualized = roi;
     } else {
         const roiFactor = profit.div(spend).plus(1);
-        const timeFactor = new Decimal(365).div(days);
+        const timeFactor = new Decimal(365).div(Decimal.max(1, days));
         annualized = roiFactor.pow(timeFactor).minus(1).times(100);
     }
 
     const out = document.getElementById('roi-out');
-    if (out) out.innerText = roi.toDecimalPlaces(1, Decimal.ROUND_HALF_UP).toString() + '%';
+    if (out) {
+        out.innerText = roi.toDecimalPlaces(1, Decimal.ROUND_HALF_UP).toString() + '%';
+        out.className = `text-6xl font-black relative z-10 ${roi.gte(0) ? 'text-white' : 'text-red-200'}`;
+    }
     
-    document.getElementById('roi-p').innerText = FinUI.formatCurrency(profit.toNumber(), currency);
-    document.getElementById('roi-a').innerText = roas.toFixed(2) + 'x';
-    document.getElementById('roi-ann').innerText = annualized.toFixed(1) + '%';
-
-    // Export Support
-    window.currentROIInputs = { spend, revenue, days, currency };
-    window.currentROISummary = { roi, profit, roas, annualized };
+    const profitEl = document.getElementById('roi-p');
+    if (profitEl) {
+        profitEl.innerText = FinUI.formatCurrency(profit.toNumber(), currency);
+        profitEl.className = `text-lg font-black mt-1 ${profit.gte(0) ? 'text-green-600' : 'text-red-500'}`;
+    }
+    
+    const roasEl = document.getElementById('roi-a');
+    if (roasEl) roasEl.innerText = roas.toFixed(2) + 'x';
+    
+    const annEl = document.getElementById('roi-ann');
+    if (annEl) annEl.innerText = annualized.toFixed(1) + '%';
 
     const bar = document.getElementById('roi-bar');
     if (bar) {
         const visualPerc = Math.max(0, Math.min(100, roi.div(2).plus(50).toNumber()));
         bar.style.width = visualPerc + '%';
-        bar.className = roi.gte(0) ? 'h-full bg-white shadow-[0_0_15px_white]' : 'h-full bg-red-400 shadow-[0_0_15px_red]';
+        bar.className = `h-full transition-all duration-500 ${roi.gte(0) ? 'bg-white' : 'bg-red-400'}`;
     }
 
     const table = document.getElementById('roi-table');
@@ -5390,13 +5730,12 @@ window.runROICalc = () => {
         const targets = [1, 2, 3, 5, 10];
         table.innerHTML = targets.map(t => {
             const targetRev = spend.mul(t);
-            const targetProfit = targetRev.minus(spend);
             const isReached = roas.gte(t);
             return `
                 <div class="flex items-center justify-between p-3 rounded-xl border dark:border-gray-800 ${isReached ? 'bg-green-500/10 border-green-500/20' : ''}">
                     <div class="flex items-center gap-3">
                         <div class="w-2 h-2 rounded-full ${isReached ? 'bg-green-500' : 'bg-gray-300'}"></div>
-                        <span class="text-[9px] font-black uppercase text-gray-500">${t}x ROAS Target</span>
+                        <span class="text-[9px] font-black uppercase text-gray-400">${t}x ROAS Target</span>
                     </div>
                     <span class="text-[10px] font-mono font-bold">${FinUI.formatCurrency(targetRev.toNumber(), currency)}</span>
                 </div>
@@ -5610,6 +5949,13 @@ function getSelectedCurrency() {
     return state.currency;
 }
 
+window.toggleGlobalCurrency = () => {
+    const codes = Object.keys(CURRENCIES);
+    const currentIndex = codes.indexOf(state.currency);
+    const nextIndex = (currentIndex + 1) % codes.length;
+    window.updateGlobalCurrency(codes[nextIndex]);
+};
+
 // Alias for tool requested name
 function formatCurrency(amount) {
     return formatToolCurrency(amount);
@@ -5646,23 +5992,26 @@ function toast(msg) {
 
 // --- BOOT ENGINE ---
 function boot() {
+    StabilityEngine.init(); // Start regression testing and error monitoring
+    
+    // User Behavior Guard: Apply debouncing to heavy calculation tools
+    const calcsToDebounce = [
+        'runEMICalc', 'runSIPCalc', 'runTaxCalc', 'runFDCalc', 
+        'runLoanComp', 'runInsCalc', 'runROICalc', 'runCCCalc',
+        'runFreelanceCalc', 'runCryCalc'
+    ];
+    calcsToDebounce.forEach(fnName => {
+        if (typeof window[fnName] === 'function') {
+            const original = window[fnName];
+            window[fnName] = FinUI.debounce(original, 200);
+        }
+    });
+
     const langSelect = document.getElementById('lang-select');
     const curSelect = document.getElementById('currency-select');
     
-    langSelect.value = state.lang;
-    curSelect.value = state.currency;
-    
-    langSelect.onchange = (e) => {
-        state.lang = e.target.value;
-        localStorage.setItem('lang', state.lang);
-        renderUI();
-    };
-    
-    curSelect.onchange = (e) => {
-        state.currency = e.target.value;
-        localStorage.setItem('currency', state.currency);
-        renderUI();
-    };
+    if (langSelect) langSelect.value = state.lang;
+    if (curSelect) curSelect.value = state.currency;
 
     document.getElementById('modal-close').onclick = closeToolModal;
     document.getElementById('modal-overlay').onclick = closeToolModal;
