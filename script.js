@@ -428,19 +428,26 @@ function D(value) {
     return {
         value: Number(clean) || 0,
         plus(x) { return D(this.value + Number(x?.value ?? x ?? 0)); },
+        add(x) { return this.plus(x); },
         minus(x) { return D(this.value - Number(x?.value ?? x ?? 0)); },
+        sub(x) { return this.minus(x); },
         times(x) { return D(this.value * Number(x?.value ?? x ?? 0)); },
-        div(x) { return D(this.value / Number(x?.value ?? x ?? 1)); },
+        mul(x) { return this.times(x); },
+        div(x) { return D(this.value / (Number(x?.value ?? x ?? 1) || 1)); },
+        pow(x) { return D(Math.pow(this.value, Number(x?.value ?? x ?? 1))); },
         gt(x) { return this.value > Number(x?.value ?? x ?? 0); },
         gte(x) { return this.value >= Number(x?.value ?? x ?? 0); },
         lt(x) { return this.value < Number(x?.value ?? x ?? 0); },
         lte(x) { return this.value <= Number(x?.value ?? x ?? 0); },
         eq(x) { return this.value === Number(x?.value ?? x ?? 0); },
+        isZero() { return this.value === 0; },
+        isNaN() { return isNaN(this.value); },
         round() { return D(Math.round(this.value)); },
         toDecimalPlaces(n) { return D(Number(this.value.toFixed(n))); },
         toNumber() { return this.value; },
         toFixed(n) { return this.value.toFixed(n); },
-        isFinite() { return isFinite(this.value); }
+        isFinite() { return isFinite(this.value); },
+        abs() { return D(Math.abs(this.value)); }
     };
 }
 
@@ -1182,8 +1189,15 @@ function injectToolFunctionalHTML(id) {
                                         <input type="number" id="emi-r" value="8.5" step="0.1" oninput="runEMICalc()" class="fin-input">
                                     </div>
                                     <div class="fin-input-group">
-                                        <label class="fin-label">Tenure (Yrs)</label>
+                                        <div class="flex justify-between items-center mb-2">
+                                            <label class="fin-label m-0" id="emi-tenure-label">Tenure (Yrs)</label>
+                                            <select id="emi-tenure-unit" onchange="window.updateEMITenureLabel(this.value); runEMICalc()" class="bg-transparent text-[10px] font-black uppercase text-blue-600 outline-none cursor-pointer">
+                                                <option value="years">Years</option>
+                                                <option value="months">Months</option>
+                                            </select>
+                                        </div>
                                         <input type="number" id="emi-n" value="15" oninput="runEMICalc()" class="fin-input">
+                                        <p class="text-[8px] text-gray-400 mt-2 italic leading-tight" id="emi-tenure-helper">Use decimal years. Example: 18 months = 1.5 years.</p>
                                     </div>
                                 </div>
 
@@ -3137,13 +3151,9 @@ const FinancialCore = {
      * Safety Wrapper
      */
     ensureDecimal: (value) => {
-        try {
-            let v = (value instanceof Decimal) ? value : new Decimal(value || 0);
-            if (v.isNaN() || !v.isFinite()) return new Decimal(0);
-            return v;
-        } catch(e) {
-            return new Decimal(0);
-        }
+        const v = D(value);
+        if (v.isNaN() || !v.isFinite()) return D(0);
+        return v;
     },
 
     /**
@@ -3329,17 +3339,18 @@ const FinancialCore = {
         const f = FinancialCore.ensureDecimal(freq);
         
         if (p.isZero() || n.isZero()) {
-            const res = p;
-            res.maturity = p;
-            res.interest = new Decimal(0);
-            return res;
+            return {
+                maturity: p,
+                interest: D(0)
+            };
         }
         
+        // maturity = principal * (1 + r/f)^(n*f)
         const maturity = p.mul(r.div(f).plus(1).pow(n.mul(f)));
-        const res = maturity;
-        res.maturity = maturity;
-        res.interest = maturity.minus(p);
-        return res;
+        return {
+            maturity: maturity,
+            interest: maturity.minus(p)
+        };
     },
 
     /**
@@ -3551,11 +3562,11 @@ const FinUI = {
 
     getValidInput: (id, fallback = 0, { min = -Infinity, max = Infinity } = {}) => {
         const el = document.getElementById(id);
-        if (!el) return new Decimal(fallback);
-        let val = FinUI.safeNumber(el.value);
+        if (!el) return D(fallback);
+        let val = el.value === "" ? fallback : FinUI.safeNumber(el.value);
         if (val < min) val = min;
         if (val > max) val = max;
-        return new Decimal(val);
+        return D(val);
     },
 
     debounce: (func, wait) => {
@@ -3593,11 +3604,25 @@ window.syncEMIRate = () => {
 };
 
 window.emiViewMode = 'abs';
+window.updateEMITenureLabel = (unit) => {
+    const label = document.getElementById('emi-tenure-label');
+    const helper = document.getElementById('emi-tenure-helper');
+    if (label) {
+        label.innerText = unit === 'years' ? 'Tenure (Yrs)' : 'Tenure (Mo)';
+    }
+    if (helper) {
+        helper.innerText = unit === 'years' ? 
+            'Use decimal years. Example: 18 months = 1.5 years.' : 
+            'Enter total duration in months directly.';
+    }
+};
+
 window.runEMICalc = () => {
     const P = FinUI.getValidInput('emi-p', 500000);
     const inputRate = FinUI.getValidInput('emi-r', 8.5);
     const annualRate = new Decimal(inputRate || 0); 
-    const tenureYears = FinUI.getValidInput('emi-n', 15);
+    const tenureVal = FinUI.getValidInput('emi-n', 15);
+    const tenureUnit = document.getElementById('emi-tenure-unit')?.value || 'years';
     const feeRate = FinUI.getValidInput('emi-fee', 0).div(100);
     
     const extraMonthly = FinUI.getValidInput('emi-prep-m', 0);
@@ -3612,12 +3637,15 @@ window.runEMICalc = () => {
     const out = document.getElementById('emi-out');
     if (!box) return;
 
-    if (P.lte(0) || annualRate.lt(0) || tenureYears.lte(0)) {
+    if (P.lte(0) || annualRate.lt(0) || tenureVal.lte(0)) {
         if (!box.classList.contains('hidden')) out.innerText = 'Error';
         return;
     }
 
-    const totalMonths = tenureYears.mul(12).round().toNumber();
+    const totalMonths = tenureUnit === 'years' 
+        ? Math.max(1, tenureVal.mul(12).ceil().toNumber())
+        : Math.max(1, tenureVal.ceil().toNumber());
+        
     const processingFee = P.mul(feeRate);
     
     const emi = FinancialCore.calculateEMI(P, annualRate, totalMonths, compoundingFreq);
@@ -3679,13 +3707,13 @@ window.runEMICalc = () => {
     const totalPayment = P.plus(totalInterestPaid).plus(processingFee);
     const baselineEMI = FinancialCore.calculateEMI(P, annualRate, totalMonths, compoundingFreq);
     const baselineTotalInterest = baselineEMI.mul(totalMonths).minus(P);
-    const savings = baselineTotalInterest.minus(totalInterestPaid);
-    const monthsSaved = totalMonths - scheduleData.length;
+    const savings = Decimal.max(0, baselineTotalInterest.minus(totalInterestPaid));
+    const monthsSaved = Math.max(0, totalMonths - scheduleData.length);
 
     box.classList.remove('hidden');
     out.innerText = FinUI.formatCurrency(emiRounded.times(exRate).toNumber(), targetCurrency);
     document.getElementById('emi-saved').innerText = FinUI.formatCurrency(savings.times(exRate).toNumber(), targetCurrency);
-    document.getElementById('emi-tenure-save').innerText = `${monthsSaved} Months Off Tenure`;
+    document.getElementById('emi-tenure-save').innerText = monthsSaved > 0 ? `${monthsSaved} Months Off Tenure` : 'Paid On Schedule';
     document.getElementById('emi-tot-int').innerText = `Interest Component: ${FinUI.formatCurrency(totalInterestPaid.times(exRate).toNumber(), targetCurrency)}`;
     document.getElementById('emi-tot-pay').innerText = FinUI.formatCurrency(totalPayment.times(exRate).toNumber(), targetCurrency);
 
@@ -4308,32 +4336,51 @@ window.runAgeCalc = () => {
 window.runFDCalc = () => {
     const P = FinUI.getValidInput('fd-p', 100000);
     const inputRate = FinUI.getValidInput('fd-r', 7.5);
-    const annualRate = new Decimal(inputRate || 0);
+    const annualRate = D(inputRate || 0);
     const years = FinUI.getValidInput('fd-n', 5);
     const freq = parseInt(document.getElementById('fd-freq')?.value || '4', 10);
-    const taxRate = FinUI.getValidInput('fd-tax', 0).div(100);
+    const taxBracketInput = document.getElementById('fd-tax')?.value;
+    const taxRate = D(taxBracketInput === "" ? 0 : taxBracketInput).div(100);
     const inflation = FinUI.getValidInput('fd-inf', 0).div(100);
     const currency = state.currency;
 
-    if (P.lte(0) || annualRate.lt(0) || years.lte(0)) return;
+    if (P.lte(0) || annualRate.lt(0) || years.lte(0)) {
+        const box = document.getElementById('fd-box');
+        if (box && !box.classList.contains('hidden') && P.gt(0)) {
+            // If zero rate, results are different but valid
+        } else {
+            return;
+        }
+    }
 
-    // Standard formula via Core logic
     const { maturity, interest } = FinancialCore.calculateFD(P, annualRate, years, freq);
     
     const taxPaid = interest.mul(taxRate);
     const netMaturity = maturity.minus(taxPaid);
     
+    // inflation-adjusted value: realValue = postTaxMaturity / (1 + inflationRate)^years
     const inflationFactor = inflation.plus(1).pow(years);
     const realMaturity = netMaturity.div(inflationFactor);
     const inflationLoss = netMaturity.minus(realMaturity);
 
-    document.getElementById('fd-out').innerText = FinUI.formatCurrency(netMaturity.toNumber(), currency);
-    document.getElementById('fd-tot-int').innerText = FinUI.formatCurrency(interest.toNumber(), currency);
-    document.getElementById('fd-tot-tax').innerText = FinUI.formatCurrency(taxPaid.plus(inflationLoss).toNumber(), currency);
-    
+    const outEl = document.getElementById('fd-out');
+    const intEl = document.getElementById('fd-tot-int');
+    const taxEl = document.getElementById('fd-tot-tax');
     const extraLabel = document.getElementById('fd-extra-label');
+
+    if (outEl) outEl.innerText = FinUI.formatCurrency(netMaturity.toNumber(), currency);
+    if (intEl) intEl.innerText = FinUI.formatCurrency(interest.toNumber(), currency);
+    
+    if (taxEl) {
+        taxEl.innerText = FinUI.formatCurrency(taxPaid.plus(inflationLoss).toNumber(), currency);
+    }
+    
     if (extraLabel) {
-        extraLabel.innerText = inflation.gt(0) ? "Tax + Inflation Loss" : "TDS / Tax Paid";
+        if (taxRate.gt(0)) {
+            extraLabel.innerText = "Tax + Inflation Loss";
+        } else {
+            extraLabel.innerText = "Inflation Loss";
+        }
     }
 
     const box = document.getElementById('fd-box');
@@ -4359,11 +4406,7 @@ window.runFDCalc = () => {
         dataPoints.push(yearResult.maturity.toNumber());
     }
 
-    // Export Support
     window.currentFDSchedule = schedule;
-    window.currentFDInputs = { p: P, r: annualRate, n: years, freq, tax: taxRate, inflation: inflation, currency };
-    window.currentFDSummary = { maturity: netMaturity, interest: interest, taxPaid: taxPaid, inflationLoss: inflationLoss };
-
     const tbody = document.getElementById('fd-tbody');
     if (tbody) {
         tbody.innerHTML = schedule.map(s => `
@@ -4380,7 +4423,7 @@ window.runFDCalc = () => {
 
     const highlights = document.getElementById('fd-highlights');
     if (highlights) {
-        const yieldPerc = interest.div(P).times(100);
+        const yieldPerc = P.gt(0) ? interest.div(P).times(100) : D(0);
         highlights.innerHTML = `
             <div class="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full text-[10px] font-black text-blue-600 border border-blue-100">${yieldPerc.toFixed(1)}% Total Yield</div>
             <div class="px-4 py-2 bg-green-50 dark:bg-green-900/20 rounded-full text-[10px] font-black text-green-600 border border-green-100">Capital Protection: 100%</div>
