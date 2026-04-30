@@ -382,6 +382,68 @@ const CURRENCIES = {
     CNY: { symbol: '¥', rate: 7.23, locale: 'zh-CN' }
 };
 
+const INDIA_TAX_CONFIG = {
+    "FY_2024_25": {
+        label: "FY 2024–25 / AY 2025–26",
+        standardDeduction: 75000,
+        rebateLimit: 700000,
+        rebateMax: 25000,
+        cessRate: 0.04,
+        slabs: [
+            { upTo: 300000, rate: 0 },
+            { upTo: 700000, rate: 0.05 },
+            { upTo: 1000000, rate: 0.10 },
+            { upTo: 1200000, rate: 0.15 },
+            { upTo: 1500000, rate: 0.20 },
+            { upTo: Infinity, rate: 0.30 }
+        ]
+    },
+    "FY_2025_26": {
+        label: "FY 2025–26 / AY 2026–27",
+        standardDeduction: 75000,
+        rebateLimit: 1200000,
+        rebateMax: 60000,
+        cessRate: 0.04,
+        slabs: [
+            { upTo: 400000, rate: 0 },
+            { upTo: 800000, rate: 0.05 },
+            { upTo: 1200000, rate: 0.10 },
+            { upTo: 1600000, rate: 0.15 },
+            { upTo: 2000000, rate: 0.20 },
+            { upTo: 2400000, rate: 0.25 },
+            { upTo: Infinity, rate: 0.30 }
+        ]
+    }
+};
+
+function D(value) {
+    const clean = FinUI && FinUI.safeNumber
+        ? FinUI.safeNumber(value, 0)
+        : Number(String(value ?? "0").replace(/[₹$,\s]/g, "")) || 0;
+
+    if (typeof Decimal !== "undefined") {
+        return new Decimal(clean);
+    }
+
+    return {
+        value: Number(clean) || 0,
+        plus(x) { return D(this.value + Number(x?.value ?? x ?? 0)); },
+        minus(x) { return D(this.value - Number(x?.value ?? x ?? 0)); },
+        times(x) { return D(this.value * Number(x?.value ?? x ?? 0)); },
+        div(x) { return D(this.value / Number(x?.value ?? x ?? 1)); },
+        gt(x) { return this.value > Number(x?.value ?? x ?? 0); },
+        gte(x) { return this.value >= Number(x?.value ?? x ?? 0); },
+        lt(x) { return this.value < Number(x?.value ?? x ?? 0); },
+        lte(x) { return this.value <= Number(x?.value ?? x ?? 0); },
+        eq(x) { return this.value === Number(x?.value ?? x ?? 0); },
+        round() { return D(Math.round(this.value)); },
+        toDecimalPlaces(n) { return D(Number(this.value.toFixed(n))); },
+        toNumber() { return this.value; },
+        toFixed(n) { return this.value.toFixed(n); },
+        isFinite() { return isFinite(this.value); }
+    };
+}
+
 const GLOBAL_COUNTRY_CONFIG = {
     IN: {
         name: "India",
@@ -389,18 +451,38 @@ const GLOBAL_COUNTRY_CONFIG = {
         locale: "en-IN",
         tax: {
             type: "progressive",
-            regime: "FY 2024-25 Revised (New Regime)",
-            standardDeduction: 75000,
-            slabs: [
-                { limit: 300000, rate: 0 },
-                { limit: 700000, rate: 0.05 },
-                { limit: 1000000, rate: 0.10 },
-                { limit: 1200000, rate: 0.15 },
-                { limit: 1500000, rate: 0.20 },
-                { limit: Infinity, rate: 0.30 }
-            ],
-            rebate: { threshold: 700000 },
-            additives: [{ name: "Health & Education Cess", rate: 0.04 }]
+            defaultYear: "2024-25",
+            years: {
+                "2024-25": {
+                    regime: "FY 2024-25 (New Regime)",
+                    standardDeduction: 75000,
+                    slabs: [
+                        { limit: 300000, rate: 0 },
+                        { limit: 700000, rate: 0.05 },
+                        { limit: 1000000, rate: 0.10 },
+                        { limit: 1200000, rate: 0.15 },
+                        { limit: 1500000, rate: 0.20 },
+                        { limit: Infinity, rate: 0.30 }
+                    ],
+                    rebate: { threshold: 700000 },
+                    additives: [{ name: "Health & Education Cess", rate: 0.04 }]
+                },
+                "2025-26": {
+                    regime: "FY 2025-26 (New Regime)",
+                    standardDeduction: 75000,
+                    slabs: [
+                        { limit: 400000, rate: 0 },
+                        { limit: 800000, rate: 0.05 },
+                        { limit: 1200000, rate: 0.10 },
+                        { limit: 1600000, rate: 0.15 },
+                        { limit: 2000000, rate: 0.20 },
+                        { limit: 2400000, rate: 0.25 },
+                        { limit: Infinity, rate: 0.30 }
+                    ],
+                    rebate: { threshold: 1200000 },
+                    additives: [{ name: "Health & Education Cess", rate: 0.04 }]
+                }
+            }
         },
         loan: {
             compounding: 12,
@@ -727,6 +809,8 @@ function renderUI() {
         if (inEl) state.lastTaxIncome = inEl.value;
         const coEl = document.getElementById('tax-country');
         if (coEl) state.lastTaxCountry = coEl.value;
+        const yeEl = document.getElementById('tax-year');
+        if ( yeEl ) state.lastTaxYear = yeEl.value;
     }
 
     applyTheme();
@@ -1633,6 +1717,14 @@ function injectToolFunctionalHTML(id) {
                                     </select>
                                 </div>
 
+                                <div id="tax-year-container" class="fin-input-group ${((state.lastTaxCountry || state.detectedCountry) === 'IN') ? '' : 'hidden'}">
+                                    <label class="fin-label">Assessment Year</label>
+                                    <select id="tax-year" onchange="runTaxCalc()" class="fin-input cursor-pointer">
+                                        <option value="2024-25" ${(state.lastTaxYear === '2024-25' || !state.lastTaxYear) ? 'selected' : ''}>FY 2024-25 / AY 2025-26</option>
+                                        <option value="2025-26" ${state.lastTaxYear === '2025-26' ? 'selected' : ''}>FY 2025-26 / AY 2026-27</option>
+                                    </select>
+                                </div>
+
                                 <div id="tax-us-addon" class="hidden fin-input-group">
                                     <label class="fin-label">State Tax (%)</label>
                                     <input type="number" id="tax-state-rate" value="5" step="0.1" oninput="runTaxCalc()" class="fin-input">
@@ -1673,7 +1765,7 @@ function injectToolFunctionalHTML(id) {
                         </div>
 
                         <div id="tax-india-compliance" class="hidden fin-card">
-                            <h3 class="fin-label mb-6">Tax Slab Analysis (FY 24-25)</h3>
+                            <h3 class="fin-label mb-6" id="tax-regime-label">Tax Slab Analysis (FY 24-25)</h3>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-[10px]">
                                     <thead class="fin-label border-b dark:border-gray-800">
@@ -1695,6 +1787,10 @@ function injectToolFunctionalHTML(id) {
                         </div>
 
                         <div id="tax-gen-slabs" class="hidden grid grid-cols-2 gap-4"></div>
+
+                        <div class="text-[8px] font-bold text-gray-400 dark:text-gray-500 px-6 py-4 bg-gray-50 dark:bg-black/20 rounded-[2rem] border border-dashed dark:border-gray-800">
+                            <b>Disclaimer:</b> Tax estimates are educational and may vary by deductions, surcharge, rebate eligibility, residential status, special-rate income, and future law changes.
+                        </div>
                     </div>
                 </div>
             `;
@@ -3057,31 +3153,34 @@ const FinancialCore = {
     getMonthlyRate: (annualRate) => FinancialCore.ensureDecimal(annualRate).div(1200),
     
     /**
-     * Progressive Tax Engine
-     * Certified India FY 2024-25 Implementation
+     * Progressive Tax Engine (Hardcoded logic for multiple jurisdictions)
+     * Supports multi-year FY configuration and Section 87A Marginal Relief.
      * RETURN: { grossIncome, taxableIncome, slabTax, taxAfterRelief, finalTax, cess, effectiveRate, slabDetails }
      */
-    calculateProgressiveTax: (grossIncome, taxableIncome, slabs, additives = [], countryCode = '') => {
-        const gross = FinancialCore.ensureDecimal(grossIncome);
-        const income = FinancialCore.ensureDecimal(taxableIncome);
-        let slabTax = new Decimal(0);
-        let prevLimit = new Decimal(0);
+    calculateProgressiveTax: (grossIncome, taxableIncome, slabs, additives = [], countryCode = '', rebateThreshold = 700000) => {
+        const gross = D(grossIncome);
+        const income = D(taxableIncome);
+        let slabTax = D(0);
+        let prevLimit = D(0);
         let slabDetails = [];
+
+        const safeSlabs = Array.isArray(slabs) ? slabs : [];
         
-        for (const slab of slabs) {
-            const limit = slab.limit === Infinity ? new Decimal(Infinity) : new Decimal(slab.limit);
-            const rate = new Decimal(slab.rate);
+        for (const slab of safeSlabs) {
+            const limitVal = slab.limit !== undefined ? slab.limit : (slab.upTo !== undefined ? slab.upTo : Infinity);
+            const limit = limitVal === Infinity ? D(Number.MAX_SAFE_INTEGER) : D(limitVal);
+            const rate = D(slab.rate || 0);
             
             if (income.gt(prevLimit)) {
                 // Ensure only income within this specific range is taxed
-                const upperBoundary = Decimal.min(income, limit);
+                const upperBoundary = income.gt(limit) ? limit : income;
                 const slabAmount = upperBoundary.minus(prevLimit);
                 const taxForSlab = slabAmount.times(rate);
                 
                 slabTax = slabTax.plus(taxForSlab);
                 
                 slabDetails.push({ 
-                    range: `${prevLimit.toNumber()} - ${limit.isFinite() ? limit.toNumber() : '∞'}`,
+                    range: `${prevLimit.toNumber()} - ${slab.limit === Infinity || slab.upTo === Infinity ? '∞' : limit.toNumber()}`,
                     rate: rate.times(100).toNumber(),
                     amount: taxForSlab,
                     isActive: true
@@ -3089,9 +3188,9 @@ const FinancialCore = {
             } else {
                 // Income does not reach this slab
                 slabDetails.push({ 
-                    range: `${prevLimit.toNumber()} - ${limit.isFinite() ? limit.toNumber() : '∞'}`,
+                    range: `${prevLimit.toNumber()} - ${slab.limit === Infinity || slab.upTo === Infinity ? '∞' : limit.toNumber()}`,
                     rate: rate.times(100).toNumber(),
-                    amount: new Decimal(0),
+                    amount: D(0),
                     isActive: false
                 });
             }
@@ -3101,16 +3200,21 @@ const FinancialCore = {
         let taxAfterRelief = slabTax;
         // India Specific: Rebate and Marginal Relief (Section 87A)
         if (countryCode === 'IN') {
-             const threshold = new Decimal(700000); 
+             const threshold = D(rebateThreshold); 
              if (income.lte(threshold)) {
-                 taxAfterRelief = new Decimal(0);
+                 taxAfterRelief = D(0);
              } else {
                  const excess = income.minus(threshold);
-                 taxAfterRelief = Decimal.min(slabTax, excess);
+                 // Marginal Relief: Tax should not exceed income above rebate limit
+                 if (slabTax.gt(excess)) {
+                     taxAfterRelief = excess;
+                 } else {
+                     taxAfterRelief = slabTax;
+                 }
              }
         }
 
-        let totalCess = new Decimal(0);
+        let totalCess = D(0);
         let taxWithCess = taxAfterRelief;
         additives.forEach(add => {
             const cessAmt = taxAfterRelief.times(add.rate);
@@ -3118,8 +3222,8 @@ const FinancialCore = {
             taxWithCess = taxWithCess.plus(cessAmt);
         });
 
-        const finalTax = taxWithCess.toDecimalPlaces(0, Decimal.ROUND_HALF_UP);
-        const effectiveRate = gross.gt(0) ? finalTax.div(gross).times(100) : new Decimal(0);
+        const finalTax = taxWithCess.round();
+        const effectiveRate = gross.gt(0) ? finalTax.div(gross).times(100) : D(0);
         
         return {
             grossIncome: gross,
@@ -3183,7 +3287,11 @@ const FinancialCore = {
 
         let shadowVal = null;
         if (stepUpPercent === 0) {
-            shadowVal = currentMonthly.mul( (rate.plus(1).pow(months).sub(1)).div(rate).mul(rate.plus(1)) );
+            if (rate.isZero()) {
+                shadowVal = currentMonthly.mul(months);
+            } else {
+                shadowVal = currentMonthly.mul( (rate.plus(1).pow(months).sub(1)).div(rate).mul(rate.plus(1)) );
+            }
         }
 
         for (let t = 1; t <= months; t++) {
@@ -3305,10 +3413,10 @@ const StabilityEngine = {
             {
                 name: 'Tax_India_Rebate_7L_Gross',
                 run: () => {
-                    const config = GLOBAL_COUNTRY_CONFIG.IN.tax;
-                    const gross = new Decimal(700000);
-                    const taxable = Decimal.max(0, gross.minus(config.standardDeduction || 0));
-                    const res = FinancialCore.calculateProgressiveTax(gross, taxable, config.slabs, config.additives, 'IN');
+                    const config = INDIA_TAX_CONFIG.FY_2024_25;
+                    const gross = D(700000);
+                    const taxable = D(700000).minus(config.standardDeduction).gt(0) ? D(700000).minus(config.standardDeduction) : D(0);
+                    const res = FinancialCore.calculateProgressiveTax(gross, taxable, config.slabs, [{ rate: config.cessRate }], 'IN', config.rebateLimit);
                     return res.finalTax.toNumber();
                 },
                 expected: 0
@@ -3316,10 +3424,10 @@ const StabilityEngine = {
             {
                 name: 'Tax_India_Marginal_775001_Gross',
                 run: () => {
-                    const config = GLOBAL_COUNTRY_CONFIG.IN.tax;
-                    const gross = new Decimal(775001); // 700,001 Taxable
-                    const taxable = Decimal.max(0, gross.minus(config.standardDeduction || 0));
-                    const res = FinancialCore.calculateProgressiveTax(gross, taxable, config.slabs, config.additives, 'IN');
+                    const config = INDIA_TAX_CONFIG.FY_2024_25;
+                    const gross = D(775001); 
+                    const taxable = gross.minus(config.standardDeduction).gt(0) ? gross.minus(config.standardDeduction) : D(0);
+                    const res = FinancialCore.calculateProgressiveTax(gross, taxable, config.slabs, [{ rate: config.cessRate }], 'IN', config.rebateLimit);
                     return res.finalTax.toNumber();
                 },
                 expected: 1
@@ -3327,21 +3435,30 @@ const StabilityEngine = {
             {
                 name: 'Tax_India_12L_Gross',
                 run: () => {
-                    const config = GLOBAL_COUNTRY_CONFIG.IN.tax;
-                    const gross = new Decimal(1200000); 
-                    const taxable = Decimal.max(0, gross.minus(config.standardDeduction || 0)); // 11.25L
-                    const res = FinancialCore.calculateProgressiveTax(gross, taxable, config.slabs, config.additives, 'IN');
+                    const config = INDIA_TAX_CONFIG.FY_2024_25;
+                    const gross = D(1200000); 
+                    const taxable = gross.minus(config.standardDeduction).gt(0) ? gross.minus(config.standardDeduction) : D(0);
+                    const res = FinancialCore.calculateProgressiveTax(gross, taxable, config.slabs, [{ rate: config.cessRate }], 'IN', config.rebateLimit);
                     return res.finalTax.toNumber();
                 },
                 expected: 71500
             },
             {
+                name: 'Tax_India_Marginal_700001_Taxable',
+                run: () => {
+                    const config = INDIA_TAX_CONFIG.FY_2024_25;
+                    const res = FinancialCore.calculateProgressiveTax(D(775001), D(700001), config.slabs, [{ rate: config.cessRate }], 'IN', config.rebateLimit);
+                    return res.finalTax.toNumber();
+                },
+                expected: 1
+            },
+            {
                 name: 'Tax_India_50L_Gross',
                 run: () => {
-                    const config = GLOBAL_COUNTRY_CONFIG.IN.tax;
-                    const gross = new Decimal(5000000); 
-                    const taxable = Decimal.max(0, gross.minus(config.standardDeduction || 0)); 
-                    const res = FinancialCore.calculateProgressiveTax(gross, taxable, config.slabs, config.additives, 'IN');
+                    const config = INDIA_TAX_CONFIG.FY_2024_25;
+                    const gross = D(5000000); 
+                    const taxable = gross.minus(config.standardDeduction).gt(0) ? gross.minus(config.standardDeduction) : D(0);
+                    const res = FinancialCore.calculateProgressiveTax(gross, taxable, config.slabs, [{ rate: config.cessRate }], 'IN', config.rebateLimit);
                     return res.finalTax.toNumber();
                 },
                 expected: 1214200
@@ -3390,7 +3507,7 @@ const StabilityEngine = {
 
 // --- ENHANCED UI UTILITIES ---
 const FinUI = {
-    formatCurrency: (v, code) => {
+    formatCurrency: (v, code, decimals) => {
         const val = parseFloat(v);
         if (isNaN(val)) return '--';
         const currency = CURRENCIES[code] || CURRENCIES.USD;
@@ -3398,7 +3515,7 @@ const FinUI = {
         const options = {
             style: 'currency',
             currency: code || 'USD',
-            maximumFractionDigits: currency.decimals !== undefined ? currency.decimals : 0
+            maximumFractionDigits: decimals !== undefined ? decimals : (currency.decimals !== undefined ? currency.decimals : 0)
         };
         try {
             return new Intl.NumberFormat(currency.locale, options).format(val);
@@ -3424,6 +3541,10 @@ const FinUI = {
 
     safeNumber: (val) => {
         if (val === null || val === undefined || val === '') return 0;
+        if (typeof val === 'string') {
+            // Strip currency symbols and commas
+            val = val.replace(/[^0-9.-]/g, '');
+        }
         const n = parseFloat(val);
         return isNaN(n) ? 0 : n;
     },
@@ -4920,13 +5041,20 @@ window.runSIPCalc = () => {
     const finalGains = finalMaturity.minus(finalInvested);
 
     // Precise Tax: 12.5% on gains exceeding 1.25 Lakh (Simplified local policy vs global fallback)
+    /**
+     * Post-tax assumes Indian equity LTCG (Long Term Capital Gains) rules:
+     * - 12.5% tax on gains exceeding ₹1.25 Lakh per year (as per 2024-25 Budget).
+     * - This is an estimate; actual taxes vary for debt funds, ELSS, or future laws.
+     */
     const exemptionLimit = state.currency === 'INR' ? 125000 : 0; 
     const taxableGain = Decimal.max(0, finalGains.minus(exemptionLimit));
     const taxAmount = taxableGain.mul(0.125);
     const postTaxMaturity = finalMaturity.minus(taxAmount);
 
-    // Inflation Adjusted (Real) Maturity
-    const realMaturity = postTaxMaturity.div(inflation.div(100).plus(1).pow(years));
+    // Inflation Adjusted (Real) Maturity - Based on nominal Wealth as per requirement
+    const inflationFactor = inflation.div(100).plus(1).pow(years);
+    const realMaturity = finalMaturity.div(inflationFactor);
+    const postTaxRealMaturity = postTaxMaturity.div(inflationFactor);
 
     // UI Updates
     document.getElementById('sip-out').innerText = FinUI.formatCurrency(finalMaturity.toNumber(), currency);
@@ -4947,9 +5075,12 @@ window.runSIPCalc = () => {
     const highlights = document.getElementById('sip-highlights');
     if (highlights) {
         const mult = finalMaturity.div(finalInvested).toFixed(1);
+        // Correct calculation for ending monthly SIP
+        const finalMonthlySIP = monthly.mul(new Decimal(1).plus(stepUp.div(100)).pow(years.minus(1))).toDecimalPlaces(0);
+        
         highlights.innerHTML = `
             <div class="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full text-[10px] font-black text-blue-600 border border-blue-100">${mult}x Wealth Multiplier</div>
-            <div class="px-4 py-2 bg-green-50 dark:bg-green-900/20 rounded-full text-[10px] font-black text-green-600 border border-green-100">Ends at: ${FinUI.formatCurrency(schedule[schedule.length-1].invested.minus(schedule[schedule.length-2]?.invested || 0).toNumber(), currency)}/mo</div>
+            <div class="px-4 py-2 bg-green-50 dark:bg-green-900/20 rounded-full text-[10px] font-black text-green-600 border border-green-100">Ends at: ${FinUI.formatCurrency(finalMonthlySIP.toNumber(), currency)}/mo</div>
         `;
     }
 
@@ -4958,7 +5089,7 @@ window.runSIPCalc = () => {
         const insights = [
             { icon: 'trending-up', title: 'Portfolio Growth', desc: `Market gains account for ${finalGains.div(finalMaturity).mul(100).toFixed(0)}% of your estimated maturity value.` },
             { icon: 'shield-check', title: 'Tax Efficiency', desc: `Estimated taxes reduce your final corpus by ${FinUI.formatCurrency(taxAmount.toNumber(), currency)}.` },
-            { icon: 'wind', title: 'Inflation Erosion', desc: `Inflation at ${inflation}%/yr reduces the purchasing power of your wealth by ${FinUI.formatCurrency(postTaxMaturity.minus(realMaturity).toNumber(), currency)}.` }
+            { icon: 'wind', title: 'Inflation Erosion', desc: `Inflation at ${inflation}%/yr reduces the purchasing power of your wealth by ${FinUI.formatCurrency(finalMaturity.minus(realMaturity).toNumber(), currency)}.` }
         ];
         insightArea.innerHTML = insights.map(i => `
             <div class="p-6 bg-white dark:bg-black/20 rounded-[2rem] border dark:border-gray-800 space-y-3">
@@ -4983,21 +5114,6 @@ window.runSIPCalc = () => {
     }
 };
 
-let taxRegime = 'new';
-window.setTaxRegime = (r) => {
-    taxRegime = r;
-    const nEl = document.getElementById('tax-reg-new');
-    const oEl = document.getElementById('tax-reg-old');
-    if(r === 'new') {
-        nEl.className = "flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-blue-600 text-white shadow-lg";
-        oEl.className = "flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all text-gray-400 hover:text-gray-900 dark:hover:text-white";
-    } else {
-        oEl.className = "flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all bg-blue-600 text-white shadow-lg";
-        nEl.className = "flex-grow py-3 rounded-xl text-[10px] font-black uppercase transition-all text-gray-400 hover:text-gray-900 dark:hover:text-white";
-    }
-    runTaxCalc();
-};
-
 // --- TAX ENGINE DATA ---
 window.runTaxCalc = () => {
     try {
@@ -5007,52 +5123,104 @@ window.runTaxCalc = () => {
         if (!incomeInput || !countrySelect || !box) return;
 
         const countryCode = countrySelect.value || 'IN';
-        const config = GLOBAL_COUNTRY_CONFIG[countryCode];
-        const taxReg = config.tax;
-        const curCode = state.currency; // Use global currency for display preference
+        const curCode = state.currency;
 
-        const grossVal = incomeInput.value.replace(/,/g, '');
-        const grossIncome = FinancialCore.ensureDecimal(grossVal);
+        const grossIncome = D(FinUI.getValidInput('tax-in', 1200000));
         if (grossIncome.lt(0)) return;
 
         box.classList.remove('hidden');
-        
-        const inCompliance = document.getElementById('tax-india-compliance');
-        if (inCompliance) inCompliance.classList.toggle('hidden', countryCode !== 'IN');
-        const genBreakdown = document.getElementById('tax-gen-slabs');
-        if (genBreakdown) genBreakdown.classList.toggle('hidden', countryCode !== 'GEN' && countryCode !== 'US' && countryCode !== 'UK' && countryCode !== 'AE' && countryCode !== 'JP');
 
-        const sd = new Decimal(taxReg.standardDeduction || 0);
-        const taxableIncome = Decimal.max(0, grossIncome.minus(sd));
+        let taxReg;
+        let finalRes;
 
-        let finalRes = { totalTax: new Decimal(0), slabDetails: [], cess: new Decimal(0) };
+        const indiaBase = GLOBAL_COUNTRY_CONFIG.IN.tax;
 
-        if (taxReg.type === 'progressive') {
-            finalRes = FinancialCore.calculateProgressiveTax(grossIncome, taxableIncome, taxReg.slabs, taxReg.additives, countryCode);
+        if (countryCode === 'IN') {
+            const yearSelect = document.getElementById('tax-year');
+            const rawYear = yearSelect ? yearSelect.value : (state.lastTaxYear || "FY_2024_25");
+            
+            // Normalize year key
+            let yearKey = "FY_2024_25";
+            if (rawYear.includes("2025") && (rawYear.includes("26") || rawYear.includes("2026"))) {
+                yearKey = "FY_2025_26";
+            } else if (rawYear === "2025-26") {
+                yearKey = "FY_2025_26";
+            }
+            
+            const config = INDIA_TAX_CONFIG[yearKey] || INDIA_TAX_CONFIG.FY_2024_25;
+            
+            state.lastTaxYear = yearKey;
+            taxReg = {
+                standardDeduction: config.standardDeduction,
+                slabs: config.slabs,
+                rebate: { threshold: config.rebateLimit },
+                additives: [{ name: "Health & Education Cess", rate: config.cessRate }],
+                regime: config.label
+            };
+
+            const yearCont = document.getElementById('tax-year-container');
+            if (yearCont) yearCont.classList.remove('hidden');
+            
+            const regimeLabel = document.getElementById('tax-regime-label');
+            if (regimeLabel) regimeLabel.innerText = `Tax Slab Analysis (${taxReg.regime})`;
+            
+            const sd = D(taxReg.standardDeduction);
+            const taxableIncome = grossIncome.minus(sd).gt(0) ? grossIncome.minus(sd) : D(0);
+            
+            finalRes = FinancialCore.calculateProgressiveTax(grossIncome, taxableIncome, taxReg.slabs, taxReg.additives, 'IN', taxReg.rebate.threshold);
+        } else {
+            const countryConfig = GLOBAL_COUNTRY_CONFIG[countryCode];
+            taxReg = countryConfig.tax;
+
+            const yearCont = document.getElementById('tax-year-container');
+            if (yearCont) yearCont.classList.add('hidden');
+
+            const sd = D(taxReg.standardDeduction || 0);
+            const taxableIncome = grossIncome.minus(sd).gt(0) ? grossIncome.minus(sd) : D(0);
+
+            if (taxReg.type === 'progressive') {
+                finalRes = FinancialCore.calculateProgressiveTax(grossIncome, taxableIncome, taxReg.slabs, taxReg.additives, countryCode, taxReg.rebate?.threshold);
+            } else {
+                finalRes = { 
+                    totalTax: D(0), 
+                    finalTax: D(0), 
+                    slabDetails: [], 
+                    cess: D(0),
+                    effectiveRate: D(0)
+                };
+            }
         }
 
-        const finalTax = finalRes.finalTax;
-        const effectiveRate = finalRes.effectiveRate || (grossIncome.gt(0) ? finalTax.div(grossIncome).times(100) : new Decimal(0));
-        const monthlyInHand = Decimal.max(0, grossIncome.minus(finalTax)).div(12);
+        const finalTax = finalRes.finalTax || D(0);
+        const effectiveRate = finalRes.effectiveRate || (grossIncome.gt(0) ? finalTax.div(grossIncome).times(100) : D(0));
+        const monthlyInHand = grossIncome.minus(finalTax).gt(0) ? grossIncome.minus(finalTax).div(12) : D(0);
 
         // Update UI
         const outEl = document.getElementById('tax-out');
         const rateEl = document.getElementById('tax-rate');
         const inhandEl = document.getElementById('tax-inhand');
         
-        if (outEl) outEl.innerText = formatEMICurrency(finalTax.toNumber(), curCode);
+        if (outEl) outEl.innerText = FinUI.formatCurrency(finalTax.toNumber(), curCode);
         if (rateEl) rateEl.innerText = `Effective Rate: ${effectiveRate.toFixed(2)}%`;
-        if (inhandEl) inhandEl.innerText = formatEMICurrency(monthlyInHand.toNumber(), curCode);
+        if (inhandEl) inhandEl.innerText = FinUI.formatCurrency(monthlyInHand.toNumber(), curCode);
         
+        const sdVal = D(taxReg.standardDeduction || 0);
         const sdValEl = document.getElementById('tax-ded-val');
         const sdTotEl = document.getElementById('tax-tot-ded');
-        if (sdValEl) sdValEl.innerText = formatEMICurrency(sd.toNumber(), curCode);
-        if (sdTotEl) sdTotEl.innerText = formatEMICurrency(sd.toNumber(), curCode);
+        if (sdValEl) sdValEl.innerText = FinUI.formatCurrency(sdVal.toNumber(), curCode);
+        if (sdTotEl) sdTotEl.innerText = FinUI.formatCurrency(sdVal.toNumber(), curCode);
         
         const curSymBtn = document.getElementById('tax-currency-sym');
-        if (curSymBtn) curSymBtn.innerText = CURRENCIES[curCode].symbol;
+        if (curSymBtn) curSymBtn.innerText = CURRENCIES[curCode] ? CURRENCIES[curCode].symbol : curCode;
+        
+        // UI Helpers: Toggle compliance view for India
+        const inCompliance = document.getElementById('tax-india-compliance');
+        if (inCompliance) inCompliance.classList.toggle('hidden', countryCode !== 'IN');
+        
+        const genBreakdown = document.getElementById('tax-gen-slabs');
+        if (genBreakdown) genBreakdown.classList.toggle('hidden', !['GEN', 'US', 'UK', 'AE', 'JP'].includes(countryCode));
 
-        if (countryCode === 'IN') {
+        if (countryCode === 'IN' && finalRes.slabDetails) {
              const tbody = document.getElementById('tax-tbody');
              const cessEl = document.getElementById('tax-cess');
              if (tbody) {
@@ -5060,20 +5228,20 @@ window.runTaxCalc = () => {
                     <tr class="${s.isActive ? 'bg-blue-50/30 dark:bg-blue-900/10' : 'opacity-40'}">
                         <td class="p-6 font-mono text-[10px]">${s.range.replace(' - Infinity', '+')}</td>
                         <td class="p-6 text-center text-[10px]">${s.rate}%</td>
-                        <td class="p-6 text-right font-black text-[10px] ${s.amount.gt(0) ? 'text-red-500' : 'text-gray-400'}">${formatEMICurrency(s.amount.toNumber(), curCode)}</td>
+                        <td class="p-6 text-right font-black text-[10px] ${D(s.amount).gt(0) ? 'text-red-500' : 'text-gray-400'}">${FinUI.formatCurrency(D(s.amount).toNumber(), curCode)}</td>
                     </tr>
                 `).join('');
              }
-             if (cessEl) cessEl.innerText = formatEMICurrency(finalRes.cess.toNumber(), curCode);
+             if (cessEl) cessEl.innerText = FinUI.formatCurrency(D(finalRes.cess).toNumber(), curCode);
         }
 
-        if (genBreakdown) {
+        if (genBreakdown && countryCode !== 'IN' && finalRes.slabDetails) {
             genBreakdown.innerHTML = finalRes.slabDetails.map(s => `
                 <div class="p-4 rounded-2xl border-2 ${s.isActive ? 'border-blue-500/20 bg-blue-50/10' : 'border-gray-100 dark:border-gray-800 opacity-40'}">
                     <p class="text-[8px] font-black text-gray-400 uppercase mb-1">${s.range.replace(' - Infinity', '+')}</p>
                     <div class="flex justify-between items-end text-[10px]">
                         <span class="font-black">${s.rate}%</span>
-                        <span class="font-mono ${s.amount.gt(0) ? 'text-red-500' : 'text-gray-400'}">${formatEMICurrency(s.amount.toNumber(), curCode)}</span>
+                        <span class="font-mono ${D(s.amount).gt(0) ? 'text-red-500' : 'text-gray-400'}">${FinUI.formatCurrency(D(s.amount).toNumber(), curCode)}</span>
                     </div>
                 </div>
             `).join('');
@@ -5490,78 +5658,105 @@ window.runFileSim = async () => {
 
 // --- PHASE 4 FINANCE LOGIC ---
 window.runCCCalc = () => {
-    const pVal = document.getElementById('cc-p').value;
-    const rVal = document.getElementById('cc-r').value;
-    const mVal = document.getElementById('cc-m').value;
-    const tVal = document.getElementById('cc-t').value;
-    if (!pVal || !rVal || !mVal) return;
-
-    const P = new Decimal(pVal || 0);
-    const annualRate = FinancialCore.getAnnualRate(rVal);
-    const monthlyPayment = new Decimal(mVal || 0);
-    const targetBalance = new Decimal(tVal || 0);
+    const P = FinUI.getValidInput('cc-p', 2500);
+    const annualAPR = FinUI.getValidInput('cc-r', 19.99);
+    const monthlyPayment = FinUI.getValidInput('cc-m', 100);
+    const targetBalance = FinUI.getValidInput('cc-t', 0);
     const currency = state.currency;
 
-    if (P.lte(0) || new Decimal(annualRate).lte(0) || monthlyPayment.lte(0)) return;
+    if (P.lte(0) || annualAPR.lt(0) || monthlyPayment.lte(0)) return;
+    if (targetBalance.gte(P)) return;
 
-    const monthlyRate = FinancialCore.getMonthlyRate(annualRate);
-    const dailyRate = new Decimal(annualRate).div(365).div(100);
+    const monthlyRate = annualAPR.div(1200);
+    const dailyRate = annualAPR.div(36500);
     
-    // Check for negative amortization
-    if (monthlyPayment.lte(P.mul(monthlyRate))) {
-        toast("Payment too low - debt will never decrease!");
+    document.getElementById('cc-box').classList.remove('hidden');
+    const insightArea = document.getElementById('cc-insights');
+
+    // Check for negative amortization (Minimum payment trap)
+    const monthlyInterestInitial = P.mul(monthlyRate);
+    if (monthlyPayment.lte(monthlyInterestInitial) && annualAPR.gt(0)) {
+        if (insightArea) {
+             insightArea.innerHTML = `
+                <div class="p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-[2rem] flex gap-4">
+                    <div class="text-red-500 shrink-0"><i data-lucide="alert-triangle" class="w-5 h-5"></i></div>
+                    <div>
+                         <h5 class="text-[10px] font-black uppercase text-red-700 dark:text-red-400 mb-1">Debt Trap Detected</h5>
+                         <p class="text-[9px] font-bold text-red-600 dark:text-red-400">Monthly payment of ${FinUI.formatCurrency(monthlyPayment.toNumber(), currency)} is less than the interest of ${FinUI.formatCurrency(monthlyInterestInitial.toNumber(), currency)}. Balance will never be repaid.</p>
+                    </div>
+                </div>
+             `;
+             lucide.createIcons();
+        }
+        document.getElementById('cc-total-i').innerText = "∞";
+        document.getElementById('cc-months').innerText = "Infinite";
+        document.getElementById('cc-daily').innerText = "---";
+        document.getElementById('cc-roi').innerText = "---";
+        document.getElementById('cc-ratio').innerText = "---";
         return;
     }
 
     let balance = P;
     let totalInterest = new Decimal(0);
     let months = 0;
+    const maxMonths = 1200;
 
-    while (balance.gt(targetBalance) && months < 600) {
-        let interest = balance.mul(monthlyRate).toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
+    while (balance.gt(targetBalance) && months < maxMonths) {
+        let interest = balance.mul(monthlyRate);
         totalInterest = totalInterest.plus(interest);
-        balance = balance.plus(interest).minus(monthlyPayment);
+        
+        // Exact payment to reach target exactly this month (if payment > remaining)
+        let paymentToTarget = balance.plus(interest).minus(targetBalance);
+        let actualPayment = Decimal.min(monthlyPayment, paymentToTarget);
+        
+        balance = balance.plus(interest).minus(actualPayment);
         months++;
-        if (balance.lt(targetBalance)) balance = targetBalance;
     }
 
-    const finalInterest = totalInterest.toDecimalPlaces(2);
-    const dailyAccrual = P.mul(dailyRate).toDecimalPlaces(2);
+    const totalPaid = P.minus(targetBalance).plus(totalInterest);
+    const finalInterestDisplay = totalInterest.round().toNumber();
+    const dailyAccrualVal = P.mul(dailyRate);
+    const dailyStr = FinUI.formatCurrency(dailyAccrualVal.toNumber(), currency, 2);
 
-    document.getElementById('cc-box').classList.remove('hidden');
-    document.getElementById('cc-total-i').innerText = formatEMICurrency(finalInterest.toNumber(), currency);
-    document.getElementById('cc-months').innerText = `${months} Months`;
-    document.getElementById('cc-daily').innerText = formatEMICurrency(dailyAccrual.toNumber(), currency);
-    
-    const principalPaid = P.minus(targetBalance);
-    const ratio = principalPaid.div(principalPaid.plus(finalInterest)).times(100);
+    let timeStr = `${months} Months`;
+    if (months >= 12) {
+        const years = Math.floor(months / 12);
+        const remMonths = months % 12;
+        timeStr = remMonths > 0 ? `${years}y ${remMonths}m` : `${years} Years`;
+    }
 
-    // Export Support
-    window.currentCCInputs = { p: P, r: annualRate, m: monthlyPayment, t: targetBalance, currency };
-    window.currentCCSummary = { interest: finalInterest, months: months, daily: dailyAccrual, principalRatio: ratio };
+    const effectiveROI = totalInterest.div(P).mul(100).negated();
+    const principalRatio = P.minus(targetBalance).div(totalPaid).mul(100);
 
-    document.getElementById('cc-roi').innerText = `-${annualRate.toFixed(2)}%`;
-    document.getElementById('cc-ratio').innerText = `${ratio.toFixed(1)}% Principal`;
+    // DOM Updates
+    document.getElementById('cc-total-i').innerText = FinUI.formatCurrency(totalInterest.toNumber(), currency);
+    document.getElementById('cc-months').innerText = timeStr;
+    document.getElementById('cc-daily').innerText = `${dailyStr}/day`;
+    document.getElementById('cc-roi').innerText = `${effectiveROI.toFixed(2)}%`;
+    document.getElementById('cc-ratio').innerText = `${principalRatio.toFixed(1)}% Principal`;
 
-    const insightArea = document.getElementById('cc-insights');
     if (insightArea) {
         const insights = [
-            { icon: 'alert-circle', title: 'Interest Trap', desc: `You will pay ${formatEMICurrency(finalInterest.toNumber(), currency)} in interest alone just to reach your target.` },
-            { icon: 'trending-up', title: 'Daily Leak', desc: `Every 24 hours, ${formatEMICurrency(dailyAccrual.toNumber(), currency)} in interest is added to your balance.` }
+            { icon: 'alert-circle', title: 'Interest Trap', desc: `You will pay ${FinUI.formatCurrency(finalInterestDisplay, currency)} in interest alone just to reach your target.` },
+            { icon: 'trending-up', title: 'Daily Leak', desc: `Every 24 hours, ${dailyStr} in interest is added to your balance.` }
         ];
-        if (annualRate.gt(20)) insights.push({ icon: 'zap', title: 'Aggressive Debt', desc: 'Extremely high APR detected. Consider balance transfer or personal loan consolidation.' });
+        if (annualAPR.gt(20)) insights.push({ icon: 'zap', title: 'Aggressive Debt', desc: 'Extremely high APR detected. Consider balance transfer or personal loan consolidation.' });
 
         insightArea.innerHTML = insights.map(i => `
-            <div class="p-4 bg-white dark:bg-black/20 rounded-2xl border dark:border-gray-800 flex gap-4">
-                <div class="text-red-500 shrink-0"><i data-lucide="${i.icon}" class="w-4 h-4"></i></div>
+            <div class="p-6 bg-white dark:bg-black/20 rounded-[2rem] border dark:border-gray-800 flex gap-4">
+                <div class="${i.title === 'Interest Trap' ? 'text-red-500' : 'text-blue-500'} shrink-0"><i data-lucide="${i.icon}" class="w-5 h-5"></i></div>
                 <div>
-                     <h5 class="text-[9px] font-black uppercase text-gray-900 dark:text-white mb-1">${i.title}</h5>
-                     <p class="text-[8px] font-bold text-gray-400 leading-tight">${i.desc}</p>
+                     <h5 class="text-[10px] font-black uppercase text-gray-900 dark:text-white mb-1">${i.title}</h5>
+                     <p class="text-[9px] font-bold text-gray-400 leading-tight">${i.desc}</p>
                 </div>
             </div>
         `).join('');
         lucide.createIcons();
     }
+
+    // Export Support
+    window.currentCCInputs = { p: P, r: annualAPR, m: monthlyPayment, t: targetBalance, currency };
+    window.currentCCSummary = { interest: totalInterest, months: months, daily: dailyAccrualVal, principalRatio: principalRatio };
 };
 
 window.runWebCost = () => {
