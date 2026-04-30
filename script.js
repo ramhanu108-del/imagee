@@ -4427,6 +4427,7 @@ window.runFDCalc = () => {
         highlights.innerHTML = `
             <div class="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full text-[10px] font-black text-blue-600 border border-blue-100">${yieldPerc.toFixed(1)}% Total Yield</div>
             <div class="px-4 py-2 bg-green-50 dark:bg-green-900/20 rounded-full text-[10px] font-black text-green-600 border border-green-100">Capital Protection: 100%</div>
+            ${inflation.gt(0) ? `<div class="px-4 py-2 bg-purple-50 dark:bg-purple-900/20 rounded-full text-[10px] font-black text-purple-600 border border-purple-100 italic">Real Value: ${FinUI.formatCurrency(realMaturity.toNumber(), currency)}</div>` : ''}
         `;
     }
 };
