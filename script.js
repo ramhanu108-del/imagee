@@ -1,6 +1,6 @@
 /**
  * SmartTools Hub v5.0 - Universal Core Engine
- * Vanilla JS logic for 31+ high-performance browser tools.
+ * Vanilla JS logic for 32+ high-performance browser tools.
  */
 
 import QUOTES_LIBRARY from './quotes.js';
@@ -12,7 +12,8 @@ Chart.register(...registerables, annotationPlugin);
 // --- TOOL DATABASE ---
 const TOOLS = [
     { id: 'image-compressor', nameKey: 'compress', icon: 'minimize', category: 'Image', desc: 'Reduce file size while keeping visual quality.' },
-    { id: 'background-remover', nameKey: 'bgremove', icon: 'trash-2', category: 'Image', desc: 'AI-powered background extraction for your photos.' },
+    { id: 'background-remover', nameKey: 'bgremove', icon: 'scissors', category: 'Image', desc: 'Manually erase image backgrounds and export clean cutouts.' },
+    { id: 'image-resizer', nameKey: 'resizer', icon: 'crop', category: 'Image', desc: 'Resize, crop, and export images in multiple formats.' },
     { id: 'pdf-merger', nameKey: 'pdfmerge', icon: 'file-text', category: 'PDF', desc: 'Combine multiple PDF files into one document.' },
     { id: 'pdf-splitter', nameKey: 'pdfsplit', icon: 'scissors', category: 'PDF', desc: 'Extract individual pages from your PDFs.' },
     { id: 'word-counter', nameKey: 'wordcount', icon: 'type', category: 'Text', desc: 'Professional utility for characters and words.' },
@@ -61,6 +62,16 @@ const TOOL_SEO_CONTENT = {
             "Arrange them in your preferred sequence for the final document.",
             "Click 'Merge' to execute the safe, client-side binding logic.",
             "Retrieve your integrated PDF file instantly with zero wait time."
+        ]
+    },
+    'image-resizer': {
+        about: "Professional-grade image transformation is no longer restricted to desktop software. Our Image Resizer tool provides a comprehensive suite of scaling and cropping options, all executing within your browser's secure sandbox. Whether you need to prepare assets for social media, reduce dimensions for web performance, or convert between high-efficiency formats like WebP and AVIF, our engine delivers precise results. By keeping all processing local, we ensure your proprietary visual content never leaves your machine, providing total privacy and offline capability.",
+        steps: [
+            "Upload your source image to the secure processing area.",
+            "Define your target dimensions or scale percentage.",
+            "Toggle aspect ratio lock to prevent visual distortion.",
+            "Choose your export format and quality settings.",
+            "Download your optimized, resized asset instantly."
         ]
     },
     'emi-calculator': {
@@ -233,8 +244,9 @@ const TRANSLATIONS = {
         hero: { title1: "Swiss Knife for ", title2: "All Your Work", sub: "Fast, secure, and works entirely in your browser. No data leaves your device." },
         ui: { all: "All Utility Tools", popular: "🔥 Popular Tools", recent: "🕒 Recently Used", trending: "📈 Trending Tools", about: "SmartTools Hub", rights: "All rights reserved.", related: "Related Utilities", search: "Search for tools...", quotesTitle: "Wisdom from Great Philosophers", categories: { ALL: "All", IMAGE: "Image", PDF: "PDF", FINANCE: "Finance", TEXT: "Text", INSTAGRAM: "Instagram", UTILITY: "Utility" } },
         tools: {
-            compress: "Image Compressor", bgremove: "Background Remover",
+            compress: "Image Compressor", bgremove: "Background Removal",
             pdfmerge: "PDF Merger", pdfsplit: "PDF Splitter", wordcount: "Word Counter", case: "Case Converter",
+            resizer: "Image Resizer",
             pass: "Password Generator", age: "Age Calculator", 
             qr: "QR Code Generator", color: "Color Picker", b64: "Base64 Converter", url: "URL Converter",
             unit: "Unit Converter", stopwatch: "Stopwatch", todo: "To-Do List", notes: "Notes App",
@@ -249,7 +261,7 @@ const TRANSLATIONS = {
         hero: { title1: "आपके सभी कामों के लिए ", title2: "स्विस चाकू", sub: "तेज़, सुरक्षित और पूरी तरह से आपके ब्राउज़र में काम करता है। आपका डेटा कहीं नहीं जाता।" },
         ui: { all: "सभी टूल्स", popular: "🔥 लोकप्रिय टूल्स", recent: "🕒 हाल ही में प्रयुक्त", trending: "📈 अभी ट्रेंड में", about: "स्मार्टटूल्स हब", rights: "सर्वाधिकार सुरक्षित।", related: "संबंधित टूल्स", search: "टूल्स खोजें...", quotesTitle: "महान दार्शनicों का ज्ञान", categories: { ALL: "सभी", IMAGE: "इमेज", PDF: "पीडीएफ", FINANCE: "वित्त", TEXT: "टेक्स्ट", INSTAGRAM: "इंस्टाग्राम", UTILITY: "उपयोगिता" } },
         tools: {
-            compress: "इमेज कंप्रेशर", bgremove: "बैकग्राउंड रिमूवर",
+            compress: "इमेज कंप्रेशर", bgremove: "बैकग्राउंड रिमूवल",
             pdfmerge: "PDF मर्जर", pdfsplit: "PDF स्प्लिटर", wordcount: "शब्द गणक", case: "केस कनवर्टर",
             pass: "पासवर्ड जनरेटर", age: "आयु गणक", 
             qr: "QR कोड जनरेटर", color: "कलर पिकर", b64: "Base64 कनवर्टर", url: "URL कनवर्टर",
@@ -265,7 +277,7 @@ const TRANSLATIONS = {
         hero: { title1: "Navaja Suiza para ", title2: "Todo tu Trabajo", sub: "Rápido, seguro y funciona completamente en tu navegador. Ningún dato sale de tu dispositivo." },
         ui: { all: "Todas las Herramientas", popular: "🔥 Herramientas Populares", recent: "🕒 Usadas Recientemente", trending: "📈 Tendencias", about: "SmartTools Hub", rights: "Todos los derechos reservados.", related: "Utilidades Relacionadas", search: "Buscar herramientas...", quotesTitle: "Sabiduría de Grandes Filósofos", categories: { ALL: "Todo", IMAGE: "Imagen", PDF: "PDF", FINANCE: "Finanzas", TEXT: "Texto", INSTAGRAM: "Instagram", UTILITY: "Utilidad" } },
         tools: {
-            compress: "Compresor de Imágenes", bgremove: "Eliminador de Fondo",
+            compress: "Compresor de Imágenes", bgremove: "Eliminación de Fondo",
             pdfmerge: "Fusionador PDF", pdfsplit: "Divisor PDF", wordcount: "Contador de Palabras", case: "Conversor de Mayúsculas/Minúsculas",
             pass: "Generador de Contraseñas", age: "Calculadora de Edad", 
             qr: "Generador de Códigos QR", color: "Selector de Color", b64: "Conversor Base64", url: "Conversor de URL",
@@ -280,7 +292,7 @@ const TRANSLATIONS = {
         hero: { title1: "Couteau Suisse pour ", title2: "Tout votre Travail", sub: "Rapide, sécurisé et fonctionne entièrement dans votre navigateur. Aucune donnée ne quitte votre appareil." },
         ui: { all: "Tous les Outils", popular: "🔥 Outils Populaires", recent: "🕒 Récemment Utilisé", trending: "📈 Tendances", about: "SmartTools Hub", rights: "Tous droits réservés.", related: "Utilitaires Associés", search: "Chercher des outils...", quotesTitle: "Sagesse des Grands Philosophe", categories: { ALL: "Tout", IMAGE: "Image", PDF: "PDF", FINANCE: "Finance", TEXT: "Texte", INSTAGRAM: "Instagram", UTILITY: "Utilitaire" } },
         tools: {
-            compress: "Compresseur d'Images", bgremove: "Suppresseur de Fond",
+            compress: "Compresseur d'Images", bgremove: "Suppression de Fond",
             pdfmerge: "Fusionneur PDF", pdfsplit: "Diviseur PDF", wordcount: "Compteur de Mots", case: "Convertisseur de Cas",
             pass: "Générateur de Mots de Passe", age: "Calculateur d'Âge", 
             qr: "Générateur de Code QR", color: "Sélecteur de Couleur", b64: "Convertisseur Base64", url: "Convertisseur d'URL",
@@ -613,7 +625,13 @@ let state = {
     currentQuote: null, 
     todo: JSON.parse(localStorage.getItem('tool_todo') || '[]'),
     notes: localStorage.getItem('tool_notes') || '',
-    emiCharts: {}
+    emiCharts: {},
+    resizerFile: null,
+    resizerImg: null,
+    resizerRatio: null,
+    bgOriginalImg: null,
+    bgUndoStack: [],
+    bgRedoStack: []
 };
 
 // --- CROSS-TAB SYNCHRONIZATION ---
@@ -1129,6 +1147,201 @@ function injectToolFunctionalHTML(id) {
     const cur = curCode; 
 
     switch(normalizedId) {
+        case 'image-resizer':
+             c.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" id="resizer-ui">
+                    <div class="space-y-6">
+                        <div id="resizer-upload" class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('res-in').click()">
+                            <input type="file" id="res-in" class="hidden" accept="image/*" onchange="handleResizerInput(this)">
+                            <div class="flex flex-col items-center gap-4">
+                                <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i data-lucide="image" class="w-8 h-8 text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-black text-gray-900 dark:text-white uppercase tracking-widest text-[10px] mb-1">Select Source Asset</h4>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">PNG, JPG, WebP, BMP, AVIF</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="resizer-controls" class="hidden space-y-6 animate-fade-in">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border dark:border-gray-800">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">Width (px)</label>
+                                    <input type="number" id="res-w" value="1080" oninput="syncResizerDim('w')" class="w-full bg-transparent font-black text-lg outline-none text-gray-900 dark:text-white">
+                                </div>
+                                <div class="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border dark:border-gray-800">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">Height (px)</label>
+                                    <input type="number" id="res-h" value="1080" oninput="syncResizerDim('h')" class="w-full bg-transparent font-black text-lg outline-none text-gray-900 dark:text-white">
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border dark:border-gray-800">
+                                <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Maintain Aspect Ratio</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="res-aspect" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+
+                            <div class="space-y-4">
+                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Target Format</label>
+                                <select id="res-format" onchange="toggleResizerQuality()" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none text-xs appearance-none">
+                                    <option value="image/png">PNG (Lossless)</option>
+                                    <option value="image/jpeg" selected>JPEG (High Perf)</option>
+                                    <option value="image/webp">WebP (Next Gen)</option>
+                                    <option value="image/bmp">BMP (Classic)</option>
+                                </select>
+                            </div>
+
+                            <div id="res-quality-box" class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Output Quality</label>
+                                    <span id="res-qual-val" class="text-[10px] font-black text-blue-600 uppercase tracking-widest">85%</span>
+                                </div>
+                                <input type="range" id="res-qual" min="1" max="100" value="85" oninput="updateResizerQual(this.value)" class="w-full h-1.5 accent-blue-600 bg-gray-100 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer">
+                            </div>
+
+                            <button onclick="runImageResizer()" class="w-full h-16 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black shadow-2xl shadow-blue-600/30 transition-all uppercase tracking-[0.2em] text-[10px] flex items-center justify-center gap-3">
+                                <i data-lucide="zap" class="w-4 h-4"></i> Process Transformation
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="resizer-preview" class="hidden animate-fade-in h-full">
+                        <div class="bg-gray-50 dark:bg-gray-900/50 rounded-[2.5rem] p-8 border dark:border-gray-800 h-full flex flex-col">
+                            <div class="flex items-center justify-between mb-8">
+                                <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Live Asset Preview</h4>
+                                <div class="px-3 py-1 bg-green-50 dark:bg-green-900/20 text-green-600 rounded-full text-[8px] font-black uppercase tracking-widest">Privacy Shield: Active</div>
+                            </div>
+                            
+                            <div class="flex-grow flex items-center justify-center mb-8 min-h-[250px] bg-white dark:bg-gray-800 rounded-3xl overflow-hidden border dark:border-gray-700 shadow-inner">
+                                <img id="res-preview-img" class="max-w-full max-h-[300px] object-contain">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 mb-6">
+                                <div class="p-4 bg-white dark:bg-gray-800 rounded-2xl">
+                                    <div class="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Source Resolution</div>
+                                    <div id="res-orig-info" class="text-xs font-black text-gray-900 dark:text-white">---</div>
+                                </div>
+                                <div class="p-4 bg-white dark:bg-gray-800 rounded-2xl border-2 border-blue-500/10">
+                                    <div class="text-[8px] font-black text-blue-600 uppercase tracking-widest mb-1">Target Resolution</div>
+                                    <div id="res-target-info" class="text-xs font-black text-gray-900 dark:text-white">---</div>
+                                </div>
+                            </div>
+
+                            <div id="res-result" class="hidden p-6 bg-green-50 dark:bg-green-900/10 border-2 border-green-100 dark:border-green-800/20 rounded-3xl animate-slide-up">
+                                <div class="flex items-center justify-between gap-4">
+                                    <div>
+                                        <div class="text-[8px] font-black text-green-600 uppercase tracking-widest mb-1">Ready for Retrieval</div>
+                                        <div id="res-final-size" class="text-xs font-black text-gray-900 dark:text-white">Processing...</div>
+                                    </div>
+                                    <button id="res-dl" class="px-8 py-4 bg-green-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-green-700 transition-all shadow-xl active:scale-95">Download Artifact</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             `;
+             lucide.createIcons();
+             break;
+
+        case 'background-remover':
+             c.innerHTML = `
+                <div class="space-y-6">
+                    <!-- Upload State -->
+                    <div id="bg-upload" class="w-full h-64 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('bg-in').click()">
+                        <input type="file" id="bg-in" class="hidden" accept="image/*" onchange="handleBgRemoveUpload(this)">
+                        <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform mb-4">
+                            <i data-lucide="scissors" class="w-8 h-8 text-blue-600"></i>
+                        </div>
+                        <h4 class="font-black text-gray-900 dark:text-white uppercase tracking-widest text-[10px] mb-1">Select Asset to De-Background</h4>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Manual isolation via precision brushes</p>
+                        <p class="text-[7px] text-gray-400 font-bold uppercase tracking-widest mt-4">Supports PNG, JPEG, WebP, BMP, SVG, AVIF, and other browser-supported image formats where available.</p>
+                        <p class="text-[8px] text-gray-400 uppercase tracking-widest mt-2">Images are processed locally in your browser and are never uploaded.</p>
+                    </div>
+
+                    <!-- Sandbox State -->
+                    <div id="bg-sandbox" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-in">
+                        <!-- Toolbar -->
+                        <div class="lg:col-span-3 space-y-6">
+                            <div class="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-3xl border dark:border-gray-800 space-y-6">
+                                <div>
+                                    <label class="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-4 block">Brush Mechanism</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button id="bg-btn-erase" onclick="setBgBrushMode('erase')" class="flex flex-col items-center gap-2 p-4 rounded-xl transition-all bg-blue-600 text-white shadow-lg">
+                                            <i data-lucide="eraser" class="w-4 h-4"></i>
+                                            <span class="text-[8px] font-black uppercase">Eraser</span>
+                                        </button>
+                                        <button id="bg-btn-restore" onclick="setBgBrushMode('restore')" class="flex flex-col items-center gap-2 p-4 rounded-xl transition-all bg-white dark:bg-gray-800 text-gray-400 border dark:border-gray-700">
+                                            <i data-lucide="paintbrush" class="w-4 h-4"></i>
+                                            <span class="text-[8px] font-black uppercase">Restore</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <div class="flex justify-between items-center">
+                                        <label class="text-[8px] font-black text-gray-400 uppercase tracking-widest">Brush Magnitude</label>
+                                        <span id="bg-brush-val" class="text-[8px] font-black text-blue-600">20px</span>
+                                    </div>
+                                    <input type="range" id="bg-brush-size" min="1" max="100" value="20" oninput="updateBgBrushSize(this.value)" class="w-full h-1 accent-blue-600 bg-gray-200 dark:bg-gray-800 rounded-full appearance-none">
+                                </div>
+
+                                <div class="pt-4 border-t dark:border-gray-800 grid grid-cols-2 gap-2">
+                                    <button onclick="bgUndo()" class="p-3 bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 text-gray-400 disabled:opacity-30" id="bg-undo">
+                                        <i data-lucide="undo-2" class="w-4 h-4 mx-auto"></i>
+                                    </button>
+                                    <button onclick="bgRedo()" class="p-3 bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 text-gray-400 disabled:opacity-30" id="bg-redo">
+                                        <i data-lucide="redo-2" class="w-4 h-4 mx-auto"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="bg-blue-600 p-6 rounded-3xl shadow-xl shadow-blue-600/20 space-y-4">
+                                <label class="text-[8px] font-black text-blue-200 uppercase tracking-widest">Artifact Export</label>
+                                <select id="bg-export-fmt" onchange="toggleBgExportWarn()" class="w-full bg-blue-700 text-white p-3 rounded-xl font-bold outline-none text-xs border-none appearance-none">
+                                    <option value="image/png">PNG (Transparent)</option>
+                                    <option value="image/webp">WebP (Transparent)</option>
+                                    <option value="image/jpeg">JPEG (Solid Back)</option>
+                                </select>
+                                <div id="bg-jpg-warn" class="hidden text-[8px] text-blue-100 uppercase tracking-widest italic flex items-center gap-2">
+                                    <i data-lucide="alert-circle" class="w-3 h-3"></i> Use White Fill for JPEG
+                                </div>
+                                <button onclick="exportBgRemovedImage()" class="w-full py-4 bg-white text-blue-600 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-blue-50 transition-all active:scale-95 shadow-lg">
+                                    Export Result
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Canvas Workspace -->
+                        <div class="lg:col-span-9 space-y-6">
+                            <div class="relative bg-gray-100 dark:bg-gray-900 rounded-[2.5rem] border-4 border-white dark:border-gray-800 overflow-hidden min-h-[400px] flex items-center justify-center p-8 bg-[url('https://www.transparenttextures.com/patterns/checkerboard.png')]">
+                                <canvas id="bg-canvas" class="max-w-full max-h-[600px] rounded-lg shadow-2xl cursor-crosshair transition-opacity duration-300"></canvas>
+                                <div id="bg-loader" class="absolute inset-0 bg-white/80 dark:bg-black/80 flex flex-col items-center justify-center z-10 hidden">
+                                    <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+                                    <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest">Initialising Workspace...</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between px-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                                        <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest">Sanitized Sandbox</span>
+                                    </div>
+                                    <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest opacity-30">•</span>
+                                    <span id="bg-dim-info" class="text-[8px] font-black text-gray-400 uppercase tracking-widest italic">---</span>
+                                </div>
+                                <button onclick="location.reload()" class="text-[8px] font-black text-red-500 uppercase tracking-widest hover:underline">Reset Session</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             `;
+             lucide.createIcons();
+             break;
+
         case 'emi-calculator':
             c.innerHTML = `
                 <div class="tool-container">
@@ -2559,6 +2772,8 @@ function injectToolFunctionalHTML(id) {
             `;
             lucide.createIcons();
             break;
+        
+             break;
         
         case 'image-compressor':
              c.innerHTML = `
@@ -6345,6 +6560,291 @@ window.runUrlAction = (mode) => {
     document.getElementById('url-out').innerText = res;
     document.getElementById('url-box').classList.remove('hidden');
     lucide.createIcons();
+};
+
+window.handleResizerInput = (input) => {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    if (!file.type.startsWith('image/')) return toast("Please select a valid image file.");
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+            state.resizerFile = file;
+            state.resizerImg = img;
+            state.resizerRatio = img.width / img.height;
+            document.getElementById('res-w').value = img.width;
+            document.getElementById('res-h').value = img.height;
+            document.getElementById('res-orig-info').innerText = `${img.width}x${img.height} (${(file.size / 1024).toFixed(1)} KB)`;
+            document.getElementById('res-preview-img').src = e.target.result;
+            document.getElementById('resizer-upload').classList.add('hidden');
+            document.getElementById('resizer-controls').classList.remove('hidden');
+            document.getElementById('resizer-preview').classList.remove('hidden');
+            updateResizerTargetInfo();
+            lucide.createIcons();
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+};
+
+window.syncResizerDim = (type) => {
+    const wInput = document.getElementById('res-w');
+    const hInput = document.getElementById('res-h');
+    const aspect = document.getElementById('res-aspect').checked;
+    if (aspect && state.resizerRatio) {
+        if (type === 'w') {
+            hInput.value = Math.round(wInput.value / state.resizerRatio);
+        } else {
+            wInput.value = Math.round(hInput.value * state.resizerRatio);
+        }
+    }
+    updateResizerTargetInfo();
+};
+
+window.updateResizerQual = (val) => {
+    document.getElementById('res-qual-val').innerText = `${val}%`;
+    updateResizerTargetInfo();
+};
+
+window.toggleResizerQuality = () => {
+    const fmt = document.getElementById('res-format').value;
+    const box = document.getElementById('res-quality-box');
+    if (fmt === 'image/png' || fmt === 'image/bmp') {
+        box.classList.add('opacity-30', 'pointer-events-none');
+    } else {
+        box.classList.remove('opacity-30', 'pointer-events-none');
+    }
+    updateResizerTargetInfo();
+};
+
+function updateResizerTargetInfo() {
+    const w = document.getElementById('res-w').value || 0;
+    const h = document.getElementById('res-h').value || 0;
+    const fmtSelection = document.getElementById('res-format');
+    if(!fmtSelection) return;
+    const fmt = fmtSelection.value.split('/')[1].toUpperCase();
+    const info = document.getElementById('res-target-info');
+    if(info) info.innerText = `${w}x${h} (${fmt})`;
+}
+
+window.runImageResizer = () => {
+    if (!state.resizerImg) return;
+    const w = parseInt(document.getElementById('res-w').value);
+    const h = parseInt(document.getElementById('res-h').value);
+    const mime = document.getElementById('res-format').value;
+    const quality = parseInt(document.getElementById('res-qual').value) / 100;
+
+    if (w < 1 || w > 10000 || h < 1 || h > 10000) return toast("Invalid dimensions (1-10000px)");
+
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    if (mime === 'image/jpeg') {
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, w, h);
+    }
+    ctx.drawImage(state.resizerImg, 0, 0, w, h);
+    
+    canvas.toBlob((blob) => {
+        if (!blob) return toast("Export failed. Browser limitation?");
+        const url = URL.createObjectURL(blob);
+        const resBox = document.getElementById('res-result');
+        const dlBtn = document.getElementById('res-dl');
+        const sizeInfo = document.getElementById('res-final-size');
+        sizeInfo.innerText = `Output Size: ${(blob.size / 1024).toFixed(1)} KB`;
+        resBox.classList.remove('hidden');
+        dlBtn.onclick = () => {
+            const a = document.createElement('a');
+            a.href = url;
+            const ext = mime.split('/')[1].replace('jpeg', 'jpg');
+            a.download = `${state.resizerFile.name.split('.')[0]}_resized_${w}x${h}.${ext}`;
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(url), 10000);
+        };
+        toast("Transformation complete!");
+    }, mime, quality);
+};
+
+// --- BACKGROUND REMOVAL LOGIC ---
+let bgCanvas, bgCtx, bgIsDrawing = false;
+let bgBrushSize = 20;
+let bgBrushMode = 'erase';
+
+window.handleBgRemoveUpload = (input) => {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    document.getElementById('bg-loader').classList.remove('hidden');
+    document.getElementById('bg-upload').classList.add('hidden');
+    document.getElementById('bg-sandbox').classList.remove('hidden');
+
+    reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+            state.bgFile = file;
+            state.bgOriginalImg = img;
+            initBgRemoverCanvas(img);
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+};
+
+function initBgRemoverCanvas(img) {
+    bgCanvas = document.getElementById('bg-canvas');
+    bgCtx = bgCanvas.getContext('2d', { willReadFrequently: true });
+
+    // Limit large images for performance
+    const maxDim = 1600;
+    let w = img.width;
+    let h = img.height;
+    if (w > maxDim || h > maxDim) {
+        const ratio = Math.min(maxDim / w, maxDim / h);
+        w *= ratio;
+        h *= ratio;
+        toast("Image scaled down for editing performance.");
+    }
+
+    bgCanvas.width = w;
+    bgCanvas.height = h;
+    bgCtx.drawImage(img, 0, 0, w, h);
+    document.getElementById('bg-dim-info').innerText = `${Math.round(w)}x${Math.round(h)} Optimized Workspace`;
+    
+    // Initial State for Undo
+    state.bgUndoStack = [bgCtx.getImageData(0, 0, w, h)];
+    state.bgRedoStack = [];
+    updateBgHistoryButtons();
+
+    // Event Listeners
+    bgCanvas.onmousedown = bgStartDraw;
+    bgCanvas.onmousemove = bgDraw;
+    bgCanvas.onmouseup = bgEndDraw;
+    bgCanvas.onmouseleave = bgEndDraw;
+
+    // Touch Support
+    bgCanvas.ontouchstart = (e) => { e.preventDefault(); bgStartDraw(e.touches[0]); };
+    bgCanvas.ontouchmove = (e) => { e.preventDefault(); bgDraw(e.touches[0]); };
+    bgCanvas.ontouchend = (e) => { e.preventDefault(); bgEndDraw(); };
+
+    document.getElementById('bg-loader').classList.add('hidden');
+    lucide.createIcons();
+}
+
+function bgStartDraw(e) {
+    bgIsDrawing = true;
+    bgDraw(e);
+}
+
+function bgDraw(e) {
+    if (!bgIsDrawing) return;
+
+    const rect = bgCanvas.getBoundingClientRect();
+    const scaleX = bgCanvas.width / rect.width;
+    const scaleY = bgCanvas.height / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+
+    bgCtx.globalCompositeOperation = bgBrushMode === 'erase' ? 'destination-out' : 'source-over';
+    
+    if (bgBrushMode === 'restore') {
+        // Drawing from original image data is tricky with globalCompositeOperation
+        // Simpler way: clip and draw original image
+        bgCtx.save();
+        bgCtx.beginPath();
+        bgCtx.arc(x, y, bgBrushSize / 2, 0, Math.PI * 2);
+        bgCtx.clip();
+        bgCtx.drawImage(state.bgOriginalImg, 0, 0, bgCanvas.width, bgCanvas.height);
+        bgCtx.restore();
+    } else {
+        bgCtx.beginPath();
+        bgCtx.arc(x, y, bgBrushSize / 2, 0, Math.PI * 2);
+        bgCtx.fill();
+    }
+}
+
+function bgEndDraw() {
+    if (!bgIsDrawing) return;
+    bgIsDrawing = false;
+    saveBgState();
+}
+
+function saveBgState() {
+    const data = bgCtx.getImageData(0, 0, bgCanvas.width, bgCanvas.height);
+    state.bgUndoStack.push(data);
+    if (state.bgUndoStack.length > 21) state.bgUndoStack.shift();
+    state.bgRedoStack = [];
+    updateBgHistoryButtons();
+}
+
+window.bgUndo = () => {
+    if (state.bgUndoStack.length <= 1) return;
+    state.bgRedoStack.push(state.bgUndoStack.pop());
+    const prev = state.bgUndoStack[state.bgUndoStack.length - 1];
+    bgCtx.putImageData(prev, 0, 0);
+    updateBgHistoryButtons();
+};
+
+window.bgRedo = () => {
+    if (state.bgRedoStack.length === 0) return;
+    const next = state.bgRedoStack.pop();
+    state.bgUndoStack.push(next);
+    bgCtx.putImageData(next, 0, 0);
+    updateBgHistoryButtons();
+};
+
+function updateBgHistoryButtons() {
+    const u = document.getElementById('bg-undo');
+    const r = document.getElementById('bg-redo');
+    if(u) u.disabled = state.bgUndoStack.length <= 1;
+    if(r) r.disabled = state.bgRedoStack.length === 0;
+}
+
+window.setBgBrushMode = (mode) => {
+    bgBrushMode = mode;
+    document.getElementById('bg-btn-erase').className = mode === 'erase' ? 'flex flex-col items-center gap-2 p-4 rounded-xl transition-all bg-blue-600 text-white shadow-lg' : 'flex flex-col items-center gap-2 p-4 rounded-xl transition-all bg-white dark:bg-gray-800 text-gray-400 border dark:border-gray-700';
+    document.getElementById('bg-btn-restore').className = mode === 'restore' ? 'flex flex-col items-center gap-2 p-4 rounded-xl transition-all bg-blue-600 text-white shadow-lg' : 'flex flex-col items-center gap-2 p-4 rounded-xl transition-all bg-white dark:bg-gray-800 text-gray-400 border dark:border-gray-700';
+};
+
+window.updateBgBrushSize = (val) => {
+    bgBrushSize = parseInt(val);
+    document.getElementById('bg-brush-val').innerText = `${val}px`;
+};
+
+window.toggleBgExportWarn = () => {
+    const fmt = document.getElementById('bg-export-fmt').value;
+    const warn = document.getElementById('bg-jpg-warn');
+    if (fmt === 'image/jpeg') {
+        warn.classList.remove('hidden');
+    } else {
+        warn.classList.add('hidden');
+    }
+};
+
+window.exportBgRemovedImage = () => {
+    const mime = document.getElementById('bg-export-fmt').value;
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = bgCanvas.width;
+    tempCanvas.height = bgCanvas.height;
+    const tCtx = tempCanvas.getContext('2d');
+
+    if (mime === 'image/jpeg') {
+        tCtx.fillStyle = '#FFFFFF';
+        tCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+    }
+    
+    tCtx.drawImage(bgCanvas, 0, 0);
+    
+    const dataUrl = tempCanvas.toDataURL(mime, 0.9);
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    const ext = mime.split('/')[1].replace('jpeg', 'jpg');
+    link.download = `${state.bgFile.name.split('.')[0]}_isolated.${ext}`;
+    link.click();
+    toast("Asset exported successfully!");
 };
 
 window.copyToolVal = (id) => {
