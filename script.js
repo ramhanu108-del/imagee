@@ -3,6 +3,16 @@
  * Vanilla JS logic for 32+ high-performance browser tools.
  */
 
+const DEBUG_MODE = false;
+
+function debugLog(...args) {
+    if (DEBUG_MODE) console.log(...args);
+}
+
+function debugWarn(...args) {
+    if (DEBUG_MODE) console.warn(...args);
+}
+
 import QUOTES_LIBRARY from './quotes.js';
 import Decimal from 'decimal.js';
 import { Chart, registerables } from 'chart.js';
@@ -1016,7 +1026,7 @@ window.updateGlobalCurrency = (code) => {
     const curSelect = document.getElementById('currency-select');
     if (curSelect) curSelect.value = code;
     
-    console.log(`[Global] Currency changed to ${code}`);
+    debugLog(`[Global] Currency changed to ${code}`);
     toast(`Currency: ${code} (${CURRENCIES[code].symbol})`);
     renderUI();
     window.dispatchEvent(new CustomEvent('currencyChanged', { detail: code }));
@@ -1062,7 +1072,7 @@ document.getElementById('currency-select').onchange = (e) => {
 
 // --- MODAL ENGINE ---
 window.openToolModal = (id) => {
-    console.log("openToolModal called with ID:", id);
+    debugLog("openToolModal called with ID:", id);
     const tool = TOOLS.find(t => t.id === id);
     if (!tool) {
         console.error("Tool not found for ID:", id);
@@ -1188,7 +1198,7 @@ function trackRecentlyUsed(id) {
 // --- TOOLS IMPLEMENTATION HUB ---
 function injectToolFunctionalHTML(id) {
     const normalizedId = (id || location.hash.replace('#', '') || '').toLowerCase().trim().replace('#', '').replace(/\s+/g, '-');
-    console.log("TOOL ID (injected):", normalizedId);
+    debugLog("TOOL ID (injected):", normalizedId);
     const c = document.getElementById('tool-content');
     const curCode = getSelectedCurrency();
     const cur = curCode; 
@@ -3250,15 +3260,10 @@ function injectToolFunctionalHTML(id) {
         'insurance-estimator': window.runInsCalc,
         'fd-calculator': window.runFDCalc,
         'loan-comparison': window.runLoanComp,
-        'age-calculator': window.runAgeCalc,
-        'word-counter': window.runWordCounter,
+        'word-counter': window.runWordCount,
         'password-generator': window.runPassGen,
-        'qr-code-generator': window.runQRGen,
-        'color-picker': window.runColorInit,
-        'base64-converter': window.runB64Calc,
-        'url-converter': window.runUrlCalc,
-        'unit-converter': window.runUnitCalc,
-        'stopwatch': window.runStopwatchInit,
+        'color-picker': window.runColorPicker,
+        'unit-converter': window.runUnitConv,
         'notes-app': () => { if(window.refreshNotes) window.refreshNotes(); },
         'todo-list': () => { if(window.refreshTodoList) window.refreshTodoList(); }
     };
@@ -3272,7 +3277,7 @@ function injectToolFunctionalHTML(id) {
                 }
             }, 50);
         } catch (e) {
-            console.warn(`Auto-run failed for ${normalizedId}:`, e);
+            debugWarn(`Auto-run failed for ${normalizedId}:`, e);
         }
     }
 }
@@ -3554,7 +3559,7 @@ const StabilityEngine = {
         this.setupErrorHandlers();
         this.runRegressionEngine();
         this.startMemoryWatcher();
-        console.log("Stability Engine: Online. Running regression tests...");
+        debugLog("Stability Engine: Online. Running regression tests...");
     },
 
     setupErrorHandlers() {
@@ -3666,7 +3671,7 @@ const StabilityEngine = {
         if (failed.length > 0) {
             this.status = 'DEGRADED';
             this.logDiagnostic('REGRESSION_FAILURE', { issues: failed });
-            console.error("Stability Engine: Regressions detected!", failed);
+            if (DEBUG_MODE) console.error("Stability Engine: Regressions detected!", failed);
         }
     },
 
@@ -4422,7 +4427,7 @@ window.writeEditorText = (editor, text) => {
 window.processWCText = (action) => {
     const editor = window.getWordCounterEditor();
     if (!editor) {
-        console.warn('Word Counter editor not found');
+        debugWarn('Word Counter editor not found');
         return;
     }
 
