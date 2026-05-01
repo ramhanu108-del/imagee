@@ -636,15 +636,38 @@ window.refreshQuote = () => {
         container.classList.add('opacity-0', 'scale-95');
         setTimeout(() => {
             state.currentQuote = getNextRandomQuote();
-            renderUI();
+            updateQuoteUIOnly();
             container.classList.remove('opacity-0', 'scale-95');
             container.classList.add('opacity-100', 'scale-100');
         }, 500);
     } else {
         state.currentQuote = getNextRandomQuote();
-        renderUI();
+        updateQuoteUIOnly();
     }
 };
+
+function updateQuoteUIOnly() {
+    const q = state.currentQuote;
+    if (!q) return;
+    
+    const textEl = document.getElementById('quote-text');
+    const authorEl = document.getElementById('quote-author');
+    
+    if (textEl) textEl.innerText = `"${q.text}"`;
+    if (authorEl) authorEl.innerText = `— ${q.author || 'Unknown'}`;
+    
+    const chipsContainer = document.getElementById('quote-chips');
+    if (chipsContainer) {
+        let chipsHTML = '';
+        if (q.tradition) {
+            chipsHTML += `<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.tradition}</span>`;
+        }
+        if (q.source) {
+            chipsHTML += `<span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.source}</span>`;
+        }
+        chipsContainer.innerHTML = chipsHTML;
+    }
+}
 
 // Visibility management for rotation
 document.addEventListener('visibilitychange', () => {
@@ -849,9 +872,10 @@ const initLocalization = () => {
 // Initialize quote safely
 state.currentQuote = getNextRandomQuote();
 
-
 // --- UI CORE RENDERING ---
 function renderUI() {
+    if (window.__userIsTyping) return;
+    
     // Preserve tool-specific state before re-render
     if (state.activeTool && state.activeTool.id === 'tax-calculator') {
         const inEl = document.getElementById('tax-in');
@@ -1053,13 +1077,14 @@ window.setGlobalCategory = (c) => {
 
 document.getElementById('tool-search').oninput = (e) => {
     state.search = e.target.value;
-    renderUI();
+    renderFullGrid();
+    renderToolShelves();
 };
 
 document.getElementById('theme-toggle').onclick = () => {
     state.theme = state.theme === 'light' ? 'dark' : 'light';
     localStorage.setItem('theme', state.theme);
-    renderUI();
+    applyTheme();
 };
 
 document.getElementById('lang-select').onchange = (e) => {
@@ -1072,11 +1097,20 @@ document.getElementById('currency-select').onchange = (e) => {
 
 // --- MODAL ENGINE ---
 window.openToolModal = (id) => {
+    if (window.__userIsTyping) return;
+    
     debugLog("openToolModal called with ID:", id);
     const tool = TOOLS.find(t => t.id === id);
     if (!tool) {
         console.error("Tool not found for ID:", id);
         return;
+    }
+
+    if (state.activeTool && state.activeTool.id !== id) {
+        const content = document.getElementById('tool-content');
+        if (content) {
+            window.saveToolState(state.activeTool.id, content);
+        }
     }
 
     state.activeTool = tool;
@@ -1150,10 +1184,21 @@ window.openToolModal = (id) => {
     }, 10);
     
     document.body.style.overflow = "hidden";
-    lucide.createIcons();
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+    }
 };
 
 function closeToolModal() {
+    if (state.activeTool && state.activeTool.id) {
+        const content = document.getElementById('tool-content');
+        if (content) {
+            window.saveToolState(state.activeTool.id, content);
+        }
+    }
+    
+    modalInjectedForToolId = null;
+    state.activeTool = null;
     // 1. Cleanup Memory & Global State
     if (window.swInt) { 
         clearInterval(window.swInt); 
@@ -1195,21 +1240,108 @@ function trackRecentlyUsed(id) {
     localStorage.setItem('tool_recent', JSON.stringify(state.recent));
 }
 
+let lucideRenderScheduled = false;
+
+window.renderLucideIconsOnce = () => {
+    if (lucideRenderScheduled) return;
+    lucideRenderScheduled = true;
+    requestAnimationFrame(() => {
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons();
+        }
+        lucideRenderScheduled = false;
+    });
+};
+
 // --- TOOL STATE MANAGEMENT ---
+window.__restoringToolState = false;
+window.__userIsTyping = false;
+
+document.addEventListener('focusin', (e) => {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+        if (e.target.type !== 'range' && e.target.type !== 'checkbox' && e.target.type !== 'radio') {
+            window.__userIsTyping = true;
+        }
+    }
+});
+document.addEventListener('focusout', (e) => {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+        window.__userIsTyping = false;
+        if (state.activeTool && window.scheduleToolCalculation) {
+            window.scheduleToolCalculation(state.activeTool.id);
+        }
+    }
+});
+
+let _lucide = window.lucide;
+let _lucideScheduled = false;
+
+Object.defineProperty(window, 'lucide', {
+    get: () => _lucide,
+    set: (val) => {
+        if (val && typeof val.createIcons === 'function') {
+            const orig = val.createIcons;
+            val.createIcons = (...args) => {
+                if (window.__userIsTyping || _lucideScheduled) return;
+                _lucideScheduled = true;
+                requestAnimationFrame(() => {
+                    orig.apply(val, args);
+                    _lucideScheduled = false;
+                });
+            };
+        }
+        _lucide = val;
+    }
+});
+if (_lucide && typeof _lucide.createIcons === 'function') {
+    const orig = _lucide.createIcons;
+    _lucide.createIcons = (...args) => {
+        if (window.__userIsTyping || _lucideScheduled) return;
+        _lucideScheduled = true;
+        requestAnimationFrame(() => {
+            orig.apply(_lucide, args);
+            _lucideScheduled = false;
+        });
+    };
+}
+
 window.getToolStateKey = (toolId) => {
     return `smarttools_state_${toolId}`;
 };
 
+window.hasToolState = (toolId) => {
+    try {
+        return !!localStorage.getItem(window.getToolStateKey(toolId));
+    } catch {
+        return false;
+    }
+};
+
+const saveTimers = {};
+window.scheduleToolStateSave = (toolId, root) => {
+    clearTimeout(saveTimers[toolId]);
+    saveTimers[toolId] = setTimeout(() => {
+        if (window.__restoringToolState) return;
+        window.saveToolState(toolId, root);
+    }, 700);
+};
+
 window.saveToolState = (toolId, root) => {
-    if (!toolId || !root) return;
+    if (!toolId || !root || window.isRestoringToolState()) return;
 
     const fields = root.querySelectorAll('input, select, textarea');
     const state = {};
 
     fields.forEach((field) => {
         if (field.type === 'file') return;
-        const key = field.name || field.id || field.dataset.stateKey;
+        const key = field.dataset.stateKey || field.name || field.id;
         if (!key) return;
+
+        // Skip range slider if there is a number/text input sharing the exact same key
+        if (field.type === 'range' && field.dataset.stateKey) {
+            const hasPairedInput = root.querySelector(`input[type="number"][data-state-key="${key}"], input[type="text"][data-state-key="${key}"]`);
+            if (hasPairedInput) return; // Prioritize the exact value from the number input instead
+        }
 
         if (field.type === 'checkbox') {
             state[key] = field.checked;
@@ -1223,6 +1355,10 @@ window.saveToolState = (toolId, root) => {
     localStorage.setItem(window.getToolStateKey(toolId), JSON.stringify(state));
 };
 
+window.isRestoringToolState = () => {
+    return window.__restoringToolState === true;
+};
+
 window.restoreToolState = (toolId, root) => {
     if (!toolId || !root) return false;
     if (toolId === 'notes-app' || toolId === 'todo-list') return false;
@@ -1230,19 +1366,21 @@ window.restoreToolState = (toolId, root) => {
     const raw = localStorage.getItem(window.getToolStateKey(toolId));
     if (!raw) return false;
 
-    let toolState = {}; // Rename local binding to toolState
+    let toolState = {}; 
     try {
         toolState = JSON.parse(raw);
     } catch {
         return false;
     }
 
+    window.__restoringToolState = true;
     let hasRestored = false;
     const fields = root.querySelectorAll('input, select, textarea');
 
+    // Restore non-range fields first so standard inputs get the saved literal values
     fields.forEach((field) => {
-        if (field.type === 'file') return;
-        const key = field.name || field.id || field.dataset.stateKey;
+        if (field.type === 'file' || field.type === 'range') return;
+        const key = field.dataset.stateKey || field.name || field.id;
         if (!key || !(key in toolState)) return;
 
         if (field.type === 'checkbox') {
@@ -1255,17 +1393,53 @@ window.restoreToolState = (toolId, root) => {
         
         hasRestored = true;
     });
+    
+    // Restore range sliders to sync with inputs
+    fields.forEach((field) => {
+        if (field.type !== 'range') return;
+        const key = field.dataset.stateKey || field.name || field.id;
+        if (key && (key in toolState)) {
+             field.value = toolState[key];
+        }
+    });
+
+    window.__restoringToolState = false;
+    
+    // Schedule calculation to run immediately after restore
+    if (window.scheduleToolCalculation && toolId) {
+        window.scheduleToolCalculation(toolId);
+    }
 
     return hasRestored;
+};
+
+window.syncLinkedControlsAfterRestore = (toolId, root) => {
+    // Force sync range sliders from their paired inputs if they share data-state-key
+    const ranges = root.querySelectorAll('input[type="range"][data-state-key]');
+    ranges.forEach(range => {
+        const key = range.dataset.stateKey;
+        const linkedInput = root.querySelector(`input[type="number"][data-state-key="${key}"], input[type="text"][data-state-key="${key}"]`);
+        if (linkedInput) {
+            range.value = linkedInput.value;
+        }
+    });
 };
 
 window.clearToolState = (toolId) => {
     localStorage.removeItem(window.getToolStateKey(toolId));
 };
 
+let modalInjectedForToolId = null;
+
 // --- TOOLS IMPLEMENTATION HUB ---
 function injectToolFunctionalHTML(id) {
+    if (window.__userIsTyping) return;
+    
     const normalizedId = (id || location.hash.replace('#', '') || '').toLowerCase().trim().replace('#', '').replace(/\s+/g, '-');
+    
+    if (modalInjectedForToolId === normalizedId) return;
+    modalInjectedForToolId = normalizedId;
+    
     debugLog("TOOL ID (injected):", normalizedId);
     const c = document.getElementById('tool-content');
     const curCode = getSelectedCurrency();
@@ -1484,10 +1658,10 @@ function injectToolFunctionalHTML(id) {
                                 <div class="fin-input-group">
                                     <label class="fin-label">Principal Amount</label>
                                     <div class="relative">
-                                        <input type="number" id="emi-p" value="500000" oninput="runEMICalc()" class="fin-input pr-16">
+                                        <input type="number" id="emi-p" data-state-key="emiPrincipal" value="500000" oninput="runEMICalc()" class="fin-input pr-16">
                                         <button onclick="window.toggleGlobalCurrency()" class="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95" id="emi-p-sym">${curCode}</button>
                                     </div>
-                                    <input type="range" min="10000" max="10000000" step="10000" value="500000" oninput="document.getElementById('emi-p').value = this.value; runEMICalc()" class="mt-4 w-full h-1.5 accent-blue-600">
+                                    <input type="range" data-state-key="emiPrincipal" min="10000" max="10000000" step="10000" value="500000" oninput="document.getElementById('emi-p').value = this.value; runEMICalc()" class="mt-4 w-full h-1.5 accent-blue-600">
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-4">
@@ -1527,7 +1701,7 @@ function injectToolFunctionalHTML(id) {
                             <div id="emi-prep-extra" class="hidden space-y-6 animate-fade-in pt-4 border-t border-green-100 dark:border-green-800">
                                 <div class="fin-input-group">
                                     <label class="fin-label flex justify-between">Extra Monthly <span class="text-green-600" id="emi-prep-m-v">$0</span></label>
-                                    <input type="range" id="emi-prep-m" min="0" max="100000" step="500" value="0" oninput="document.getElementById('emi-prep-m-v').innerText = formatToolCurrency(this.value); runEMICalc()" class="w-full h-1.5 accent-green-600">
+                                    <input type="range" id="emi-prep-m" data-state-key="emiExtraMonthly" min="0" max="100000" step="500" value="0" oninput="document.getElementById('emi-prep-m-v').innerText = formatToolCurrency(this.value); runEMICalc()" class="w-full h-1.5 accent-green-600">
                                 </div>
                                 <div class="fin-input-group">
                                     <label class="fin-label">One-Time Lump Sum</label>
@@ -1914,10 +2088,10 @@ function injectToolFunctionalHTML(id) {
                                 <div class="fin-input-group">
                                     <label class="fin-label">Monthly Investment</label>
                                     <div class="relative">
-                                        <input type="number" id="sip-m" oninput="runSIPCalc()" class="fin-input pr-12" value="5000">
+                                        <input type="number" id="sip-m" data-state-key="sipMonthlyInvestment" oninput="runSIPCalc()" class="fin-input pr-12" value="5000">
                                         <button onclick="window.toggleGlobalCurrency()" class="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95">${curCode}</button>
                                     </div>
-                                    <input type="range" min="500" max="100000" step="500" value="5000" oninput="document.getElementById('sip-m').value = this.value; runSIPCalc()" class="mt-4 w-full h-1.5 accent-blue-600">
+                                    <input type="range" data-state-key="sipMonthlyInvestment" min="500" max="100000" step="500" value="5000" oninput="document.getElementById('sip-m').value = this.value; runSIPCalc()" class="mt-4 w-full h-1.5 accent-blue-600">
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-4">
@@ -2388,6 +2562,7 @@ function injectToolFunctionalHTML(id) {
                             <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-3xl border border-blue-100 dark:border-blue-900/20 text-center">
                                 <h5 class="text-[8px] font-black text-blue-600 uppercase tracking-widest mb-2">Final Take-Away</h5>
                                 <div id="cry-net" class="text-xl font-black text-blue-700 dark:text-blue-400">---</div>
+                                <p class="text-[9px] text-blue-400/80 uppercase tracking-widest mt-4">Disclaimer: Investments are volatile. Tax limits vary.</p>
                             </div>
                         </div>
                     </div>
@@ -3338,18 +3513,58 @@ function injectToolFunctionalHTML(id) {
     
     // Restore state
     window.restoreToolState(normalizedId, c);
+    window.syncLinkedControlsAfterRestore(normalizedId, c);
 
     if (runMap[normalizedId]) {
         try {
-            // Use setTimeout to ensure DOM is fully ready
-            setTimeout(() => {
-                if (typeof runMap[normalizedId] === 'function') {
-                    runMap[normalizedId]();
-                }
-            }, 50);
+            if (typeof runMap[normalizedId] === 'function') {
+                runMap[normalizedId]();
+            }
         } catch (e) {
             debugWarn(`Auto-run failed for ${normalizedId}:`, e);
         }
+    }
+
+    // Auto-save tool states locally for this modal
+    if (!c.dataset.stateBound) {
+        c.addEventListener('input', (e) => {
+            if (e.target && e.target.dataset && e.target.dataset.stateKey) {
+                const key = e.target.dataset.stateKey;
+                window.__syncingLinkedControls = true;
+                
+                // If a number/text input changes, instantly reflect it on paired range slider
+                if (e.target.type !== 'range') {
+                    const pairedRange = c.querySelector(`input[type="range"][data-state-key="${key}"]`);
+                    if (pairedRange && String(pairedRange.value) !== String(e.target.value)) {
+                        pairedRange.value = e.target.value;
+                    }
+                } else {
+                    // Range slider updates paired input
+                    const pairedInput = c.querySelector(`input[type="number"][data-state-key="${key}"], input[type="text"][data-state-key="${key}"]`);
+                    if (pairedInput && String(pairedInput.value) !== String(e.target.value)) {
+                        pairedInput.value = e.target.value;
+                    }
+                }
+                
+                window.__syncingLinkedControls = false;
+            }
+
+            if (state.activeTool && state.activeTool.id) {
+                window.scheduleToolStateSave(state.activeTool.id, c);
+                if (window.scheduleToolCalculation) {
+                    window.scheduleToolCalculation(state.activeTool.id);
+                }
+            }
+        });
+        c.addEventListener('change', () => {
+            if (state.activeTool && state.activeTool.id) {
+                window.scheduleToolStateSave(state.activeTool.id, c);
+                if (window.scheduleToolCalculation) {
+                    window.scheduleToolCalculation(state.activeTool.id);
+                }
+            }
+        });
+        c.dataset.stateBound = "true";
     }
 }
 
@@ -3987,31 +4202,69 @@ window.runEMICalc = () => {
 
     const milestonesArea = document.getElementById('emi-highlights');
     if (milestonesArea) {
-        let mHtml = '';
-        if (breakEvenMonth) mHtml += `<div class="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full text-[10px] font-black text-blue-600 flex items-center gap-2 border border-blue-100"><i data-lucide="zap" class="w-3 h-3"></i> Break-even Point M${breakEvenMonth}</div>`;
-        if (halfPaidMonth) mHtml += `<div class="px-4 py-2 bg-green-50 dark:bg-green-900/20 rounded-full text-[10px] font-black text-green-600 flex items-center gap-2 border border-green-100"><i data-lucide="check" class="w-3 h-3"></i> 50% Principal M${halfPaidMonth}</div>`;
-        if (processingFee.gt(0)) mHtml += `<div class="px-4 py-2 bg-slate-50 dark:bg-slate-900/20 rounded-full text-[10px] font-black text-slate-600 flex items-center gap-2 border border-slate-100"><i data-lucide="info" class="w-3 h-3"></i> Fee: ${FinUI.formatCurrency(processingFee.toNumber(), targetCurrency)}</div>`;
-        milestonesArea.innerHTML = mHtml;
-        lucide.createIcons();
+        let h1 = document.getElementById('emi-hl-1');
+        let h2 = document.getElementById('emi-hl-2');
+        let h3 = document.getElementById('emi-hl-3');
+        if (!h1 || !h2 || !h3) {
+            milestonesArea.innerHTML = `
+                <div id="emi-hl-1" class="hidden px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full text-[10px] font-black text-blue-600 flex items-center gap-2 border border-blue-100"></div>
+                <div id="emi-hl-2" class="hidden px-4 py-2 bg-green-50 dark:bg-green-900/20 rounded-full text-[10px] font-black text-green-600 flex items-center gap-2 border border-green-100"></div>
+                <div id="emi-hl-3" class="hidden px-4 py-2 bg-slate-50 dark:bg-slate-900/20 rounded-full text-[10px] font-black text-slate-600 flex items-center gap-2 border border-slate-100"></div>
+            `;
+            h1 = document.getElementById('emi-hl-1');
+            h2 = document.getElementById('emi-hl-2');
+            h3 = document.getElementById('emi-hl-3');
+        }
+
+        if (breakEvenMonth) {
+            h1.innerText = `Break-even Point M${breakEvenMonth}`;
+            h1.classList.remove('hidden');
+        } else {
+            h1.classList.add('hidden');
+        }
+        
+        if (halfPaidMonth) {
+            h2.innerText = `50% Principal M${halfPaidMonth}`;
+            h2.classList.remove('hidden');
+        } else {
+            h2.classList.add('hidden');
+        }
+        
+        if (processingFee.gt(0)) {
+            h3.innerText = `Fee: ${FinUI.formatCurrency(processingFee.toNumber(), targetCurrency)}`;
+            h3.classList.remove('hidden');
+        } else {
+            h3.classList.add('hidden');
+        }
     }
 
     const insightArea = document.getElementById('emi-insights-list');
     if (insightArea) {
         const insights = [
-            { icon: 'shield-alert', title: 'Debt Efficiency', desc: `Total cost is ${totalPayment.div(P).toFixed(2)}x of principal. ${burdenPerc.gt(40) ? 'High interest burden detected.' : 'Efficient debt structure.'}` },
-            { icon: 'trending-down', title: 'Savings Potential', desc: `Prepayments save you ${FinUI.formatCurrency(savings.times(exRate).toNumber(), targetCurrency)} and retire loan ${monthsSaved} months early.` },
-            { icon: 'activity', title: 'Processing Impact', desc: `Upfront processing fee adds ${feeRate.times(100).toFixed(1)}% to your effective loan cost today.` }
+            { id: 'emi-ins-1', icon: 'shield-alert', title: 'Debt Efficiency', desc: `Total cost is ${totalPayment.div(P).toFixed(2)}x of principal. ${burdenPerc.gt(40) ? 'High interest burden detected.' : 'Efficient debt structure.'}` },
+            { id: 'emi-ins-2', icon: 'trending-down', title: 'Savings Potential', desc: `Prepayments save you ${FinUI.formatCurrency(savings.times(exRate).toNumber(), targetCurrency)} and retire loan ${monthsSaved} months early.` },
+            { id: 'emi-ins-3', icon: 'activity', title: 'Processing Impact', desc: `Upfront processing fee adds ${feeRate.times(100).toFixed(1)}% to your effective loan cost today.` }
         ];
-        insightArea.innerHTML = insights.map(i => `
-            <div class="p-4 bg-white dark:bg-black/20 rounded-2xl border dark:border-gray-800 flex gap-4">
-                <div class="text-blue-600"><i data-lucide="${i.icon}" class="w-4 h-4"></i></div>
-                <div class="space-y-1">
-                    <h5 class="text-[9px] font-black uppercase text-gray-900 dark:text-white leading-none">${i.title}</h5>
-                    <p class="text-[8px] font-bold text-gray-500 dark:text-gray-400 break-words">${i.desc}</p>
+        
+        if (insightArea.children.length === 0) {
+            insightArea.innerHTML = insights.map(i => `
+                <div class="p-4 bg-white dark:bg-black/20 rounded-2xl border dark:border-gray-800 flex gap-4">
+                    <div class="text-blue-600"><i data-lucide="${i.icon}" class="w-4 h-4"></i></div>
+                    <div class="space-y-1">
+                        <h5 class="text-[9px] font-black uppercase text-gray-900 dark:text-white leading-none">${i.title}</h5>
+                        <p id="${i.id}" class="text-[8px] font-bold text-gray-500 dark:text-gray-400 break-words">${i.desc}</p>
+                    </div>
                 </div>
-            </div>
-        `).join('');
-        lucide.createIcons();
+            `).join('');
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                window.lucide.createIcons();
+            }
+        } else {
+            insights.forEach(i => {
+                const el = document.getElementById(i.id);
+                if (el) el.innerText = i.desc;
+            });
+        }
     }
 
     const tbody = document.getElementById('emi-tbody');
@@ -5592,30 +5845,47 @@ window.runSIPCalc = () => {
     const highlights = document.getElementById('sip-highlights');
     if (highlights) {
         const mult = finalMaturity.div(finalInvested).toFixed(1);
-        // Correct calculation for ending monthly SIP
         const finalMonthlySIP = monthly.mul(new Decimal(1).plus(stepUp.div(100)).pow(years.minus(1))).toDecimalPlaces(0);
         
-        highlights.innerHTML = `
-            <div class="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full text-[10px] font-black text-blue-600 border border-blue-100">${mult}x Wealth Multiplier</div>
-            <div class="px-4 py-2 bg-green-50 dark:bg-green-900/20 rounded-full text-[10px] font-black text-green-600 border border-green-100">Ends at: ${FinUI.formatCurrency(finalMonthlySIP.toNumber(), currency)}/mo</div>
-        `;
+        let h1 = document.getElementById('sip-hl-1');
+        let h2 = document.getElementById('sip-hl-2');
+        if (!h1 || !h2) {
+             highlights.innerHTML = `
+                 <div id="sip-hl-1" class="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full text-[10px] font-black text-blue-600 border border-blue-100"></div>
+                 <div id="sip-hl-2" class="px-4 py-2 bg-green-50 dark:bg-green-900/20 rounded-full text-[10px] font-black text-green-600 border border-green-100"></div>
+             `;
+             h1 = document.getElementById('sip-hl-1');
+             h2 = document.getElementById('sip-hl-2');
+        }
+        h1.innerText = `${mult}x Wealth Multiplier`;
+        h2.innerText = `Ends at: ${FinUI.formatCurrency(finalMonthlySIP.toNumber(), currency)}/mo`;
     }
 
     const insightArea = document.getElementById('sip-insights-area');
     if (insightArea) {
         const insights = [
-            { icon: 'trending-up', title: 'Portfolio Growth', desc: `Market gains account for ${finalGains.div(finalMaturity).mul(100).toFixed(0)}% of your estimated maturity value.` },
-            { icon: 'shield-check', title: 'Tax Efficiency', desc: `Estimated taxes reduce your final corpus by ${FinUI.formatCurrency(taxAmount.toNumber(), currency)}.` },
-            { icon: 'wind', title: 'Inflation Erosion', desc: `Inflation at ${inflation}%/yr reduces the purchasing power of your wealth by ${FinUI.formatCurrency(finalMaturity.minus(realMaturity).toNumber(), currency)}.` }
+            { id: 'sip-ins-1', icon: 'trending-up', title: 'Portfolio Growth', desc: `Market gains account for ${finalGains.div(finalMaturity).mul(100).toFixed(0)}% of your estimated maturity value.` },
+            { id: 'sip-ins-2', icon: 'shield-check', title: 'Tax Efficiency', desc: `Estimated taxes reduce your final corpus by ${FinUI.formatCurrency(taxAmount.toNumber(), currency)}.` },
+            { id: 'sip-ins-3', icon: 'wind', title: 'Inflation Erosion', desc: `Inflation at ${inflation}%/yr reduces the purchasing power of your wealth by ${FinUI.formatCurrency(finalMaturity.minus(realMaturity).toNumber(), currency)}.` }
         ];
-        insightArea.innerHTML = insights.map(i => `
-            <div class="p-6 bg-white dark:bg-black/20 rounded-[2rem] border dark:border-gray-800 space-y-3">
-                <div class="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/40 flex items-center justify-center text-blue-600"><i data-lucide="${i.icon}" class="w-4 h-4"></i></div>
-                <h5 class="text-[10px] font-black uppercase text-gray-900 dark:text-white">${i.title}</h5>
-                <p class="text-[9px] font-bold text-gray-400 leading-relaxed">${i.desc}</p>
-            </div>
-        `).join('');
-        lucide.createIcons();
+        
+        if (insightArea.children.length === 0) {
+            insightArea.innerHTML = insights.map(i => `
+                <div class="p-6 bg-white dark:bg-black/20 rounded-[2rem] border dark:border-gray-800 space-y-3">
+                    <div class="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/40 flex items-center justify-center text-blue-600"><i data-lucide="${i.icon}" class="w-4 h-4"></i></div>
+                    <h5 class="text-[10px] font-black uppercase text-gray-900 dark:text-white">${i.title}</h5>
+                    <p id="${i.id}" class="text-[9px] font-bold text-gray-400 leading-relaxed">${i.desc}</p>
+                </div>
+            `).join('');
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                window.lucide.createIcons();
+            }
+        } else {
+            insights.forEach(i => {
+                const el = document.getElementById(i.id);
+                if (el) el.innerText = i.desc;
+            });
+        }
     }
 
     const tbody = document.getElementById('sip-tbody');
@@ -5769,22 +6039,38 @@ window.runTaxCalc = () => {
         if (insightList) {
             let insights = [];
             if (finalTax.isZero()) {
-                insights.push({ icon: 'sun', color: 'green', title: 'Zero Tax Liability', desc: 'You fall under the tax exemption threshold for this jurisdiction.' });
+                insights.push({ id: 'tax-ins-1', icon: 'sun', color: 'green', title: 'Zero Tax Liability', desc: 'You fall under the tax exemption threshold for this jurisdiction.' });
             } else {
-                insights.push({ icon: 'trending-down', color: 'red', title: 'Tax Impact', desc: `Approximately ${effectiveRate.toFixed(1)}% of your gross earnings are allocated to statutory dues.` });
+                insights.push({ id: 'tax-ins-1', icon: 'trending-down', color: 'red', title: 'Tax Impact', desc: `Approximately ${effectiveRate.toFixed(1)}% of your gross earnings are allocated to statutory dues.` });
             }
-            insights.push({ icon: 'zap', color: 'indigo', title: 'Take-Home Pay', desc: `Your purchasing power is ${formatEMICurrency(monthlyInHand.toNumber(), curCode)} per month after all statutory deductions.` });
+            insights.push({ id: 'tax-ins-2', icon: 'zap', color: 'indigo', title: 'Take-Home Pay', desc: `Your purchasing power is ${FinUI.formatCurrency(monthlyInHand.toNumber(), curCode)} per month after all statutory deductions.` });
             
-            insightList.innerHTML = insights.map(i => `
-                <div class="p-5 bg-white dark:bg-black/20 rounded-3xl border dark:border-gray-800 flex gap-4">
-                    <div class="text-${i.color}-500 shrink-0"><i data-lucide="${i.icon}" class="w-5 h-5"></i></div>
-                    <div>
-                        <h5 class="text-[10px] font-black uppercase text-gray-900 dark:text-white mb-1">${i.title}</h5>
-                        <p class="text-[9px] font-bold text-gray-400 leading-tight">${i.desc}</p>
+            if (insightList.children.length === 0) {
+                insightList.innerHTML = insights.map(i => `
+                    <div class="p-5 bg-white dark:bg-black/20 rounded-3xl border dark:border-gray-800 flex gap-4">
+                        <div class="text-${i.color}-500 shrink-0"><i id="${i.id}-icon" data-lucide="${i.icon}" class="w-5 h-5"></i></div>
+                        <div>
+                            <h5 id="${i.id}-title" class="text-[10px] font-black uppercase text-gray-900 dark:text-white mb-1">${i.title}</h5>
+                            <p id="${i.id}-desc" class="text-[9px] font-bold text-gray-400 leading-tight">${i.desc}</p>
+                        </div>
                     </div>
-                </div>
-            `).join('');
-            lucide.createIcons();
+                `).join('');
+                if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                    window.lucide.createIcons();
+                }
+            } else {
+                insights.forEach(i => {
+                    const descEl = document.getElementById(`${i.id}-desc`);
+                    if (descEl) descEl.innerText = i.desc;
+                    const titleEl = document.getElementById(`${i.id}-title`);
+                    if (titleEl) titleEl.innerText = i.title;
+                    const iconEl = document.getElementById(`${i.id}-icon`);
+                    // Update icon color class on parent
+                    if (iconEl && iconEl.parentElement) {
+                        iconEl.parentElement.className = `text-${i.color}-500 shrink-0`;
+                    }
+                });
+            }
         }
 
     } catch (err) {
@@ -6137,16 +6423,26 @@ window.runCCCalc = () => {
     const monthlyInterestInitial = P.mul(monthlyRate);
     if (monthlyPayment.lte(monthlyInterestInitial) && annualAPR.gt(0)) {
         if (insightArea) {
-             insightArea.innerHTML = `
-                <div class="p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-[2rem] flex gap-4">
-                    <div class="text-red-500 shrink-0"><i data-lucide="alert-triangle" class="w-5 h-5"></i></div>
-                    <div>
-                         <h5 class="text-[10px] font-black uppercase text-red-700 dark:text-red-400 mb-1">Debt Trap Detected</h5>
-                         <p class="text-[9px] font-bold text-red-600 dark:text-red-400">Monthly payment of ${FinUI.formatCurrency(monthlyPayment.toNumber(), currency)} is less than the interest of ${FinUI.formatCurrency(monthlyInterestInitial.toNumber(), currency)}. Balance will never be repaid.</p>
+             if (insightArea.children.length === 0) {
+                 insightArea.innerHTML = `
+                    <div class="p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-[2rem] flex gap-4">
+                        <div class="text-red-500 shrink-0"><i data-lucide="alert-triangle" class="w-5 h-5"></i></div>
+                        <div>
+                             <h5 id="cc-trap-title" class="text-[10px] font-black uppercase text-red-700 dark:text-red-400 mb-1">Debt Trap Detected</h5>
+                             <p id="cc-trap-desc" class="text-[9px] font-bold text-red-600 dark:text-red-400">Monthly payment of ${FinUI.formatCurrency(monthlyPayment.toNumber(), currency)} is less than the interest of ${FinUI.formatCurrency(monthlyInterestInitial.toNumber(), currency)}. Balance will never be repaid.</p>
+                        </div>
                     </div>
-                </div>
-             `;
-             lucide.createIcons();
+                 `;
+                 if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                    window.lucide.createIcons();
+                 }
+             } else {
+                 const trapDesc = document.getElementById('cc-trap-desc');
+                 if (trapDesc) trapDesc.innerText = `Monthly payment of ${FinUI.formatCurrency(monthlyPayment.toNumber(), currency)} is less than the interest of ${FinUI.formatCurrency(monthlyInterestInitial.toNumber(), currency)}. Balance will never be repaid.`;
+                 
+                 const trapTitle = document.getElementById('cc-trap-title');
+                 if (trapTitle) trapTitle.innerText = "Debt Trap Detected";
+             }
         }
         document.getElementById('cc-total-i').innerText = "∞";
         document.getElementById('cc-months').innerText = "Infinite";
@@ -6197,21 +6493,53 @@ window.runCCCalc = () => {
 
     if (insightArea) {
         const insights = [
-            { icon: 'alert-circle', title: 'Interest Trap', desc: `You will pay ${FinUI.formatCurrency(finalInterestDisplay, currency)} in interest alone just to reach your target.` },
-            { icon: 'trending-up', title: 'Daily Leak', desc: `Every 24 hours, ${dailyStr} in interest is added to your balance.` }
+            { id: 'cc-ins-1', icon: 'alert-circle', title: 'Interest Trap', color: 'red', desc: `You will pay ${FinUI.formatCurrency(finalInterestDisplay, currency)} in interest alone just to reach your target.` },
+            { id: 'cc-ins-2', icon: 'trending-up', title: 'Daily Leak', color: 'blue', desc: `Every 24 hours, ${dailyStr} in interest is added to your balance.` }
         ];
-        if (annualAPR.gt(20)) insights.push({ icon: 'zap', title: 'Aggressive Debt', desc: 'Extremely high APR detected. Consider balance transfer or personal loan consolidation.' });
+        if (annualAPR.gt(20)) insights.push({ id: 'cc-ins-3', icon: 'zap', title: 'Aggressive Debt', color: 'orange', desc: 'Extremely high APR detected. Consider balance transfer or personal loan consolidation.' });
 
-        insightArea.innerHTML = insights.map(i => `
-            <div class="p-6 bg-white dark:bg-black/20 rounded-[2rem] border dark:border-gray-800 flex gap-4">
-                <div class="${i.title === 'Interest Trap' ? 'text-red-500' : 'text-blue-500'} shrink-0"><i data-lucide="${i.icon}" class="w-5 h-5"></i></div>
-                <div>
-                     <h5 class="text-[10px] font-black uppercase text-gray-900 dark:text-white mb-1">${i.title}</h5>
-                     <p class="text-[9px] font-bold text-gray-400 leading-tight">${i.desc}</p>
+        if (insightArea.children.length === 0 || document.getElementById('cc-trap-title')) {
+            insightArea.innerHTML = insights.map(i => `
+                <div class="p-6 bg-white dark:bg-black/20 rounded-[2rem] border dark:border-gray-800 flex gap-4">
+                    <div class="text-${i.color}-500 shrink-0"><i id="${i.id}-icon" data-lucide="${i.icon}" class="w-5 h-5"></i></div>
+                    <div>
+                         <h5 id="${i.id}-title" class="text-[10px] font-black uppercase text-gray-900 dark:text-white mb-1">${i.title}</h5>
+                         <p id="${i.id}-desc" class="text-[9px] font-bold text-gray-400 leading-tight">${i.desc}</p>
+                    </div>
                 </div>
-            </div>
-        `).join('');
-        lucide.createIcons();
+            `).join('');
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                window.lucide.createIcons();
+            }
+        } else {
+            insights.forEach(i => {
+                const descEl = document.getElementById(`${i.id}-desc`);
+                if (descEl) descEl.innerText = i.desc;
+                const titleEl = document.getElementById(`${i.id}-title`);
+                if (titleEl) titleEl.innerText = i.title;
+            });
+            
+            // If the 3rd insight wasn't there before, we might just re-render to be safe
+            if (insights.length === 3 && !document.getElementById('cc-ins-3-title')) {
+                insightArea.innerHTML = insights.map(i => `
+                    <div class="p-6 bg-white dark:bg-black/20 rounded-[2rem] border dark:border-gray-800 flex gap-4">
+                        <div class="text-${i.color}-500 shrink-0"><i id="${i.id}-icon" data-lucide="${i.icon}" class="w-5 h-5"></i></div>
+                        <div>
+                             <h5 id="${i.id}-title" class="text-[10px] font-black uppercase text-gray-900 dark:text-white mb-1">${i.title}</h5>
+                             <p id="${i.id}-desc" class="text-[9px] font-bold text-gray-400 leading-tight">${i.desc}</p>
+                        </div>
+                    </div>
+                `).join('');
+                if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                    window.lucide.createIcons();
+                }
+            } else if (insights.length === 2 && document.getElementById('cc-ins-3-title')) {
+                const el = document.getElementById('cc-ins-3-title');
+                if (el && el.closest('.flex.gap-4')) {
+                    el.closest('.flex.gap-4').remove();
+                }
+            }
+        }
     }
 
     // Export Support
@@ -7010,19 +7338,6 @@ function toast(msg) {
 // --- BOOT ENGINE ---
 function boot() {
     StabilityEngine.init(); // Start regression testing and error monitoring
-    
-    // User Behavior Guard: Apply debouncing to heavy calculation tools
-    const calcsToDebounce = [
-        'runEMICalc', 'runSIPCalc', 'runTaxCalc', 'runFDCalc', 
-        'runLoanComp', 'runInsCalc', 'runROICalc', 'runCCCalc',
-        'runFreelanceCalc', 'runCryCalc'
-    ];
-    calcsToDebounce.forEach(fnName => {
-        if (typeof window[fnName] === 'function') {
-            const original = window[fnName];
-            window[fnName] = FinUI.debounce(original, 200);
-        }
-    });
 
     const langSelect = document.getElementById('lang-select');
     const curSelect = document.getElementById('currency-select');
@@ -7038,12 +7353,12 @@ function boot() {
     if (toolContent) {
         toolContent.addEventListener('input', () => {
             if (state.activeTool && state.activeTool.id) {
-                window.saveToolState(state.activeTool.id, toolContent);
+                window.scheduleToolStateSave(state.activeTool.id, toolContent);
             }
         });
         toolContent.addEventListener('change', () => {
             if (state.activeTool && state.activeTool.id) {
-                window.saveToolState(state.activeTool.id, toolContent);
+                window.scheduleToolStateSave(state.activeTool.id, toolContent);
             }
         });
     }
@@ -7068,6 +7383,57 @@ function boot() {
     window.addEventListener('hashchange', handleRoute);
     handleRoute();
 }
+
+// --- CALCULATION DEBOUNCE SYSTEM ---
+let toolCalcTimer = null;
+
+// Map to identify which function handles which tool natively
+const runFunctionMap = {
+    'emi-calculator': 'runEMICalc',
+    'sip-calculator': 'runSIPCalc',
+    'tax-calculator': 'runTaxCalc',
+    'credit-card-interest': 'runCCCalc',
+    'website-cost': 'runWebCost',
+    'freelancer-earning': 'runFreelanceCalc',
+    'crypto-profit': 'runCryCalc',
+    'roi-calculator': 'runROICalc',
+    'insurance-estimator': 'runInsCalc',
+    'fd-calculator': 'runFDCalc',
+    'loan-comparison': 'runLoanComp',
+    'word-counter': 'runWordCount',
+    'password-generator': 'runPassGen',
+    'unit-converter': 'runUnitConv',
+    'color-picker': 'runColorPicker'
+};
+
+window.scheduleToolCalculation = (toolId) => {
+    const tid = toolId.replace('#', '').toLowerCase();
+    const fnName = runFunctionMap[tid];
+    if (fnName && typeof window[fnName] === 'function') {
+        window[fnName](); // It will be intercepted by our debounce wrapper
+    }
+};
+
+// Intercept all calculator functions so inline HTML oninputs are also debounced
+Object.values(runFunctionMap).forEach((fnName) => {
+    if (typeof window[fnName] === 'function') {
+        const originalFn = window[fnName];
+        let timer = null;
+        window[fnName] = (...args) => {
+            if (window.__restoringToolState) return;
+            clearTimeout(timer);
+            const delay = window.__userIsTyping ? 500 : 50;
+            timer = setTimeout(() => {
+                if (window.__userIsTyping && typeof args[0] !== 'boolean') {
+                    // if it's not a forced update, and user is typing, we still calculate after 500ms pause
+                }
+                window.__calculatingTool = true;
+                originalFn.apply(window, args);
+                window.__calculatingTool = false;
+            }, delay);
+        };
+    }
+});
 
 // Expose local functions to window for legacy inline onclick handlers
 window.closeToolModal = closeToolModal;
