@@ -1,6 +1,6 @@
 /**
  * SmartTools Hub v5.0 - Universal Core Engine
- * Vanilla JS logic for 33+ high-performance browser tools.
+ * Vanilla JS logic for 31+ high-performance browser tools.
  */
 
 import QUOTES_LIBRARY from './quotes.js';
@@ -13,14 +13,10 @@ Chart.register(...registerables, annotationPlugin);
 const TOOLS = [
     { id: 'image-compressor', nameKey: 'compress', icon: 'minimize', category: 'Image', desc: 'Reduce file size while keeping visual quality.' },
     { id: 'background-remover', nameKey: 'bgremove', icon: 'trash-2', category: 'Image', desc: 'AI-powered background extraction for your photos.' },
-    { id: 'image-resizer', nameKey: 'resize', icon: 'image', category: 'Image', desc: 'Change width and height of images instantly.' },
-    { id: 'jpg-to-png', nameKey: 'png', icon: 'image', category: 'Image', desc: 'Standard converter for JPG to transparent PNG.' },
     { id: 'pdf-merger', nameKey: 'pdfmerge', icon: 'file-text', category: 'PDF', desc: 'Combine multiple PDF files into one document.' },
     { id: 'pdf-splitter', nameKey: 'pdfsplit', icon: 'scissors', category: 'PDF', desc: 'Extract individual pages from your PDFs.' },
     { id: 'word-counter', nameKey: 'wordcount', icon: 'type', category: 'Text', desc: 'Professional utility for characters and words.' },
     { id: 'case-converter', nameKey: 'case', icon: 'type', category: 'Text', desc: 'Uppercase, lowercase, title case and more.' },
-    { id: 'text-to-speech', nameKey: 'tts', icon: 'volume-2', category: 'Text', desc: 'Convert text to natural speech audio files.' },
-    { id: 'speech-to-text', nameKey: 'stt', icon: 'mic', category: 'Text', desc: 'Real-time voice transcription in your browser.' },
     { id: 'notes-app', nameKey: 'notes', icon: 'pen-tool', category: 'Text', desc: 'Secure, locally saved markdown notes.' },
     { id: 'password-generator', nameKey: 'pass', icon: 'lock', category: 'Utility', desc: 'Enterprise-grade secure password creator.' },
     { id: 'age-calculator', nameKey: 'age', icon: 'calendar', category: 'Utility', desc: 'Calculate exact age in years, months and days.' },
@@ -94,15 +90,6 @@ const TOOL_SEO_CONTENT = {
             "Download the result as a transparent PNG file."
         ]
     },
-    'image-resizer': {
-        about: "Correct image dimensions are vital for page speed and social media layout consistency. Our Image Resizer allows you to adjust the width and height of your photos with precise control. Whether you need to meet the strict requirements of an online application or optimize a thumbnail for your latest blog post, our tool ensures your images are perfectly scaled without losing clarity. Efficient resizing helps reduce bandwidth consumption and improves the Core Web Vitals of your website.",
-        steps: [
-            "Drag your image into the resize workspace.",
-            "Input your desired dimensions or select a standard preset.",
-            "Toggle 'Aspect Ratio Lock' to prevent distortion.",
-            "Apply and download the perfectly sized image."
-        ]
-    },
     'word-counter': {
         about: "Our Word Counter is more than just a digit tracker; it is a comprehensive text analysis utility for writers, students, and SEO professionals. Beyond simple character and word counts, our tool analyzes sentence structure and identifies reading levels to help you craft more engaging content. Character limits are a constant in digital communication—from meta descriptions to social media captions. This tool ensures you hit the mark every time without the risk of truncation.",
         steps: [
@@ -119,24 +106,6 @@ const TOOL_SEO_CONTENT = {
             "Identify the specific pages or ranges to extract.",
             "Click 'Split' to generate the individual documents.",
             "Download your isolated pages instantly."
-        ]
-    },
-    'jpg-to-png': {
-        about: "Transforming standard JPG files into high-quality, transparent PNG images is a fundamental task for designers and web developers. Original JPG files often contain compression artifacts that are visible during design work; converting them to PNG ensures a lossless environment for further editing. Our converter handles the mapping of pixel data with high fidelity, ensuring that your gradients and fine lines remain sharp. This utility is perfect for creating assets for mobile apps, website headers, and presentation slides.",
-        steps: [
-            "Upload your JPG photo to the conversion workspace.",
-            "The browser engine will re-encode the pixels into a PNG-24 container.",
-            "Review the output for clarity and color accuracy.",
-            "Download your new PNG asset with one click."
-        ]
-    },
-    'text-to-speech': {
-        about: "Accessibility and content consumption are evolving. Our Text-to-Speech (TTS) engine converts written copy into lifelike audio narration, allowing users to listen to articles, scripts, and documents on the go. By utilizing native browser Synthesis APIs, we provide a variety of voices and accents without requiring any cloud fees. This tool is an essential partner for content creators wanting to offer audio versions of their blog posts and for students who learn better by listening.",
-        steps: [
-            "Input your content into the TTS processing area.",
-            "Select your preferred voice, pitch, and speed from the options.",
-            "Preview the audio generation in real-time.",
-            "Download or play the audio directly from your browser."
         ]
     },
     'age-calculator': {
@@ -264,9 +233,9 @@ const TRANSLATIONS = {
         hero: { title1: "Swiss Knife for ", title2: "All Your Work", sub: "Fast, secure, and works entirely in your browser. No data leaves your device." },
         ui: { all: "All Utility Tools", popular: "🔥 Popular Tools", recent: "🕒 Recently Used", trending: "📈 Trending Tools", about: "SmartTools Hub", rights: "All rights reserved.", related: "Related Utilities", search: "Search for tools...", quotesTitle: "Wisdom from Great Philosophers", categories: { ALL: "All", IMAGE: "Image", PDF: "PDF", FINANCE: "Finance", TEXT: "Text", INSTAGRAM: "Instagram", UTILITY: "Utility" } },
         tools: {
-            compress: "Image Compressor", bgremove: "Background Remover", resize: "Image Resizer", png: "JPG to PNG Converter",
+            compress: "Image Compressor", bgremove: "Background Remover",
             pdfmerge: "PDF Merger", pdfsplit: "PDF Splitter", wordcount: "Word Counter", case: "Case Converter",
-            pass: "Password Generator", age: "Age Calculator", tts: "Text to Speech", stt: "Speech to Text",
+            pass: "Password Generator", age: "Age Calculator", 
             qr: "QR Code Generator", color: "Color Picker", b64: "Base64 Converter", url: "URL Converter",
             unit: "Unit Converter", stopwatch: "Stopwatch", todo: "To-Do List", notes: "Notes App",
             emi: "EMI Calculator", sip: "SIP Calculator", tax: "Tax Calculator", cc: "Credit Card Interest",
@@ -280,9 +249,9 @@ const TRANSLATIONS = {
         hero: { title1: "आपके सभी कामों के लिए ", title2: "स्विस चाकू", sub: "तेज़, सुरक्षित और पूरी तरह से आपके ब्राउज़र में काम करता है। आपका डेटा कहीं नहीं जाता।" },
         ui: { all: "सभी टूल्स", popular: "🔥 लोकप्रिय टूल्स", recent: "🕒 हाल ही में प्रयुक्त", trending: "📈 अभी ट्रेंड में", about: "स्मार्टटूल्स हब", rights: "सर्वाधिकार सुरक्षित।", related: "संबंधित टूल्स", search: "टूल्स खोजें...", quotesTitle: "महान दार्शनicों का ज्ञान", categories: { ALL: "सभी", IMAGE: "इमेज", PDF: "पीडीएफ", FINANCE: "वित्त", TEXT: "टेक्स्ट", INSTAGRAM: "इंस्टाग्राम", UTILITY: "उपयोगिता" } },
         tools: {
-            compress: "इमेज कंप्रेशर", bgremove: "बैकग्राउंड रिमूवर", resize: "इमेज रिसाइज़र", png: "JPG से PNG कनवर्टर",
+            compress: "इमेज कंप्रेशर", bgremove: "बैकग्राउंड रिमूवर",
             pdfmerge: "PDF मर्जर", pdfsplit: "PDF स्प्लिटर", wordcount: "शब्द गणक", case: "केस कनवर्टर",
-            pass: "पासवर्ड जनरेटर", age: "आयु गणक", tts: "टेक्स्ट टू स्पीच", stt: "स्पीच टू टेक्स्ट",
+            pass: "पासवर्ड जनरेटर", age: "आयु गणक", 
             qr: "QR कोड जनरेटर", color: "कलर पिकर", b64: "Base64 कनवर्टर", url: "URL कनवर्टर",
             unit: "यूनिट कनवर्टर", stopwatch: "स्टॉपवॉच", todo: "टू-डू लिस्ट", notes: "नोट्स ऐप",
             emi: "EMI कैलकुलेटर", sip: "SIP कैलकुलेटर", tax: "टैक्स कैलकुलेटर", cc: "क्रेडिट कार्ड ब्याज",
@@ -296,9 +265,9 @@ const TRANSLATIONS = {
         hero: { title1: "Navaja Suiza para ", title2: "Todo tu Trabajo", sub: "Rápido, seguro y funciona completamente en tu navegador. Ningún dato sale de tu dispositivo." },
         ui: { all: "Todas las Herramientas", popular: "🔥 Herramientas Populares", recent: "🕒 Usadas Recientemente", trending: "📈 Tendencias", about: "SmartTools Hub", rights: "Todos los derechos reservados.", related: "Utilidades Relacionadas", search: "Buscar herramientas...", quotesTitle: "Sabiduría de Grandes Filósofos", categories: { ALL: "Todo", IMAGE: "Imagen", PDF: "PDF", FINANCE: "Finanzas", TEXT: "Texto", INSTAGRAM: "Instagram", UTILITY: "Utilidad" } },
         tools: {
-            compress: "Compresor de Imágenes", bgremove: "Eliminador de Fondo", resize: "Redimensionador de Imágenes", png: "Conversor JPG a PNG",
+            compress: "Compresor de Imágenes", bgremove: "Eliminador de Fondo",
             pdfmerge: "Fusionador PDF", pdfsplit: "Divisor PDF", wordcount: "Contador de Palabras", case: "Conversor de Mayúsculas/Minúsculas",
-            pass: "Generador de Contraseñas", age: "Calculadora de Edad", tts: "Texto a Voz", stt: "Voz a Texto",
+            pass: "Generador de Contraseñas", age: "Calculadora de Edad", 
             qr: "Generador de Códigos QR", color: "Selector de Color", b64: "Conversor Base64", url: "Conversor de URL",
             unit: "Conversor de Unidades", stopwatch: "Cronómetro", todo: "Lista de Tareas", notes: "App de Notas",
             emi: "Calculadora EMI", sip: "Calculadora SIP", tax: "Calculadora de Impuestos", cc: "Interés de Tarjeta de Crédito",
@@ -311,9 +280,9 @@ const TRANSLATIONS = {
         hero: { title1: "Couteau Suisse pour ", title2: "Tout votre Travail", sub: "Rapide, sécurisé et fonctionne entièrement dans votre navigateur. Aucune donnée ne quitte votre appareil." },
         ui: { all: "Tous les Outils", popular: "🔥 Outils Populaires", recent: "🕒 Récemment Utilisé", trending: "📈 Tendances", about: "SmartTools Hub", rights: "Tous droits réservés.", related: "Utilitaires Associés", search: "Chercher des outils...", quotesTitle: "Sagesse des Grands Philosophe", categories: { ALL: "Tout", IMAGE: "Image", PDF: "PDF", FINANCE: "Finance", TEXT: "Texte", INSTAGRAM: "Instagram", UTILITY: "Utilitaire" } },
         tools: {
-            compress: "Compresseur d'Images", bgremove: "Suppresseur de Fond", resize: "Redimensionneur d'Images", png: "Convertisseur JPG en PNG",
+            compress: "Compresseur d'Images", bgremove: "Suppresseur de Fond",
             pdfmerge: "Fusionneur PDF", pdfsplit: "Diviseur PDF", wordcount: "Compteur de Mots", case: "Convertisseur de Cas",
-            pass: "Générateur de Mots de Passe", age: "Calculateur d'Âge", tts: "Synthèse Vocale", stt: "Reconnaissance Vocale",
+            pass: "Générateur de Mots de Passe", age: "Calculateur d'Âge", 
             qr: "Générateur de Code QR", color: "Sélecteur de Couleur", b64: "Convertisseur Base64", url: "Convertisseur d'URL",
             unit: "Convertisseur d'Unités", stopwatch: "Chronomètre", todo: "Liste de Tâches", notes: "App de Notes",
             emi: "Calculatrice EMI", sip: "Calculatrice SIP", tax: "Calculatrice d'Impôts", cc: "Intérêt de Carte de Crédit",
@@ -326,9 +295,9 @@ const TRANSLATIONS = {
         hero: { title1: "Schweizer Taschenmesser für ", title2: "Ihre ganze Arbeit", sub: "Schnell, sicher und funktioniert komplett in Ihrem Browser. Keine Daten verlassen Ihr Gerät." },
         ui: { all: "Alle Werkzeuge", popular: "🔥 Beliebte Werkzeuge", recent: "🕒 Kürzlich Verwendet", trending: "📈 Trends", about: "SmartTools Hub", rights: "Alle Rechte vorbehalten.", related: "Verwandte Utilities", search: "Nach Werkzeugen suchen...", quotesTitle: "Weisheit großer Philosophen", categories: { ALL: "Alle", IMAGE: "Bild", PDF: "PDF", FINANCE: "Finanzen", TEXT: "Text", INSTAGRAM: "Instagram", UTILITY: "Dienstprogramm" } },
         tools: {
-            compress: "Bildkomprimierer", bgremove: "Hintergrundentferner", resize: "Bildgrößenänderung", png: "JPG zu PNG Konverter",
+            compress: "Bildkomprimierer", bgremove: "Hintergrundentferner",
             pdfmerge: "PDF Zusammenführen", pdfsplit: "PDF Splitten", wordcount: "Wortzähler", case: "Groß-/Kleinschreibung",
-            pass: "Passwortgenerator", age: "Altersrechner", tts: "Text-zu-Sprache", stt: "Sprache-zu-Text",
+            pass: "Passwortgenerator", age: "Altersrechner", 
             qr: "QR-Code-Generator", color: "Farbauswahl", b64: "Base64-Konverter", url: "URL-Konverter",
             unit: "Einheitenumrechner", stopwatch: "Stoppuhr", todo: "To-Do Liste", notes: "Notizen App",
             emi: "EMI Rechner", sip: "SIP Rechner", tax: "Steuerrechner", cc: "Kreditkartenzinsen",
@@ -341,9 +310,9 @@ const TRANSLATIONS = {
         hero: { title1: "Canivete Suíço para ", title2: "Todo o seu Trabalho", sub: "Rápido, seguro e funciona inteiramente no seu navegador. Nenhum dado sai do seu dispositivo." },
         ui: { all: "Todas as Ferramentas", popular: "🔥 Ferramentas Populares", recent: "🕒 Usado Recentemente", trending: "📈 Tendências", about: "SmartTools Hub", rights: "Todos os direitos reservados.", related: "Utilidades Relacionadas", search: "Procurar ferramentas...", quotesTitle: "Sabedoria de Grandes Filósofos", categories: { ALL: "Todas", IMAGE: "Imagem", PDF: "PDF", FINANCE: "Finanças", TEXT: "Texto", INSTAGRAM: "Instagram", UTILITY: "Utilidade" } },
         tools: {
-            compress: "Compressor de Imagens", bgremove: "Removedor de Fundo", resize: "Redimensionador de Imagens", png: "Conversor JPG para PNG",
+            compress: "Compressor de Imagens", bgremove: "Removedor de Fundo",
             pdfmerge: "Fusão de PDF", pdfsplit: "Divisor de PDF", wordcount: "Contador de Palavras", case: "Conversor de Letras",
-            pass: "Gerador de Senhas", age: "Calculadora de Idade", tts: "Texto para Fala", stt: "Fala para Texto",
+            pass: "Gerador de Senhas", age: "Calculadora de Idade", 
             qr: "Gerador de Código QR", color: "Seletor de Cores", b64: "Conversor Base64", url: "Conversor de URL",
             unit: "Conversor de Unidades", stopwatch: "Cronômetro", todo: "Lista de Tarefas", notes: "App de Notas",
             emi: "Calculadora EMI", sip: "Calculadora SIP", tax: "Calculadora de Impostos", cc: "Juros de Cartão de Crédito",
@@ -356,9 +325,9 @@ const TRANSLATIONS = {
         hero: { title1: "すべての作業に最適な ", title2: "スイスアーミーナイフ", sub: "高速で安全かつ、ブラウザ上で完全に動作します。データがデバイスから離れることはありません。" },
         ui: { all: "すべてのツール", popular: "🔥 人気のツール", recent: "🕒 最近使ったツール", trending: "📈 トレンドのツール", about: "SmartTools Hub", rights: "全著作権所有。", related: "関連ユーティリティ", search: "ツールを検索...", quotesTitle: "偉大な哲学者の知恵", categories: { ALL: "すべて", IMAGE: "画像", PDF: "PDF", FINANCE: "金融", TEXT: "テキスト", INSTAGRAM: "インスタ", UTILITY: "ユーティリティ" } },
         tools: {
-            compress: "画像圧縮", bgremove: "背景削除", resize: "画像サイズ変更", png: "JPGからPNGへの変換",
+            compress: "画像圧縮", bgremove: "背景削除",
             pdfmerge: "PDF結合", pdfsplit: "PDF分割", wordcount: "単語数カウント", case: "大文字小文字変換",
-            pass: "パスワード生成", age: "年齢計算", tts: "テキスト読み上げ", stt: "音声文字変換",
+            pass: "パスワード生成", age: "年齢計算", 
             qr: "QRコード生成", color: "カラーピッカー", b64: "Base64変換", url: "URL変換",
             unit: "単位変換", stopwatch: "ストップウォッチ", todo: "ToDoリスト", notes: "メモ帳アプリ",
             emi: "EMI計算機", sip: "SIP計算機", tax: "税金計算機", cc: "クレジットカード利息",
@@ -1312,38 +1281,42 @@ function injectToolFunctionalHTML(id) {
             `;
             lucide.createIcons();
             break;
-            lucide.createIcons();
-            break;
 
         case 'word-counter':
             c.innerHTML = `
-                <div class="space-y-8">
+                <div class="space-y-8 word-counter" id="word-counter">
                     <div class="flex items-center justify-between">
                         <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Quantitative Linguistic Workshop</label>
                         <div class="flex gap-2">
-                             <button onclick="window.runCaseConv('upper')" class="px-3 py-1 bg-gray-50 dark:bg-gray-800 rounded-lg text-[10px] font-black hover:bg-blue-50 transition-colors uppercase">UPPER</button>
-                             <button onclick="window.runCaseConv('lower')" class="px-3 py-1 bg-gray-50 dark:bg-gray-800 rounded-lg text-[10px] font-black hover:bg-blue-50 transition-colors uppercase">lower</button>
-                             <button onclick="processWCText('clean')" class="px-3 py-1 bg-gray-50 dark:bg-gray-800 rounded-lg text-[10px] font-black hover:bg-blue-50 transition-colors uppercase">Cleanup</button>
+                             <button type="button" data-wc-action="copy" class="wc-copy px-3 py-1 bg-blue-600 text-white rounded-lg text-[10px] font-black hover:bg-blue-700 transition-colors uppercase">Copy</button>
+                             <button type="button" data-wc-action="upper" class="wc-upper px-3 py-1 bg-white dark:bg-gray-800 rounded-lg text-[10px] font-black hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors uppercase border dark:border-gray-700">UPPER</button>
+                             <button type="button" data-wc-action="lower" class="wc-lower px-3 py-1 bg-white dark:bg-gray-800 rounded-lg text-[10px] font-black hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors uppercase border dark:border-gray-700">LOWER</button>
+                             <button type="button" data-wc-action="title" class="wc-title px-3 py-1 bg-white dark:bg-gray-800 rounded-lg text-[10px] font-black hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors uppercase border dark:border-gray-700">Title</button>
+                             <button type="button" data-wc-action="clear" class="wc-clear px-3 py-1 bg-red-50 dark:bg-red-900/10 text-red-600 rounded-lg text-[10px] font-black hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors uppercase border border-red-200 dark:border-red-900/50">Clear</button>
                         </div>
                     </div>
-                    <textarea id="wc-in" oninput="runWordCount()" class="w-full h-64 p-8 bg-gray-50 dark:bg-gray-900 border-2 border-transparent focus:border-blue-500/20 rounded-[2.5rem] dark:border-gray-700 outline-none focus:ring-4 focus:ring-blue-500/5 font-medium leading-relaxed custom-scrollbar placeholder:text-gray-300" placeholder="Type or paste your content here..."></textarea>
+                    <textarea id="wc-in" oninput="window.runWordCount()" class="word-counter-editor w-full h-64 p-8 bg-gray-50 dark:bg-gray-900 border-2 border-transparent focus:border-blue-500/20 rounded-[2.5rem] dark:border-gray-700 outline-none focus:ring-4 focus:ring-blue-500/5 font-medium leading-relaxed custom-scrollbar placeholder:text-gray-300" placeholder="Type or paste your content here..."></textarea>
                     
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-[1.5rem] border dark:border-gray-700 text-center relative overflow-hidden group">
                             <div class="text-3xl font-black mb-1 group-hover:scale-110 transition-transform" id="wc-w">0</div>
                             <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Words</div>
+                            <i data-lucide="type" class="absolute -bottom-2 -right-2 w-12 h-12 text-gray-200 dark:text-gray-800 opacity-40 group-hover:scale-110 transition-transform"></i>
                         </div>
                         <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-[1.5rem] border dark:border-gray-700 text-center relative overflow-hidden group">
                             <div class="text-3xl font-black mb-1 group-hover:scale-110 transition-transform" id="wc-c">0</div>
                             <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Chars (Space)</div>
+                            <i data-lucide="align-left" class="absolute -bottom-2 -right-2 w-12 h-12 text-gray-200 dark:text-gray-800 opacity-40 group-hover:scale-110 transition-transform"></i>
                         </div>
                         <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-[1.5rem] border dark:border-gray-700 text-center relative overflow-hidden group">
                             <div class="text-3xl font-black mb-1 group-hover:scale-110 transition-transform" id="wc-c-ns">0</div>
                             <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Chars (No)</div>
+                            <i data-lucide="hash" class="absolute -bottom-2 -right-2 w-12 h-12 text-gray-200 dark:text-gray-800 opacity-40 group-hover:scale-110 transition-transform"></i>
                         </div>
                         <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-[1.5rem] border dark:border-gray-700 text-center relative overflow-hidden group text-blue-600">
                              <div class="text-3xl font-black mb-1 group-hover:scale-110 transition-transform" id="wc-r">0m</div>
                              <div class="text-[10px] font-black uppercase tracking-widest">Read Time</div>
+                             <i data-lucide="clock" class="absolute -bottom-2 -right-2 w-12 h-12 text-blue-100 dark:text-blue-900/30 opacity-40 group-hover:scale-110 transition-transform"></i>
                         </div>
                     </div>
 
@@ -1947,18 +1920,42 @@ function injectToolFunctionalHTML(id) {
                         </div>
                         <div class="space-y-3">
                             <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Weekly Hours</label>
-                            <input type="number" id="fr-hours" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none" value="35" oninput="runFreelanceCalc()">
+                            <input type="number" id="fr-hours" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none" value="35" min="0" max="168" oninput="runFreelanceCalc()">
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                         <div class="p-8 bg-blue-50 dark:bg-blue-900/10 rounded-[2.5rem] border dark:border-blue-900/20 text-center">
-                            <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest block mb-4">Monthly Income</span>
-                            <div id="fr-month" class="text-4xl font-black text-blue-600">---</div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Platform Fees (%)</label>
+                            <input type="number" id="fr-fee" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none" value="0" step="0.1" oninput="runFreelanceCalc()">
+                            <p class="text-[9px] text-gray-400 uppercase font-black tracking-tighter italic">Upwork, Fiverr etc.</p>
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Estimated Tax (%)</label>
+                            <input type="number" id="fr-tax" class="w-full p-5 bg-gray-50 border rounded-2xl dark:bg-gray-900 dark:border-gray-700 font-bold outline-none" value="0" step="1" oninput="runFreelanceCalc()">
+                             <p class="text-[9px] text-gray-400 uppercase font-black tracking-tighter italic">Self-employment tax estimate.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                         <div class="p-6 bg-gray-50 dark:bg-gray-800 rounded-[2rem] border dark:border-gray-700 text-center">
+                            <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-3">Weekly Net</span>
+                            <div id="fr-week" class="text-2xl font-black text-gray-800 dark:text-gray-100">---</div>
                          </div>
-                         <div class="p-8 bg-gray-900 text-white rounded-[2.5rem] text-center shadow-xl">
-                            <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest block mb-4 text-blue-400">Annual Projection</span>
-                            <div id="fr-year" class="text-4xl font-black">---</div>
+                         <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-[2rem] border dark:border-blue-900/20 text-center">
+                            <span class="text-[9px] font-black text-blue-600 uppercase tracking-widest block mb-3">Monthly Net</span>
+                            <div id="fr-month" class="text-2xl font-black text-blue-600">---</div>
                          </div>
+                         <div class="p-6 bg-gray-900 text-white rounded-[2rem] text-center shadow-xl">
+                            <span class="text-[9px] font-black text-blue-400 uppercase tracking-widest block mb-3">Annual Net</span>
+                            <div id="fr-year" class="text-2xl font-black">---</div>
+                         </div>
+                    </div>
+
+                    <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-900/20">
+                         <p class="text-[10px] text-blue-600 dark:text-blue-400 font-bold text-center leading-relaxed">
+                            Projection assumed on 52 working weeks/year. Net income excludes overheads like software, equipment, and health insurance.
+                         </p>
                     </div>
                 </div>
             `;
@@ -2017,7 +2014,7 @@ function injectToolFunctionalHTML(id) {
                         <div class="md:col-span-2 p-10 bg-gray-900 text-white rounded-[2.5rem] text-center shadow-2xl space-y-6 relative overflow-hidden group">
                             <div class="absolute inset-0 bg-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                             <div class="relative z-10">
-                                 <span class="text-[8px] font-black text-blue-400 uppercase tracking-[0.4em] mb-2 block">Net Profit After Fees</span>
+                                 <span class="text-[8px] font-black text-blue-400 uppercase tracking-[0.4em] mb-2 block">Net Profit After Tax</span>
                                  <div id="cry-profit" class="text-5xl font-black">---</div>
                                  <div id="cry-perc" class="text-lg font-black text-green-400 mt-2">+0%</div>
                             </div>
@@ -2076,25 +2073,32 @@ function injectToolFunctionalHTML(id) {
                             
                             <div class="fin-input-panel">
                                 <div class="fin-input-group">
-                                    <label class="fin-label">Initial Capital</label>
+                                    <label class="fin-label">Initial Capital / Spend</label>
                                     <div class="relative">
                                         <input type="number" id="roi-s" value="5000" oninput="runROICalc()" class="fin-input pr-12">
                                         <button onclick="window.toggleGlobalCurrency()" class="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95">${curCode}</button>
                                     </div>
+                                    <p class="text-[9px] text-gray-400 mt-1 uppercase font-black italic">Total marketing budget spent</p>
                                 </div>
 
                                 <div class="fin-input-group">
-                                    <label class="fin-label">Final Value</label>
+                                    <label class="fin-label">Final Value / Revenue</label>
                                     <div class="relative">
                                         <input type="number" id="roi-r" value="12000" oninput="runROICalc()" class="fin-input pr-12">
                                         <button onclick="window.toggleGlobalCurrency()" class="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-95">${curCode}</button>
                                     </div>
+                                    <p class="text-[9px] text-gray-400 mt-1 uppercase font-black italic">Total revenue generated from ads</p>
                                 </div>
 
                                 <div class="fin-input-group">
                                     <label class="fin-label">Duration (Days)</label>
                                     <input type="number" id="roi-t" value="365" oninput="runROICalc()" class="fin-input">
+                                    <p class="text-[9px] text-gray-400 mt-1 uppercase font-black italic">Used for annualizing performance</p>
                                 </div>
+                            </div>
+
+                            <div id="roi-error" class="mt-4 p-4 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 rounded-xl hidden">
+                                <p class="text-[10px] font-bold text-red-600 dark:text-red-400 text-center uppercase tracking-widest">Initial capital must be greater than 0.</p>
                             </div>
                         </div>
 
@@ -2112,27 +2116,34 @@ function injectToolFunctionalHTML(id) {
                     </div>
 
                     <div class="fin-result-panel">
-                        <div class="fin-card bg-indigo-600 text-white border-none min-h-[200px] flex flex-col justify-center items-center text-center overflow-hidden relative">
+                        <div class="fin-card bg-indigo-600 text-white border-none min-h-[220px] flex flex-col justify-center items-center text-center overflow-hidden relative">
                             <div class="absolute inset-0 bg-gradient-to-br from-indigo-500 to-indigo-700 opacity-50"></div>
                             <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 blur-3xl rounded-full"></div>
-                            <span class="fin-label text-indigo-100 mb-2 relative z-10">Net ROI</span>
+                            <span class="fin-label text-indigo-100 mb-2 relative z-10">Net Return on Investment (ROI)</span>
                             <div id="roi-out" class="text-6xl font-black relative z-10">0%</div>
                             <div class="w-full max-w-[200px] h-1 bg-white/20 rounded-full mt-6 overflow-hidden relative z-10">
                                 <div id="roi-bar" class="h-full bg-white shadow-[0_0_15px_white] transition-all duration-1000" style="width: 0%"></div>
                             </div>
+                            <p class="text-[9px] font-bold text-indigo-200 mt-4 uppercase tracking-[0.2em] relative z-10">Profit divided by spend</p>
                         </div>
 
                         <div class="grid grid-cols-3 gap-4">
-                            <div class="fin-card">
+                            <div class="fin-card group hover:shadow-lg transition-all">
                                 <span class="fin-label opacity-60">Net Profit</span>
                                 <div id="roi-p" class="text-lg font-black mt-1">--</div>
                             </div>
-                            <div class="fin-card">
-                                <span class="fin-label opacity-60">ROAS</span>
+                            <div class="fin-card group hover:shadow-lg transition-all">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="fin-label opacity-60">ROAS</span>
+                                    <div class="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-[8px] font-bold group-hover:bg-indigo-600 group-hover:text-white transition-colors" title="Revenue divided by spend">?</div>
+                                </div>
                                 <div id="roi-a" class="text-lg font-black mt-1">--</div>
                             </div>
-                            <div class="fin-card">
-                                <span class="fin-label opacity-60">Annualized</span>
+                            <div class="fin-card group hover:shadow-lg transition-all">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="fin-label opacity-60">Annualized</span>
+                                    <div class="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-[8px] font-bold group-hover:bg-indigo-600 group-hover:text-white transition-colors" title="ROI adjusted to 365-day period">?</div>
+                                </div>
                                 <div id="roi-ann" class="text-lg font-black mt-1">--</div>
                             </div>
                         </div>
@@ -2140,6 +2151,10 @@ function injectToolFunctionalHTML(id) {
                         <div class="fin-card border-dashed">
                             <h4 class="fin-label mb-6">Efficiency Breakdown</h4>
                             <div id="roi-table" class="space-y-4"></div>
+                        </div>
+
+                        <div class="p-6 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-800 text-center">
+                            <p class="text-[9px] text-gray-400 font-medium leading-relaxed italic">ROI is an estimate and does not include platform fees, taxes, refunds, attribution errors, or operational costs unless included in your inputs.</p>
                         </div>
                     </div>
                 </div>
@@ -2235,11 +2250,38 @@ function injectToolFunctionalHTML(id) {
 
                         <div id="fd-highlights" class="flex flex-wrap gap-3"></div>
 
-                        <div id="fd-box" class="hidden fin-card animate-fade-in">
-                            <h4 class="fin-label mb-8">Yield Analysis</h4>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                                <canvas id="fd-pie-chart" height="200"></canvas>
-                                <div id="fd-insights" class="space-y-4"></div>
+                        <div id="fd-box" class="hidden fin-card animate-fade-in space-y-8">
+                            <div class="flex items-center justify-between">
+                                <h4 class="fin-label">Yield Analysis & Comparison</h4>
+                                <div id="fd-verdict" class="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg text-[8px] font-black uppercase tracking-widest text-gray-500">---</div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                                <!-- Chart Section -->
+                                <div class="space-y-6">
+                                    <div class="flex justify-center p-4 bg-gray-50/50 dark:bg-gray-900/50 rounded-3xl">
+                                        <canvas id="fd-pie-chart" class="max-w-[180px] w-full"></canvas>
+                                    </div>
+                                    <div id="fd-simple-insights" class="space-y-3"></div>
+                                </div>
+                                
+                                <!-- Comparison Detail Section -->
+                                <div class="space-y-6">
+                                     <div class="space-y-4">
+                                        <h5 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Compounding comparison</h5>
+                                        <div id="fd-comp-table" class="space-y-2"></div>
+                                     </div>
+                                     
+                                     <div class="space-y-4 pt-6 border-t border-gray-100 dark:border-gray-800">
+                                        <h5 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Real Return Analysis</h5>
+                                        <div id="fd-real-return" class="grid grid-cols-2 gap-4"></div>
+                                     </div>
+
+                                     <div class="space-y-4 pt-6 border-t border-gray-100 dark:border-gray-800">
+                                        <h5 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Purchasing Power Result</h5>
+                                        <div id="fd-power-analysis" class="space-y-3"></div>
+                                     </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2310,6 +2352,7 @@ function injectToolFunctionalHTML(id) {
                                 <option value="term">Term Life Insurance</option>
                                 <option value="health">Health Insurance</option>
                                 <option value="accident">Accident Cover</option>
+                                <option value="ci">Critical Illness Plan</option>
                             </select>
                         </div>
                         <div class="space-y-3">
@@ -2354,22 +2397,53 @@ function injectToolFunctionalHTML(id) {
                         </div>
 
                         <div class="flex flex-col space-y-6 justify-center">
-                            <div class="p-10 bg-gray-900 text-white rounded-[3rem] shadow-2xl relative overflow-hidden group">
+                            <div class="p-8 bg-gray-900 text-white rounded-[3rem] shadow-2xl relative overflow-hidden group">
                                 <div class="absolute inset-0 bg-blue-600 opacity-0 group-hover:opacity-10 transition-opacity pointer-events-none"></div>
                                 <div class="relative z-10 text-center">
                                     <span class="text-[8px] font-black text-blue-400 uppercase tracking-[0.4em] mb-4 block">Estimated Premium</span>
                                     <div class="flex items-end justify-center gap-2">
-                                        <div id="ins-out" class="text-6xl font-black">---</div>
+                                        <div id="ins-out" class="text-5xl font-black">---</div>
                                         <span class="text-xs font-black text-gray-500 mb-2">/MO</span>
                                     </div>
-                                    <p class="text-[9px] font-bold text-gray-500 mt-6 uppercase tracking-widest">Industry Standard Actuarial Estimate</p>
+                                    <p class="text-[8px] font-bold text-gray-500 mt-6 uppercase tracking-widest leading-loose">Educational estimate only. Actual premium may vary by insurer and underwriting.</p>
+                                    
+                                    <div id="ins-breakdown" class="mt-6 pt-6 border-t border-white/5 space-y-1 hidden">
+                                        <div class="flex justify-between text-[8px] uppercase tracking-tighter">
+                                            <span class="text-gray-500">Base Premium</span>
+                                            <span id="ins-val-base" class="font-mono">--</span>
+                                        </div>
+                                        <div id="ins-row-smoker" class="flex justify-between text-[8px] uppercase tracking-tighter hidden">
+                                            <span class="text-gray-500">Tobacco Loading</span>
+                                            <span id="ins-val-smoker" class="font-mono">--</span>
+                                        </div>
+                                        <div id="ins-row-riders" class="flex justify-between text-[8px] uppercase tracking-tighter hidden">
+                                            <span class="text-gray-500">Rider Add-ons</span>
+                                            <span id="ins-val-riders" class="font-mono">--</span>
+                                        </div>
+                                        <div id="ins-row-gst" class="flex justify-between text-[8px] uppercase tracking-tighter hidden">
+                                            <span class="text-gray-500">GST / Tax (18%)</span>
+                                            <span id="ins-val-gst" class="font-mono">--</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            
+                            <div id="ins-caution" class="hidden animate-bounce-subtle">
+                                <div class="px-4 py-3 bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-900/30 rounded-2xl flex items-center gap-3">
+                                    <i data-lucide="alert-triangle" class="w-4 h-4 text-orange-500"></i>
+                                    <p class="text-[10px] font-bold text-orange-700 dark:text-orange-400 leading-tight">Premiums may vary significantly after medical underwriting.</p>
+                                </div>
+                            </div>
+
                             <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-3xl border border-blue-100 dark:border-blue-900/20 text-center space-y-2">
                                 <h5 class="text-[10px] font-black text-blue-600 uppercase tracking-widest">Safety Quotient</h5>
                                 <div id="ins-safety" class="text-sm font-bold text-gray-600 dark:text-gray-300 tracking-tight">Optimal coverage strategy for your cohort.</div>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="mt-8 p-6 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-800 text-center">
+                        <p class="text-[9px] text-gray-400 font-medium leading-relaxed italic">Disclaimer: This is an educational estimate, not an insurer quote. Actual premiums depend on underwriting, medical history, policy term, insurer pricing, GST, and policy conditions. Term life estimates are indicative for a standard policy term.</p>
                     </div>
                 </div>
             `;
@@ -2606,12 +2680,15 @@ function injectToolFunctionalHTML(id) {
 
         case 'unit-converter':
             c.innerHTML = `
-                <div class="space-y-10">
+                <div class="space-y-10 unit-converter-card">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                        <div class="space-y-8">
+                        <div class="space-y-8 min-w-0">
                             <div class="space-y-4">
-                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Universal Magnitude</label>
-                                <input type="number" id="uc-in" oninput="runUnitConv()" class="w-full p-8 bg-gray-50 dark:bg-gray-900 border-2 border-transparent focus:border-blue-500/20 rounded-[2.5rem] font-black text-3xl outline-none focus:ring-4 focus:ring-blue-500/5 transition-all" placeholder="100.00">
+                                <label class="text-xs font-black text-gray-400 uppercase tracking-widest flex justify-between">
+                                    <span>Universal Magnitude</span>
+                                    <span id="uc-in-preview" class="opacity-0 transition-opacity"></span>
+                                </label>
+                                <input type="number" id="uc-in" oninput="runUnitConv()" class="unit-converter-input w-full p-8 bg-gray-50 dark:bg-gray-900 border-2 border-transparent focus:border-blue-500/20 rounded-[2.5rem] font-black outline-none focus:ring-4 focus:ring-blue-500/5 transition-all text-gray-900 dark:text-white" placeholder="100.00">
                             </div>
                             <div class="space-y-4">
                                 <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Format Precision</label>
@@ -2635,23 +2712,23 @@ function injectToolFunctionalHTML(id) {
                             </div>
                         </div>
                         
-                        <div class="space-y-8">
+                        <div class="space-y-8 min-w-0">
                             <div class="p-6 bg-white dark:bg-gray-900 border-2 border-gray-100 dark:border-gray-800 rounded-[2rem] grid grid-cols-2 gap-4">
-                                <div class="space-y-3">
+                                <div class="space-y-3 min-w-0">
                                     <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Source Entity</label>
                                     <select id="uc-f" onchange="runUnitConv()" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none text-sm appearance-none"></select>
                                 </div>
-                                <div class="space-y-3">
+                                <div class="space-y-3 min-w-0">
                                     <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Target Entity</label>
                                     <select id="uc-t" onchange="runUnitConv()" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none text-sm appearance-none"></select>
                                 </div>
                             </div>
                             
-                            <div class="tool-result flex flex-col items-center justify-center py-12 bg-blue-600 text-white rounded-[3rem] shadow-2xl shadow-blue-600/30 overflow-hidden relative group">
+                            <div class="tool-result flex flex-col items-center justify-center py-12 bg-blue-600 text-white rounded-[3rem] shadow-2xl shadow-blue-600/30 overflow-hidden relative group unit-converter-card">
                                 <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                                 <span class="text-[10px] font-black uppercase tracking-[0.4em] mb-4 opacity-60">Standard Metric Result</span>
-                                <div class="flex flex-col items-center gap-1">
-                                    <div class="text-6xl font-black tracking-tighter" id="uc-out">0.00</div>
+                                <div class="flex flex-col items-center gap-1 w-full px-4">
+                                    <div class="unit-converter-result-value font-black tracking-tighter" id="uc-out">0.00</div>
                                     <div id="uc-unit-name" class="text-xs font-black uppercase tracking-[0.2em] opacity-40 mt-2">---</div>
                                 </div>
                             </div>
@@ -2785,68 +2862,7 @@ function injectToolFunctionalHTML(id) {
                             </div>
                             <div class="font-black text-gray-900 dark:text-white uppercase text-xs tracking-widest">Extraction Vector Ready</div>
                             <p class="text-xs text-gray-500 font-bold">Successfully isolated 12 individual document segments.</p>
-                            <button class="w-full mt-4 py-4 bg-blue-600 text-white rounded-2xl text-xs font-black shadow-xl hover:bg-blue-700 transition-all uppercase tracking-widest">Download ZIP Archive</button>
-                         </div>
-                    </div>
-                </div>
-             `;
-             lucide.createIcons();
-             break;
-
-        case 'image-resizer':
-             c.innerHTML = `
-                <div class="space-y-10">
-                    <div id="resizer-upload" class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('file-in').click()">
-                        <i data-lucide="maximize" class="w-12 h-12 text-gray-300 group-hover:text-blue-500 mb-4 transition-transform group-hover:scale-110"></i>
-                        <p class="text-sm font-bold text-gray-400 group-hover:text-gray-600">Select Image to Resize</p>
-                        <input type="file" id="file-in" class="hidden" accept="image/*" onchange="handleResizerInput(this)">
-                    </div>
-
-                    <div id="resizer-controls" class="hidden animate-fade-in space-y-10">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                             <div class="space-y-6">
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div class="space-y-2">
-                                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Width (px)</label>
-                                        <input type="number" id="res-w" oninput="window.syncResizerDim('w')" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" value="1920">
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Height (px)</label>
-                                        <input type="number" id="res-h" oninput="window.syncResizerDim('h')" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" value="1080">
-                                    </div>
-                                </div>
-                                <label class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl cursor-pointer group">
-                                    <span class="text-[10px] font-black text-gray-500 group-hover:text-blue-600 uppercase tracking-widest">Maintain Aspect Ratio</span>
-                                    <input type="checkbox" id="res-aspect" checked class="w-4 h-4 rounded text-blue-600 border-gray-300">
-                                </label>
-                             </div>
-                             <div class="space-y-6">
-                                <div class="space-y-2">
-                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Export Format</label>
-                                    <select id="res-format" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none text-xs">
-                                        <option value="image/webp">WEBP (Modern Web Format)</option>
-                                        <option value="image/jpeg">JPEG (High Quality Compression)</option>
-                                        <option value="image/png">PNG (Lossless / Transparent)</option>
-                                        <option value="image/avif">AVIF (Ultra High Comp)</option>
-                                        <option value="image/bmp">BMP (Classic Lossless)</option>
-                                        <option value="image/gif">GIF (Legacy Standard)</option>
-                                    </select>
-                                </div>
-                                <button onclick="runFileSim()" class="w-full h-16 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black shadow-2xl shadow-blue-600/30 transition-all uppercase tracking-widest text-[10px]">
-                                    Process Transformation
-                                </button>
-                             </div>
-                        </div>
-                    </div>
-
-                    <div id="file-box" class="hidden animate-fade-in space-y-6">
-                         <div class="w-full bg-gray-100 dark:bg-gray-800 h-3 rounded-full overflow-hidden">
-                             <div id="file-prog" class="w-0 h-full bg-blue-600 transition-all duration-1000"></div>
-                         </div>
-                         <div id="res-out-box" class="hidden p-8 bg-green-50 dark:bg-green-900/10 border-2 border-green-100 dark:border-green-800/20 rounded-[2.5rem] flex flex-col items-center justify-center gap-4 text-center animate-slide-up">
-                            <i data-lucide="image" class="w-10 h-10 text-green-600 mb-2"></i>
-                            <div class="font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-widest">Dimensions Optimized</div>
-                            <button class="w-full mt-2 py-4 bg-green-600 text-white rounded-2xl text-xs font-black shadow-xl hover:bg-green-700 transition-all uppercase tracking-widest">Download Asset</button>
+                            <button class="w-full mt-4 py-4 bg-blue-600 text-white rounded-2xl text-xs font-black shadow-xl hover:bg-green-700 transition-all uppercase tracking-widest">Download ZIP Archive</button>
                          </div>
                     </div>
                 </div>
@@ -2866,52 +2882,6 @@ function injectToolFunctionalHTML(id) {
                     </div>
                 </div>
              `;
-             break;
-
-        case 'text-to-speech':
-             c.innerHTML = `
-                <div class="space-y-10">
-                    <textarea id="tts-in" class="w-full h-48 p-8 bg-gray-50 dark:bg-gray-900 border rounded-[2.5rem] dark:border-gray-700 outline-none font-medium leading-relaxed" placeholder="Enter text to synthesize..."></textarea>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="space-y-4">
-                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Select Voice Actor</label>
-                            <select id="tts-voice" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none text-xs"></select>
-                        </div>
-                        <div class="flex items-end gap-4">
-                            <button onclick="runTTS()" class="flex-grow py-5 bg-blue-600 text-white rounded-2xl font-black shadow-xl flex items-center justify-center gap-3 uppercase tracking-widest text-[10px]">
-                                <i data-lucide="volume-2"></i> Initialise Synthesis
-                            </button>
-                            <button onclick="stopTTS()" class="px-6 py-5 bg-gray-100 dark:bg-gray-800 rounded-2xl font-black text-gray-500"><i data-lucide="square"></i></button>
-                        </div>
-                    </div>
-                </div>
-             `;
-             initTTSVoices();
-             lucide.createIcons();
-             break;
-
-        case 'speech-to-text':
-             c.innerHTML = `
-                <div class="space-y-10 text-center py-10">
-                    <div id="stt-active" class="hidden mb-10">
-                        <div class="w-24 h-24 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto animate-pulse">
-                            <div class="w-8 h-8 bg-red-600 rounded-full"></div>
-                        </div>
-                        <p class="mt-4 text-xs font-black text-red-600 uppercase tracking-widest">Listening to Audio Stream...</p>
-                    </div>
-                    <div id="stt-idle" class="mb-10">
-                        <div class="w-24 h-24 bg-blue-50 dark:bg-blue-900/10 rounded-full flex items-center justify-center mx-auto">
-                            <i data-lucide="mic" class="w-8 h-8 text-blue-600"></i>
-                        </div>
-                        <p class="mt-4 text-xs font-black text-gray-400 uppercase tracking-widest">Mic Ready for Input</p>
-                    </div>
-                    <textarea id="stt-out" class="w-full h-48 p-8 bg-gray-50 dark:bg-gray-900 border rounded-[2.5rem] dark:border-gray-700 outline-none font-medium leading-relaxed font-mono text-sm" placeholder="Transcribed text will appear here..."></textarea>
-                    <button onclick="toggleSTT()" id="stt-btn" class="w-full py-6 bg-blue-600 text-white rounded-[2rem] font-black shadow-2xl flex items-center justify-center gap-3 uppercase tracking-widest text-[10px]">
-                        Start Dictation
-                    </button>
-                </div>
-             `;
-             lucide.createIcons();
              break;
 
         case 'color-picker':
@@ -2975,63 +2945,6 @@ function injectToolFunctionalHTML(id) {
                 </div>
              `;
              runColorPicker();
-             lucide.createIcons();
-             break;
-
-        case 'background-remover':
-             c.innerHTML = `
-                <div class="space-y-10">
-                    <div id="br-upload" class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('br-in').click()">
-                        <i data-lucide="image" class="w-12 h-12 text-gray-300 group-hover:text-blue-500 mb-4 transition-transform group-hover:-translate-y-2"></i>
-                        <p class="text-sm font-bold text-gray-400">Select Portrait/Image</p>
-                        <p class="text-[10px] text-gray-300 dark:text-gray-600 mt-2 font-bold uppercase tracking-widest italic">Local AI Processing • No Uploads</p>
-                        <input type="file" id="br-in" class="hidden" accept="image/*" onchange="handleBRInput(this)">
-                    </div>
-                    <div id="br-status" class="hidden text-center space-y-4">
-                        <div class="flex justify-center"><i data-lucide="loader-2" class="w-8 h-8 text-blue-600 animate-spin"></i></div>
-                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest" id="br-progress">Initalizing AI Tensor Models...</p>
-                    </div>
-                    <div id="br-result" class="hidden space-y-8 animate-fade-in">
-                        <div class="p-4 bg-gray-50 dark:bg-gray-900 rounded-[2.5rem] border dark:border-gray-800">
-                            <img id="br-img" class="w-full rounded-2xl shadow-xl max-h-80 object-contain bg-[url('https://www.transparenttextures.com/patterns/checkerboard.png')]">
-                        </div>
-                        <button onclick="downloadBR()" class="w-full py-6 bg-gray-900 dark:bg-white dark:text-gray-900 text-white rounded-[2rem] font-black shadow-2xl uppercase tracking-widest text-[10px]">Download Transparent Asset</button>
-                    </div>
-                </div>
-             `;
-             lucide.createIcons();
-             break;
-
-        case 'jpg-to-png':
-             c.innerHTML = `
-                <div class="space-y-10">
-                    <div id="conv-upload" class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('conv-in').click()">
-                        <i data-lucide="file-type" class="w-12 h-12 text-gray-300 group-hover:text-blue-500 mb-4 transition-transform group-hover:-translate-y-2"></i>
-                        <p class="text-sm font-bold text-gray-400">Upload Image to Convert</p>
-                        <input type="file" id="conv-in" class="hidden" accept="image/*" onchange="handleConvInput(this)">
-                    </div>
-                    <div id="conv-controls" class="hidden space-y-10 animate-fade-in">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="space-y-3">
-                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Target Format</label>
-                                <select id="conv-fmt" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none text-sm">
-                                    <option value="png">PNG (Transparent)</option>
-                                    <option value="webp">WebP (Efficient)</option>
-                                    <option value="jpeg">JPEG (Compressed)</option>
-                                    <option value="avif">AVIF (Next-Gen)</option>
-                                    <option value="bmp">BMP (Classic)</option>
-                                    <option value="gif">GIF (Standard)</option>
-                                </select>
-                            </div>
-                            <div class="space-y-3">
-                                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Image Quality</label>
-                                <input type="range" id="conv-qual" min="1" max="100" value="95" class="w-full accent-blue-600">
-                            </div>
-                        </div>
-                        <button onclick="runConvAction()" class="w-full py-6 bg-blue-600 text-white rounded-[2rem] font-black shadow-2xl uppercase tracking-widest text-[10px]">Process & Secure Download</button>
-                    </div>
-                </div>
-             `;
              lucide.createIcons();
              break;
 
@@ -3981,6 +3894,17 @@ window.runUnitConv = () => {
     const t = t_el.value;
     const useSci = document.getElementById('uc-sci')?.checked;
     
+    // Preview for huge inputs
+    const inPreview = document.getElementById('uc-in-preview');
+    if (inPreview) {
+        if (useSci && inputVal.length > 5) {
+            inPreview.innerText = v.toExponential(2);
+            inPreview.classList.remove('opacity-0');
+        } else {
+            inPreview.classList.add('opacity-0');
+        }
+    }
+    
     // Multipliers relative to Meters (Length) or Kilograms (Mass)
     const units = {
         km: new Decimal(1000), m: new Decimal(1), cm: new Decimal(0.01), mm: new Decimal(0.001), 
@@ -4017,8 +3941,15 @@ window.runUnitConv = () => {
     if (useSci) {
         out.innerText = res.toExponential(ucPrec);
     } else {
-        out.innerText = res.toFixed(ucPrec, Decimal.ROUND_HALF_UP);
+        let formatted = res.toFixed(ucPrec, Decimal.ROUND_HALF_UP);
+        if (formatted.length < 100) {
+            const parts = formatted.split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            formatted = parts.join('.');
+        }
+        out.innerText = formatted;
     }
+    out.title = res.toString();
     
     label.innerText = t_el.options[t_el.selectedIndex]?.text || '';
     
@@ -4030,26 +3961,33 @@ window.runUnitConv = () => {
 
 window.runWordCount = () => {
     const el = document.getElementById('wc-in');
+    if (!el) return;
     const t = el.value || '';
     const cleanStr = t.trim();
     
     // Quantitative Linguistic Analysis
-    const words = cleanStr ? cleanStr.split(/\s+/).filter(w => w.length > 0).length : 0;
+    // 1. Count words using trimmed text only.
+    // 2. Split on one or more whitespace characters.
+    // 3. Filter out empty strings.
+    // 4. Do not count empty text as 1 word.
+    const words = cleanStr ? cleanStr.split(/\s+/).filter(Boolean).length : 0;
+    const charsWithSpaces = t.length;
     const charsNoSpace = t.replace(/\s/g, '').length;
     const sentences = cleanStr ? cleanStr.split(/[.!?]+/).filter(s => s.trim().length > 0).length : 0;
-    const paragraphs = cleanStr ? cleanStr.split(/\n\s*\n/).filter(p => p.trim().length > 0).length : 0;
     
     document.getElementById('wc-w').innerText = words.toLocaleString();
-    document.getElementById('wc-c').innerText = t.length.toLocaleString();
+    document.getElementById('wc-c').innerText = charsWithSpaces.toLocaleString();
+    document.getElementById('wc-c-ns').innerText = charsNoSpace.toLocaleString();
     document.getElementById('wc-s').innerText = sentences.toLocaleString();
     
-    const readTime = Math.ceil(words / 225); // Industry standard 200-250 wpm
+    // Read time: 0 words = 0m, 1+ words = minimum 1m
+    let readTime = 0;
+    if (words > 0) {
+        readTime = Math.max(1, Math.ceil(words / 200));
+    }
+    
     const readingTimeEl = document.getElementById('wc-r');
     if (readingTimeEl) readingTimeEl.innerText = `${readTime}m`;
-    
-    // Visibility of extra stats
-    const charNoSpaceEl = document.getElementById('wc-c-ns');
-    if (charNoSpaceEl) charNoSpaceEl.innerText = charsNoSpace.toLocaleString();
     
     // Progress towards goal (default 500 words)
     const prog = document.getElementById('wc-prog');
@@ -4088,53 +4026,6 @@ window.runCaseConv = (mode) => {
     if (mode === 'title') text = text.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
     if (mode === 'sentence') text = text.toLowerCase().replace(/(^\s*\w|[\.\!\?]\s*\w)/g, (c) => c.toUpperCase());
     el.value = text;
-};
-
-let ttsSynth = window.speechSynthesis;
-window.initTTSVoices = () => {
-    const sel = document.getElementById('tts-voice');
-    if (!sel) return;
-    const updateVoices = () => {
-        const voices = ttsSynth.getVoices();
-        sel.innerHTML = voices.map(v => `<option value="${v.name}">${v.name} (${v.lang})</option>`).join('');
-    };
-    if (ttsSynth.onvoiceschanged !== undefined) ttsSynth.onvoiceschanged = updateVoices;
-    updateVoices();
-};
-
-window.runTTS = () => {
-    const text = document.getElementById('tts-in').value;
-    if (!text) return;
-    const utterance = new SpeechSynthesisUtterance(text);
-    const voices = ttsSynth.getVoices();
-    utterance.voice = voices.find(v => v.name === document.getElementById('tts-voice').value);
-    ttsSynth.speak(utterance);
-};
-window.stopTTS = () => ttsSynth.cancel();
-
-let sttRec = null;
-window.toggleSTT = () => {
-    const btn = document.getElementById('stt-btn');
-    if (sttRec) {
-        sttRec.stop();
-        sttRec = null;
-        btn.innerText = "Start Dictation";
-        document.getElementById('stt-active').classList.add('hidden');
-        document.getElementById('stt-idle').classList.remove('hidden');
-        return;
-    }
-    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRec) return alert("Browser does not support Speech Recognition.");
-    sttRec = new SpeechRec();
-    sttRec.continuous = true;
-    sttRec.onresult = (event) => {
-        const last = event.results.length - 1;
-        document.getElementById('stt-out').value += event.results[last][0].transcript;
-    };
-    sttRec.start();
-    btn.innerText = "Stop Dictation";
-    document.getElementById('stt-active').classList.remove('hidden');
-    document.getElementById('stt-idle').classList.add('hidden');
 };
 
 window.runColorPicker = () => {
@@ -4230,17 +4121,117 @@ window.copyColor = () => {
     toast("HEX Signature Locked!");
 };
 
-window.processWCText = (action) => {
-    const el = document.getElementById('wc-in');
-    let val = el.value;
-    
-    if(action === 'upper') val = val.toUpperCase();
-    if(action === 'lower') val = val.toLowerCase();
-    if(action === 'clean') val = val.replace(/\s+/g, ' ').trim();
-    
-    el.value = val;
-    runWordCount();
+/* Word Counter Robust Logic */
+window.getWordCounterEditor = () => {
+    const root =
+        document.querySelector('#word-counter') ||
+        document.querySelector('[data-tool="word-counter"]') ||
+        document.querySelector('.word-counter');
+
+    if (!root) return null;
+
+    return (
+        root.querySelector('textarea') ||
+        root.querySelector('[contenteditable="true"]') ||
+        root.querySelector('.word-counter-editor') ||
+        root.querySelector('#word-counter-input') ||
+        root.querySelector('#wc-input') ||
+        document.getElementById('wc-in')
+    );
 };
+
+window.readEditorText = (editor) => {
+    if (!editor) return '';
+    if ('value' in editor) return editor.value || '';
+    return editor.textContent || '';
+};
+
+window.writeEditorText = (editor, text) => {
+    if (!editor) return;
+    if ('value' in editor) {
+        editor.value = text;
+        editor.dispatchEvent(new Event('input', { bubbles: true }));
+    } else {
+        editor.textContent = text;
+        editor.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+};
+
+window.processWCText = (action) => {
+    const editor = window.getWordCounterEditor();
+    if (!editor) {
+        console.warn('Word Counter editor not found');
+        return;
+    }
+
+    const text = window.readEditorText(editor);
+    
+    if (action === 'copy') {
+        navigator.clipboard.writeText(text);
+        if (window.toast) toast("Content Copied!");
+        return;
+    }
+
+    let next = text;
+
+    if (action === 'upper') {
+        next = text.toUpperCase();
+    } else if (action === 'lower') {
+        next = text.toLowerCase();
+    } else if (action === 'cleanup' || action === 'clean') {
+        next = text
+            .replace(/\t/g, ' ') // Convert all tabs to single spaces
+            .replace(/[ ]+/g, ' ') // Collapse multiple spaces to one
+            .split('\n') // Process line by line
+            .map(line => line.trim()) // Trim whitespace from each line
+            .join('\n') // Rejoin lines
+            .replace(/\n{3,}/g, '\n\n') // Collapse 3+ newlines to 2
+            .trim(); // Final trim of overall text
+    } else if (action === 'title') {
+        next = text.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+    } else if (action === 'clear') {
+        next = '';
+    }
+
+    window.writeEditorText(editor, next);
+
+    if (typeof window.runWordCount === 'function') {
+        window.runWordCount();
+    }
+};
+
+// Event Delegation for Word Counter Toolbar
+document.addEventListener('click', function (event) {
+    const btn = event.target.closest(
+        '[data-wc-action], .wc-copy, .wc-upper, .wc-lower, .wc-cleanup, .wc-title, .wc-clear'
+    );
+
+    if (!btn) return;
+
+    const action = btn.dataset.wcAction || (btn.textContent || '').trim().toLowerCase();
+    
+    let finalAction = null;
+    if (action.includes('copy')) finalAction = 'copy';
+    if (action.includes('upper')) finalAction = 'upper';
+    if (action.includes('lower')) finalAction = 'lower';
+    if (action.includes('cleanup') || action.includes('clean')) finalAction = 'cleanup';
+    if (action.includes('title')) finalAction = 'title';
+    if (action.includes('clear')) finalAction = 'clear';
+
+    if (!finalAction) return;
+
+    const wordCounterRoot =
+        btn.closest('#word-counter') ||
+        btn.closest('[data-tool="word-counter"]') ||
+        btn.closest('.word-counter');
+
+    if (!wordCounterRoot) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    window.processWCText(finalAction);
+});
 
 window.runPassGen = () => {
     const len = parseInt(document.getElementById('pg-len')?.value || 16);
@@ -4334,23 +4325,21 @@ window.runAgeCalc = () => {
 
 // --- FD CALCULATOR LOGIC ---
 window.runFDCalc = () => {
-    const P = FinUI.getValidInput('fd-p', 100000);
-    const inputRate = FinUI.getValidInput('fd-r', 7.5);
+    const P = FinUI.getValidInput('fd-p', 100000, { min: 0.01 });
+    const inputRate = FinUI.getValidInput('fd-r', 7.5, { min: 0 });
     const annualRate = D(inputRate || 0);
-    const years = FinUI.getValidInput('fd-n', 5);
-    const freq = parseInt(document.getElementById('fd-freq')?.value || '4', 10);
+    const years = FinUI.getValidInput('fd-n', 5, { min: 0.01 });
+    const freqEl = document.getElementById('fd-freq');
+    const freq = parseInt(freqEl?.value || '4', 10);
     const taxBracketInput = document.getElementById('fd-tax')?.value;
     const taxRate = D(taxBracketInput === "" ? 0 : taxBracketInput).div(100);
-    const inflation = FinUI.getValidInput('fd-inf', 0).div(100);
+    const inflation = FinUI.getValidInput('fd-inf', 0, { min: 0 }).div(100);
     const currency = state.currency;
 
-    if (P.lte(0) || annualRate.lt(0) || years.lte(0)) {
+    if (P.lte(0) || years.lte(0)) {
         const box = document.getElementById('fd-box');
-        if (box && !box.classList.contains('hidden') && P.gt(0)) {
-            // If zero rate, results are different but valid
-        } else {
-            return;
-        }
+        if (box) box.classList.add('hidden');
+        return;
     }
 
     const { maturity, interest } = FinancialCore.calculateFD(P, annualRate, years, freq);
@@ -4372,7 +4361,8 @@ window.runFDCalc = () => {
     if (intEl) intEl.innerText = FinUI.formatCurrency(interest.toNumber(), currency);
     
     if (taxEl) {
-        taxEl.innerText = FinUI.formatCurrency(taxPaid.plus(inflationLoss).toNumber(), currency);
+        const isNegZeroTx = taxPaid.plus(inflationLoss).lt(0) && taxPaid.plus(inflationLoss).gt(-0.01);
+        taxEl.innerText = (taxPaid.plus(inflationLoss).lt(0) && !isNegZeroTx ? '-' : '') + FinUI.formatCurrency(taxPaid.plus(inflationLoss).abs().toNumber(), currency);
     }
     
     if (extraLabel) {
@@ -4386,56 +4376,129 @@ window.runFDCalc = () => {
     const box = document.getElementById('fd-box');
     if (box) box.classList.remove('hidden');
     
-    const schedule = [];
+    // Compounding Comparison
+    const compTable = document.getElementById('fd-comp-table');
+    if (compTable) {
+        const frequencies = [
+            { name: 'Annually', f: 1 },
+            { name: 'Quarterly', f: 4 },
+            { name: 'Monthly', f: 12 }
+        ];
+        
+        compTable.innerHTML = frequencies.map(comp => {
+            const res = FinancialCore.calculateFD(P, annualRate, years, comp.f);
+            const diff = res.maturity.minus(maturity);
+            const isSelected = comp.f === freq;
+            
+            return `
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 border ${isSelected ? 'border-emerald-500' : 'dark:border-gray-800'} rounded-2xl">
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">${comp.name}</span>
+                        ${isSelected ? '<span class="text-[8px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-black">SELECTED</span>' : ''}
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs font-black text-gray-900 dark:text-white">${FinUI.formatCurrency(res.maturity.toNumber(), currency)}</div>
+                        <div class="text-[9px] font-bold ${diff.gte(0) ? 'text-green-500' : 'text-red-500'}">
+                            ${diff.isZero() ? 'Base' : (diff.gt(0) ? '+' : '') + FinUI.formatCurrency(diff.toNumber(), currency)}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Real Return Analysis
+    const realAnnualReturn = inflation.gt(10) ? D(0) : D(1).plus(annualRate.div(100)).div(D(1).plus(inflation)).minus(1).times(100);
+    const realReturnEl = document.getElementById('fd-real-return');
+    if (realReturnEl) {
+        realReturnEl.innerHTML = `
+            <div class="p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl">
+                <p class="text-[8px] font-black text-gray-400 uppercase mb-1">Nominal Return</p>
+                <div class="text-sm font-black text-gray-900 dark:text-white">${annualRate.toFixed(2)}%</div>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl">
+                <p class="text-[8px] font-black text-gray-400 uppercase mb-1">Real Return (Adj.)</p>
+                <div class="text-sm font-black ${realAnnualReturn.gt(0) ? 'text-green-500' : 'text-red-500'}">${realAnnualReturn.toFixed(2)}%</div>
+            </div>
+        `;
+    }
+
+    // Purchasing Power Analysis
+    const powerEl = document.getElementById('fd-power-analysis');
+    if (powerEl) {
+        const realGain = realMaturity.minus(P);
+        powerEl.innerHTML = `
+            <div class="p-4 bg-white dark:bg-gray-900 border dark:border-gray-800 rounded-2xl space-y-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Real Value (Inflation adj.)</span>
+                    <span class="text-xs font-black text-gray-900 dark:text-white">${FinUI.formatCurrency(realMaturity.toNumber(), currency)}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Purchasing Power Delta</span>
+                    <span class="text-xs font-black ${realGain.gte(0) ? 'text-green-500' : 'text-red-500'}">${realGain.gt(0) ? '+' : ''}${FinUI.formatCurrency(realGain.toNumber(), currency)}</span>
+                </div>
+            </div>
+            ${taxRate.gt(0) ? `
+            <div class="p-4 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 rounded-2xl flex justify-between items-center">
+                <span class="text-[10px] font-black text-red-600 uppercase tracking-widest">Tax Impact on Yield</span>
+                <span class="text-xs font-black text-red-600">-${FinUI.formatCurrency(taxPaid.toNumber(), currency)}</span>
+            </div>
+            ` : '<div class="p-4 bg-blue-50 dark:bg-blue-900/10 rounded-2xl text-center text-[10px] font-black text-blue-600 uppercase tracking-widest">No tax assumed in calculation</div>'}
+        `;
+    }
+
+    // Verdict Chip
+    const verdictEl = document.getElementById('fd-verdict');
+    if (verdictEl) {
+        if (realAnnualReturn.gt(1)) {
+            verdictEl.innerText = "Positive Real Return";
+            verdictEl.className = "px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 rounded-lg text-[8px] font-black uppercase tracking-widest";
+        } else if (realAnnualReturn.gte(0)) {
+            verdictEl.innerText = "Low Real Return";
+            verdictEl.className = "px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-lg text-[8px] font-black uppercase tracking-widest";
+        } else {
+            verdictEl.innerText = "Inflation Beats Returns";
+            verdictEl.className = "px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-lg text-[8px] font-black uppercase tracking-widest";
+        }
+    }
+
+    // Simple Insights
+    const simpleIns = document.getElementById('fd-simple-insights');
+    if (simpleIns) {
+        simpleIns.innerHTML = `
+            <div class="flex items-center gap-3">
+                <div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                <p class="text-[10px] font-black text-gray-500 uppercase">Principal Stake: ${((P.div(netMaturity.gt(0) ? netMaturity : 1)).times(100)).toFixed(1)}%</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                <p class="text-[10px] font-black text-gray-500 uppercase">Interest Growth: ${interest.div(P).times(100).toFixed(1)}%</p>
+            </div>
+        `;
+    }
+
+    const highlights = document.getElementById('fd-highlights');
+    if (highlights) {
+        highlights.innerHTML = `
+            <div class="px-4 py-2 bg-emerald-50 dark:bg-emerald-900/20 rounded-full text-[10px] font-black text-emerald-600 border border-emerald-100">Capital Protection: 100%</div>
+            <div class="px-4 py-2 bg-gray-50 dark:bg-gray-800 rounded-full text-[8px] font-bold text-gray-400 border dark:border-gray-700 italic">*Nominal capital protected; real value depends on inflation</div>
+        `;
+    }
+
     const labels = [];
     const dataPoints = [];
-    
     for (let i = 1; i <= years.toNumber(); i++) {
         const yearResult = FinancialCore.calculateFD(P, annualRate, i, freq);
-        const opening = i === 1 ? P : schedule[i-2].closing;
-        const interestThisYear = yearResult.maturity.minus(opening);
-        
-        schedule.push({
-            year: i,
-            opening: opening,
-            interest: interestThisYear,
-            closing: yearResult.maturity
-        });
-        
         labels.push(`Year ${i}`);
         dataPoints.push(yearResult.maturity.toNumber());
     }
 
-    window.currentFDSchedule = schedule;
-    const tbody = document.getElementById('fd-tbody');
-    if (tbody) {
-        tbody.innerHTML = schedule.map(s => `
-            <tr class="border-b dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                <td class="p-4 font-bold text-gray-500">${s.year}</td>
-                <td class="p-4 text-right font-mono text-xs">${FinUI.formatCurrency(s.opening.toNumber(), currency)}</td>
-                <td class="p-4 text-right font-mono text-xs text-green-600">+${FinUI.formatCurrency(s.interest.toNumber(), currency)}</td>
-                <td class="p-4 text-right font-black font-mono text-xs">${FinUI.formatCurrency(s.closing.toNumber(), currency)}</td>
-            </tr>
-        `).join('');
-    }
-
     updateFDCharts(P.toNumber(), interest.toNumber(), labels, dataPoints, currency);
-
-    const highlights = document.getElementById('fd-highlights');
-    if (highlights) {
-        const yieldPerc = P.gt(0) ? interest.div(P).times(100) : D(0);
-        highlights.innerHTML = `
-            <div class="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-full text-[10px] font-black text-blue-600 border border-blue-100">${yieldPerc.toFixed(1)}% Total Yield</div>
-            <div class="px-4 py-2 bg-green-50 dark:bg-green-900/20 rounded-full text-[10px] font-black text-green-600 border border-green-100">Capital Protection: 100%</div>
-            ${inflation.gt(0) ? `<div class="px-4 py-2 bg-purple-50 dark:bg-purple-900/20 rounded-full text-[10px] font-black text-purple-600 border border-purple-100 italic">Real Value: ${FinUI.formatCurrency(realMaturity.toNumber(), currency)}</div>` : ''}
-        `;
-    }
 };
 
 const updateFDCharts = (principal, interest, labels, data, currency) => {
     const pieCtx = document.getElementById('fd-pie-chart');
-    const lineCtx = document.getElementById('fd-line-chart');
-    if (!pieCtx || !lineCtx) return;
+    if (!pieCtx) return;
 
     if (window.fdCharts) {
         window.fdCharts.pie?.destroy();
@@ -4454,7 +4517,7 @@ const updateFDCharts = (principal, interest, labels, data, currency) => {
             datasets: [{
                 data: [principal, interest],
                 backgroundColor: ['#3b82f6', '#10b981'],
-                borderWidth: 0
+                borderWidth:0
             }]
         },
         options: {
@@ -4464,29 +4527,32 @@ const updateFDCharts = (principal, interest, labels, data, currency) => {
         }
     });
 
-    window.fdCharts.line = new Chart(lineCtx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Maturity Value',
-                data: data,
-                borderColor: '#3b82f6',
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                fill: true,
-                tension: 0.4
-            }]
-        },
-        options: {
-            scales: {
-                x: { ticks: { color: textColor, font: { size: 9 } } },
-                y: { ticks: { color: textColor, font: { size: 9 }, callback: v => formatEMICurrency(v, currency).split('.')[0] } }
+    const lineCtx = document.getElementById('fd-line-chart');
+    if (lineCtx) {
+        window.fdCharts.line = new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Maturity Value',
+                    data: data,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
             },
-            plugins: {
-                legend: { display: false }
+            options: {
+                scales: {
+                    x: { ticks: { color: textColor, font: { size: 9 } } },
+                    y: { ticks: { color: textColor, font: { size: 9 }, callback: v => FinUI.formatCurrency(v, currency).split('.')[0] } }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
             }
-        }
-    });
+        });
+    }
 };
 
 // --- LOAN COMPARISON LOGIC ---
@@ -4498,6 +4564,19 @@ let lcScenarios = [
 window.initLoanComp = () => {
     renderLoanScenarios();
     runLoanComp();
+
+    // Event Delegation for Remove Buttons
+    const container = document.getElementById('lc-scenarios');
+    if (container && !container.dataset.bound) {
+        container.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-remove-loan]');
+            if (btn) {
+                const id = parseInt(btn.dataset.removeLoan);
+                window.removeLoanScenario(id);
+            }
+        });
+        container.dataset.bound = 'true';
+    }
 };
 
 window.addLoanScenario = () => {
@@ -4508,20 +4587,25 @@ window.addLoanScenario = () => {
     runLoanComp();
 };
 
-function removeLoanScenario(id) {
+window.removeLoanScenario = (id) => {
     if (lcScenarios.length <= 2) return toast("At least 2 scenarios are required for comparison");
     lcScenarios = lcScenarios.filter(s => s.id !== id);
     renderLoanScenarios();
     runLoanComp();
-}
+};
 
 function renderLoanScenarios() {
     const container = document.getElementById('lc-scenarios');
     if (!container) return;
     container.innerHTML = lcScenarios.map(s => `
-        <div class="p-6 bg-white dark:bg-gray-900 border dark:border-gray-800 rounded-[2rem] space-y-4 relative group animate-fade-in">
-            <button onclick="removeLoanScenario(${s.id})" class="absolute top-4 right-4 text-gray-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
-                <i data-lucide="x-circle" class="w-4 h-4"></i>
+        <div class="p-6 bg-white dark:bg-gray-900 border dark:border-gray-800 rounded-[2rem] space-y-4 relative group animate-fade-in" data-loan-card>
+            <button 
+                type="button"
+                data-remove-loan="${s.id}"
+                aria-label="Remove bank"
+                class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-all sm:opacity-0 group-hover:opacity-100 opacity-100 z-20 cursor-pointer p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20"
+            >
+                <i data-lucide="x-circle" class="w-5 h-5 pointer-events-none"></i>
             </button>
             <div class="space-y-2">
                 <input type="text" value="${s.name}" oninput="updateLCParam(${s.id}, 'name', this.value)" class="bg-transparent border-none outline-none font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-widest w-full">
@@ -4551,70 +4635,120 @@ window.updateLCParam = (id, key, val) => {
 };
 
 window.runLoanComp = () => {
-    const pVal = document.getElementById('lc-p').value;
-    const nVal = document.getElementById('lc-n').value;
-    const P = new Decimal(pVal || 0);
-    const N = new Decimal(nVal || 0);
+    const P = FinUI.getValidInput('lc-p', 500000, { min: 0.01 });
+    const N = FinUI.getValidInput('lc-n', 5, { min: 0.01 });
     const currency = state.currency;
+    const recContainer = document.getElementById('lc-results');
+    const recText = document.getElementById('lc-rec');
+    const cardsContainer = document.getElementById('lc-cards');
 
-    if (P.lte(0) || N.lte(0)) return;
+    if (!recContainer || !recText || !cardsContainer) return;
+
+    if (P.lte(0) || N.lte(0)) {
+        recContainer.classList.add('hidden');
+        return;
+    }
+
+    if (lcScenarios.length < 2) {
+        recContainer.classList.remove('hidden');
+        recText.innerHTML = '<div class="text-sm opacity-80 font-medium">Add at least 2 valid offers to compare.</div>';
+        cardsContainer.innerHTML = '';
+        return;
+    }
 
     const results = lcScenarios.map(s => {
-        const annualRate = FinancialCore.getAnnualRate(s.rate);
+        const annualRate = new Decimal(s.rate || 0);
+        const processingFee = new Decimal(s.fee || 0);
         const totalMonths = N.mul(12).round().toNumber();
+        
         const emi = FinancialCore.calculateEMI(P, annualRate, totalMonths);
-
-        const totalInterest = emi.mul(totalMonths).minus(P);
-        const totalOutflow = totalInterest.plus(P).plus(s.fee);
+        const totalEMIOutflow = emi.mul(totalMonths);
+        const totalInterest = totalEMIOutflow.minus(P);
+        const totalOutflow = totalEMIOutflow.plus(processingFee);
 
         return {
             id: s.id,
             name: s.name,
             emi: emi,
             interest: totalInterest,
+            fee: processingFee,
             outflow: totalOutflow,
             rate: annualRate
         };
     });
 
     results.sort((a, b) => a.outflow.minus(b.outflow).toNumber());
+    const best = results[0];
+    const worst = results[results.length - 1];
+    const savings = worst.outflow.minus(best.outflow);
 
-    const resultsBox = document.getElementById('lc-results');
-    resultsBox.classList.remove('hidden');
+    recContainer.classList.remove('hidden');
 
-    const tbody = document.getElementById('lc-tbody');
-    tbody.innerHTML = results.map(r => {
-        const delta = r.outflow.minus(results[0].outflow);
-        return `
-            <tr class="border-b dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                <td class="p-6 font-black uppercase text-gray-500">${r.name} <span class="ml-2 px-2 py-0.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded text-[8px]">${r.rate}%</span></td>
-                <td class="p-6 font-bold font-mono">${formatEMICurrency(r.emi.toNumber(), currency)}</td>
-                <td class="p-6 font-bold font-mono text-red-500">${formatEMICurrency(r.interest.toNumber(), currency)}</td>
-                <td class="p-6 font-black font-mono text-gray-900 dark:text-white">${formatEMICurrency(r.outflow.toNumber(), currency)}</td>
-                <td class="p-6 font-bold font-mono ${delta.gt(0) ? 'text-orange-500' : 'text-green-500'}">${delta.isZero() ? 'CHEAPEST' : '+'+formatEMICurrency(delta.toNumber(), currency)}</td>
-            </tr>
-        `;
-    }).join('');
-
-    // Verdict
-    const savings = results[results.length - 1].outflow.minus(results[0].outflow);
-    const verdict = document.getElementById('lc-verdict');
-    verdict.innerHTML = `
-        <div class="p-6 bg-blue-600 rounded-3xl space-y-2">
-            <h5 class="text-[10px] font-black uppercase text-blue-200">Cheapest Option Detected</h5>
-            <div class="text-3xl font-black">${results[0].name}</div>
-            <p class="text-[9px] font-bold text-blue-100 opacity-80">Choosing this bank over the most expensive option saves you ${formatEMICurrency(savings.toNumber(), currency)} in total capital outflow.</p>
-        </div>
+    // Recommendation Result
+    recText.innerHTML = `
         <div class="space-y-4">
-             <div class="flex justify-between items-center text-[10px] font-black uppercase">
-                <span class="text-gray-500">Interest / Principal Ratio</span>
-                <span class="text-blue-400">${results[0].interest.div(P).times(100).toFixed(1)}%</span>
-             </div>
-             <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
-                <div class="h-full bg-blue-500" style="width: ${Math.min(100, results[0].interest.div(P).times(100).toNumber())}%"></div>
-             </div>
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="text-[10px] font-black uppercase text-blue-200 mb-1">Best Recommended Offer</div>
+                    <div class="text-3xl font-black">${best.name}</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-[10px] font-black uppercase text-blue-200 mb-1">Total Cost</div>
+                    <div class="text-2xl font-black">${FinUI.formatCurrency(best.outflow.toNumber(), currency)}</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-4 pt-4 border-t border-white/10">
+                <div>
+                    <div class="text-[10px] font-black uppercase text-blue-200">Estimated EMI</div>
+                    <div class="text-lg font-bold">${FinUI.formatCurrency(best.emi.toNumber(), currency)}/mo</div>
+                </div>
+                <div class="flex-grow"></div>
+                <div class="px-4 py-2 bg-white/10 rounded-2xl">
+                    <div class="text-[10px] font-black uppercase text-blue-200 mb-1">Impact Analysis</div>
+                    <div class="text-xs font-black text-emerald-300">Saves ${FinUI.formatCurrency(savings.toNumber(), currency)} vs most expensive</div>
+                </div>
+            </div>
         </div>
     `;
+
+    // Cards Table
+    cardsContainer.innerHTML = results.map(r => {
+        const delta = r.outflow.minus(best.outflow);
+        return `
+            <div class="p-6 bg-white dark:bg-gray-900 border dark:border-gray-800 rounded-3xl space-y-4 relative overflow-hidden transition-all hover:shadow-lg">
+                ${delta.isZero() ? '<div class="absolute top-0 right-0 px-4 py-1 bg-blue-600 text-white text-[8px] font-black uppercase tracking-widest rounded-bl-xl">Winner</div>' : ''}
+                <div class="flex justify-between items-start">
+                    <div class="space-y-1">
+                        <h5 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-widest">${r.name}</h5>
+                        <p class="text-[10px] font-bold text-gray-400">${r.rate}% Interest</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-lg font-black text-gray-900 dark:text-white">${FinUI.formatCurrency(r.emi.toNumber(), currency)}</div>
+                        <p class="text-[8px] font-black uppercase text-gray-400">Monthly EMI</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 py-4 border-t border-gray-50 dark:border-gray-800">
+                    <div>
+                        <p class="text-[8px] font-black text-gray-400 uppercase mb-1">Total Interest</p>
+                        <p class="text-xs font-bold text-red-500">${FinUI.formatCurrency(r.interest.toNumber(), currency)}</p>
+                    </div>
+                    <div>
+                        <p class="text-[8px] font-black text-gray-400 uppercase mb-1">Proc. Fee</p>
+                        <p class="text-xs font-bold text-gray-600 dark:text-gray-400">${FinUI.formatCurrency(r.fee.toNumber(), currency)}</p>
+                    </div>
+                </div>
+                
+                <div class="pt-4 border-t border-gray-50 dark:border-gray-800 flex justify-between items-center">
+                    <div>
+                        <p class="text-[8px] font-black text-gray-400 uppercase mb-1">Total Cost</p>
+                        <p class="text-sm font-black text-gray-900 dark:text-white">${FinUI.formatCurrency(r.outflow.toNumber(), currency)}</p>
+                    </div>
+                    ${!delta.isZero() ? `<div class="text-[10px] font-black text-orange-500">+${FinUI.formatCurrency(delta.toNumber(), currency)}</div>` : ''}
+                </div>
+            </div>
+        `;
+    }).join('');
 
     // Export Support
     window.currentLCResults = results;
@@ -5545,39 +5679,6 @@ window.runCaptionGen = () => {
     lucide.createIcons();
 };
 
-window.handleResizerInput = (input) => {
-    if (!input.files.length) return;
-    const file = input.files[0];
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-            window.resizerOriginalImg = img;
-            state.resizerRatio = img.width / img.height;
-            document.getElementById('res-w').value = img.width;
-            document.getElementById('res-h').value = img.height;
-            document.getElementById('resizer-upload').classList.add('hidden');
-            document.getElementById('resizer-controls').classList.remove('hidden');
-            lucide.createIcons();
-        };
-        img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-};
-
-window.syncResizerDim = (type) => {
-    const maintain = document.getElementById('res-aspect').checked;
-    if (!maintain || !state.resizerRatio) return;
-    
-    if (type === 'w') {
-        const w = document.getElementById('res-w').value;
-        document.getElementById('res-h').value = Math.round(w / state.resizerRatio);
-    } else {
-        const h = document.getElementById('res-h').value;
-        document.getElementById('res-w').value = Math.round(h * state.resizerRatio);
-    }
-};
-
 window.runFileSim = async () => {
     const prog = document.getElementById('file-prog');
     const box = document.getElementById('file-box');
@@ -5662,30 +5763,6 @@ window.runFileSim = async () => {
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = `Split_${file.name}`;
-                a.click();
-            };
-        }
-        else if (id === 'image-resizer') {
-            const file = input.files[0];
-            const w = parseInt(document.getElementById('res-w').value);
-            const h = parseInt(document.getElementById('res-h').value);
-            const format = document.getElementById('res-format').value;
-            
-            if (!window.resizerOriginalImg) return toast("Processing error: Image not loaded");
-
-            const canvas = document.createElement('canvas');
-            canvas.width = w;
-            canvas.height = h;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(window.resizerOriginalImg, 0, 0, w, h);
-            
-            const url = canvas.toDataURL(format);
-            document.getElementById('res-out-box').classList.remove('hidden');
-            const dlBtn = document.getElementById('res-out-box').querySelector('button');
-            dlBtn.onclick = () => {
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `resized_${file.name.split('.')[0]}.${format.split('/')[1]}`;
                 a.click();
             };
         }
@@ -5815,20 +5892,38 @@ window.runWebCost = () => {
 };
 
 window.runFreelanceCalc = () => {
-    const rVal = document.getElementById('fr-rate').value;
-    const hVal = document.getElementById('fr-hours').value;
-    const r = new Decimal(rVal || 0);
-    const h = new Decimal(hVal || 0);
+    const r = FinUI.getValidInput('fr-rate', 45, { min: 0 });
+    const h = FinUI.getValidInput('fr-hours', 35, { min: 0, max: 168 });
+    const feeRate = FinUI.getValidInput('fr-fee', 0, { min: 0, max: 100 }).div(100);
+    const taxRate = FinUI.getValidInput('fr-tax', 0, { min: 0, max: 100 }).div(100);
     const currency = state.currency;
     
-    if (r.lt(0) || h.lt(0)) return;
+    // Revenue
+    const weeklyGross = r.mul(h);
+    
+    // Deductions
+    const platformFees = weeklyGross.mul(feeRate);
+    const weeklyAfterFees = weeklyGross.minus(platformFees);
+    const taxDeduction = weeklyAfterFees.mul(taxRate);
+    
+    const weeklyNet = weeklyAfterFees.minus(taxDeduction);
+    
+    // Projections
+    // User requested Annual = Weekly * 52 and Monthly = Annual / 12
+    const yearlyNet = weeklyNet.mul(52);
+    const monthlyNet = yearlyNet.div(12);
 
-    const weekly = r.mul(h);
-    const monthly = weekly.mul(4.34524); // More precise weeks per month (365.25 / 7 / 12)
-    const yearly = r.mul(h).mul(52);
+    const weekEl = document.getElementById('fr-week');
+    const monthEl = document.getElementById('fr-month');
+    const yearEl = document.getElementById('fr-year');
 
-    document.getElementById('fr-month').innerText = formatEMICurrency(monthly.toNumber(), currency);
-    document.getElementById('fr-year').innerText = formatEMICurrency(yearly.toNumber(), currency);
+    if (weekEl) weekEl.innerText = formatEMICurrency(weeklyNet.toNumber(), currency);
+    if (monthEl) monthEl.innerText = formatEMICurrency(monthlyNet.toNumber(), currency);
+    if (yearEl) yearEl.innerText = formatEMICurrency(yearlyNet.toNumber(), currency);
+
+    // Export Support
+    window.currentFreelanceInputs = { r, h, feeRate, taxRate, currency };
+    window.currentFreelanceSummary = { weeklyNet, monthlyNet, yearlyNet };
 };
 
 window.runDomEst = () => {
@@ -5860,14 +5955,33 @@ window.runDomEst = () => {
 };
 
 window.runCryCalc = () => {
-    const capital = FinUI.getValidInput('cry-in', 0);
-    const buyPrice = FinUI.getValidInput('cry-buy', 0);
-    const sellPrice = FinUI.getValidInput('cry-sell', 0);
-    const feeRate = FinUI.getValidInput('cry-fee', 0).div(100);
-    const taxRate = FinUI.getValidInput('cry-tax', 0).div(100);
+    const capital = FinUI.getValidInput('cry-in', 0, { min: 0 });
+    const buyPrice = FinUI.getValidInput('cry-buy', 0, { min: 0.00000001 });
+    const sellPrice = FinUI.getValidInput('cry-sell', 0, { min: 0 });
+    const feeRate = FinUI.getValidInput('cry-fee', 0.1, { min: 0, max: 100 }).div(100);
+    const taxRate = FinUI.getValidInput('cry-tax', 0, { min: 0, max: 100 }).div(100);
     const currency = state.currency;
 
-    if (capital.lte(0) || buyPrice.lte(0)) return;
+    const profitEl = document.getElementById('cry-profit');
+    const percEl = document.getElementById('cry-perc');
+    const tokensEl = document.getElementById('cry-tokens');
+    const balEl = document.getElementById('cry-bal');
+    const beEl = document.getElementById('cry-be');
+    const feeValEl = document.getElementById('cry-fee-val');
+    const taxValEl = document.getElementById('cry-tax-val');
+    const netEl = document.getElementById('cry-net');
+
+    if (capital.lte(0) || buyPrice.lte(0)) {
+        if (profitEl) profitEl.innerText = '---';
+        if (percEl) percEl.innerText = '+0%';
+        if (tokensEl) tokensEl.innerText = '---';
+        if (balEl) balEl.innerText = '---';
+        if (beEl) beEl.innerText = '---';
+        if (feeValEl) feeValEl.innerText = '---';
+        if (taxValEl) taxValEl.innerText = '---';
+        if (netEl) netEl.innerText = '---';
+        return;
+    }
 
     // Buying Phase: Capital -> Tokens (minus entry fee)
     const entryFee = capital.mul(feeRate);
@@ -5891,26 +6005,42 @@ window.runCryCalc = () => {
     const percentage = finalProfit.div(capital).times(100);
 
     // Break-even Buy Price (assuming selling at current sell price)
+    // Formula: FinalBalance = Capital
+    // Tokens = Capital * (1-fee) / BuyPrice
+    // FinalBalance = Tokens * SellPrice * (1-fee)
+    // BuyPriceTarget = SellPrice * (1-fee)^2
+    // Wait, the user usually wants to know what SELL price they need to break even at a given BUY price.
+    // Or what BUY price they should have had for current SELL price.
+    // Usually it's: "I bought at X, what should I sell at to break even?"
+    // The current code does: breakEven = buyPrice / (1-fee)^2
+    // Let's re-verify:
+    // Capital = Tokens * TargetSellPrice * (1-fee)
+    // Capital = [Capital * (1-fee) / BuyPrice] * TargetSellPrice * (1-fee)
+    // 1 = (1-fee)^2 * TargetSellPrice / BuyPrice
+    // TargetSellPrice = BuyPrice / (1-fee)^2. Correct.
     const breakEven = buyPrice.div(new Decimal(1).minus(feeRate).pow(2));
 
-    const profitEl = document.getElementById('cry-profit');
     if (profitEl) {
-        profitEl.innerText = FinUI.formatCurrency(finalProfit.toNumber(), currency);
+        const isNegZero = finalProfit.lt(0) && finalProfit.gt(-0.01);
+        profitEl.innerText = (finalProfit.lt(0) && !isNegZero ? '-' : '') + FinUI.formatCurrency(finalProfit.abs().toNumber(), currency);
         profitEl.className = `text-5xl font-black mb-2 ${finalProfit.gte(0) ? 'text-green-500' : 'text-red-500'}`;
     }
     
-    const percEl = document.getElementById('cry-perc');
     if (percEl) {
-        percEl.innerText = (percentage.gte(0) ? '+' : '') + percentage.toFixed(2) + '%';
+        const isNegZeroPerc = percentage.lt(0) && percentage.gt(-0.005);
+        percEl.innerText = (percentage.gte(0) || isNegZeroPerc ? '+' : '') + percentage.toFixed(2) + '%';
         percEl.className = `text-lg font-black ${percentage.gte(0) ? 'text-green-400' : 'text-red-400'}`;
     }
     
-    document.getElementById('cry-bal').innerText = FinUI.formatCurrency(finalBalance.toNumber(), currency);
-    document.getElementById('cry-tokens').innerText = tokens.toFixed(6);
-    document.getElementById('cry-be').innerText = FinUI.formatCurrency(breakEven.toNumber(), currency);
-    document.getElementById('cry-fee-val').innerText = `-${FinUI.formatCurrency(totalFees.toNumber(), currency)}`;
-    document.getElementById('cry-tax-val').innerText = `-${FinUI.formatCurrency(taxAmount.toNumber(), currency)}`;
-    document.getElementById('cry-net').innerText = FinUI.formatCurrency(netTakeAway.toNumber(), currency);
+    if (balEl) balEl.innerText = FinUI.formatCurrency(finalBalance.toNumber(), currency);
+    if (tokensEl) tokensEl.innerText = tokens.toFixed(8);
+    if (beEl) beEl.innerText = FinUI.formatCurrency(breakEven.toNumber(), currency);
+    if (feeValEl) feeValEl.innerText = `-${FinUI.formatCurrency(totalFees.toNumber(), currency)}`;
+    if (taxValEl) taxValEl.innerText = `-${FinUI.formatCurrency(taxAmount.toNumber(), currency)}`;
+    if (netEl) {
+        const isNegZeroNet = netTakeAway.lt(0) && netTakeAway.gt(-0.01);
+        netEl.innerText = (netTakeAway.lt(0) && !isNegZeroNet ? '-' : '') + FinUI.formatCurrency(netTakeAway.abs().toNumber(), currency);
+    }
 };
 
 window.runROICalc = () => {
@@ -5919,49 +6049,74 @@ window.runROICalc = () => {
     const days = FinUI.getValidInput('roi-t', 365);
     const currency = state.currency;
 
+    const errorEl = document.getElementById('roi-error');
+    const out = document.getElementById('roi-out');
+    const profitEl = document.getElementById('roi-p');
+    const roasEl = document.getElementById('roi-a');
+    const annEl = document.getElementById('roi-ann');
+    const bar = document.getElementById('roi-bar');
+
     if (spend.lte(0)) {
-        const out = document.getElementById('roi-out');
-        if (out) out.innerText = '0%';
+        if (errorEl) errorEl.classList.remove('hidden');
+        if (out) out.innerText = '---';
+        if (profitEl) profitEl.innerText = '--';
+        if (roasEl) roasEl.innerText = '--';
+        if (annEl) annEl.innerText = '--';
+        if (bar) bar.style.width = '0%';
         return;
     }
+
+    if (errorEl) errorEl.classList.add('hidden');
 
     const profit = revenue.minus(spend);
     const roi = profit.div(spend).times(100);
     const roas = revenue.div(spend);
 
-    // Annualized ROI: ((1 + ROI)^(365/days)) - 1
+    // Annualized ROI: ((finalValue / initialCapital) ^ (365 / durationDays) - 1) × 100
     let annualized;
-    if (profit.lte(0)) {
-        annualized = roi;
+    if (days.lte(0)) {
+        annualized = null;
     } else {
-        const roiFactor = profit.div(spend).plus(1);
-        const timeFactor = new Decimal(365).div(Decimal.max(1, days));
-        annualized = roiFactor.pow(timeFactor).minus(1).times(100);
+        try {
+            const roasFactor = revenue.div(spend);
+            if (roasFactor.lte(0)) {
+                annualized = roi; // Fallback for total loss
+            } else {
+                const timeFactor = new Decimal(365).div(days);
+                annualized = roasFactor.pow(timeFactor).minus(1).times(100);
+            }
+        } catch (e) {
+            annualized = null;
+        }
     }
 
-    const out = document.getElementById('roi-out');
     if (out) {
-        out.innerText = roi.toDecimalPlaces(1, Decimal.ROUND_HALF_UP).toString() + '%';
+        out.innerText = (roi.lt(0) && roi.gt(-0.05) ? '0.0' : roi.toFixed(1)) + '%';
         out.className = `text-6xl font-black relative z-10 ${roi.gte(0) ? 'text-white' : 'text-red-200'}`;
     }
     
-    const profitEl = document.getElementById('roi-p');
     if (profitEl) {
-        profitEl.innerText = FinUI.formatCurrency(profit.toNumber(), currency);
+        const isNegZero = profit.lt(0) && profit.gt(-0.01);
+        profitEl.innerText = (profit.lt(0) && !isNegZero ? '-' : '') + FinUI.formatCurrency(profit.abs().toNumber(), currency);
         profitEl.className = `text-lg font-black mt-1 ${profit.gte(0) ? 'text-green-600' : 'text-red-500'}`;
     }
     
-    const roasEl = document.getElementById('roi-a');
     if (roasEl) roasEl.innerText = roas.toFixed(2) + 'x';
     
-    const annEl = document.getElementById('roi-ann');
-    if (annEl) annEl.innerText = annualized.toFixed(1) + '%';
+    if (annEl) {
+        if (annualized === null) {
+            annEl.innerText = 'N/A';
+            annEl.className = 'text-lg font-black mt-1 text-gray-400';
+        } else {
+            annEl.innerText = (annualized.lt(0) && annualized.gt(-0.1) ? '0.0' : annualized.toFixed(1)) + '%';
+            annEl.className = `text-lg font-black mt-1 ${annualized.gte(0) ? 'text-green-600' : 'text-red-500'}`;
+        }
+    }
 
-    const bar = document.getElementById('roi-bar');
     if (bar) {
         const visualPerc = Math.max(0, Math.min(100, roi.div(2).plus(50).toNumber()));
         bar.style.width = visualPerc + '%';
-        bar.className = `h-full transition-all duration-500 ${roi.gte(0) ? 'bg-white' : 'bg-red-400'}`;
+        bar.className = `h-full transition-all duration-1000 ${roi.gte(0) ? 'bg-white' : 'bg-red-400'}`;
     }
 
     const table = document.getElementById('roi-table');
@@ -5984,59 +6139,139 @@ window.runROICalc = () => {
 };
 
 window.runInsCalc = () => {
-    const type = document.getElementById('ins-type').value;
-    const age = parseInt(document.getElementById('ins-age').value) || 25;
-    const cov = new Decimal(document.getElementById('ins-cov').value || 0);
-    const isTobacco = document.getElementById('ins-t-yes').classList.contains('bg-blue-600');
+    const type = document.getElementById('ins-type')?.value;
+    const age = FinUI.getValidInput('ins-age', 25).toNumber();
+    const cov = FinUI.getValidInput('ins-cov', 1000000);
+    const isTobacco = document.getElementById('ins-t-yes')?.classList.contains('bg-blue-600');
     const hasCI = document.getElementById('ins-r-ci')?.checked;
     const hasAD = document.getElementById('ins-r-ad')?.checked;
     const currency = state.currency;
-
-    if (cov.lte(0)) return;
-
-    // Actuarial base rates (Simplified industry standard)
-    let baseRate;
-    if (type === 'term') baseRate = new Decimal(0.0008); // 0.08% base for 25yo
-    else if (type === 'health') baseRate = new Decimal(0.012); // 1.2% base
-    else baseRate = new Decimal(0.0004); // 0.04% base for accident
-
-    // Age loading (5% increase every 5 years after 25)
-    let ageLoading = new Decimal(1);
-    if (age > 25) {
-        const factor = Math.floor((age - 25) / 5);
-        ageLoading = ageLoading.plus(new Decimal(factor).mul(0.15)); // 15% per 5-year block
-    }
-
-    // Lifestyle loading
-    let lifestyleLoading = new Decimal(1);
-    if (isTobacco) lifestyleLoading = lifestyleLoading.mul(1.6); // 60% hike for smokers
-
-    // Riders
-    let riderLoading = new Decimal(1);
-    if (hasCI) riderLoading = riderLoading.plus(0.2); // 20% for Critical Illness
-    if (hasAD) riderLoading = riderLoading.plus(0.1); // 10% for Accidental Disability
-
-    const annualPremium = cov.mul(baseRate).mul(ageLoading).mul(lifestyleLoading).mul(riderLoading);
-    const monthlyPremium = annualPremium.div(12).toDecimalPlaces(0, Decimal.ROUND_HALF_UP);
+    const country = state.detectedCountry;
 
     const out = document.getElementById('ins-out');
-    if (out) out.innerText = formatEMICurrency(monthlyPremium.toNumber(), currency);
+    const breakdown = document.getElementById('ins-breakdown');
+    const caution = document.getElementById('ins-caution');
 
-    // Export Support
-    window.currentInsInputs = { type, age, cov, isTobacco, hasCI, hasAD, currency };
-    window.currentInsSummary = { monthlyPremium, annualPremium };
+    if (cov.lte(0) || age < 18 || age > 75) {
+        if (out) out.innerText = "---";
+        if (breakdown) breakdown.classList.add('hidden');
+        
+        // Handle caution display for invalid age before returning
+        if (caution && (age > 75 || age < 18)) {
+            caution.classList.remove('hidden');
+            const cautionText = caution.querySelector('p');
+            if (cautionText) cautionText.innerText = "Age outside standard coverage range.";
+        } else if (caution) {
+            caution.classList.add('hidden');
+        }
+        return;
+    }
 
-    // Safety Quotient & Insights
+    // Base Rates per 1000 Coverage
+    const termRates = {
+        18: 0.45, 26: 0.55, 31: 0.75, 36: 1.05, 41: 1.55, 46: 2.30, 51: 3.40, 56: 5.20, 61: 7.80
+    };
+    const healthRates = {
+        18: 0.65, 26: 0.85, 31: 1.10, 36: 1.45, 41: 1.95, 46: 2.80, 51: 4.10, 56: 6.20, 61: 9.50
+    };
+
+    const getBase = (a, table) => {
+        const keys = Object.keys(table).map(Number).sort((a,b) => b-a);
+        for(let k of keys) {
+            if (a >= k) return table[k];
+        }
+        return table[18];
+    };
+
+    let baseRateVal = 0;
+    let planMult = 1.0;
+
+    if (type === 'term') {
+        baseRateVal = getBase(age, termRates);
+        planMult = 1.0;
+    } else if (type === 'health') {
+        baseRateVal = getBase(age, healthRates);
+        planMult = 1.25; // Loading for comprehensive health
+    } else if (type === 'accident') {
+        baseRateVal = getBase(age, termRates);
+        planMult = 0.25;
+    } else if (type === 'ci') {
+        baseRateVal = getBase(age, termRates);
+        planMult = 1.80;
+    }
+
+    const basePremAnnual = cov.div(1000).mul(baseRateVal).mul(planMult);
+    
+    // Multipliers
+    let smokerMult = isTobacco ? 1.35 : 1.0;
+    
+    // Riders (Additive components)
+    let riderLoading = 0;
+    if (hasCI) riderLoading += 0.25;
+    if (hasAD) riderLoading += 0.15;
+    const riderMult = 1 + riderLoading;
+
+    const totalAnnualBase = basePremAnnual.mul(smokerMult).mul(riderMult);
+    
+    let gstVal = D(0);
+    // Trigger GST if country is India or currency is INR (common for tests/Indian users)
+    if (country === 'IN' || currency === 'INR') {
+        gstVal = totalAnnualBase.mul(0.18);
+    }
+    
+    const finalAnnual = totalAnnualBase.plus(gstVal);
+    const monthly = finalAnnual.div(12);
+
+    // Update UI
+    if (out) out.innerText = FinUI.formatCurrency(monthly.toNumber(), currency);
+    
+    if (breakdown) {
+        breakdown.classList.remove('hidden');
+        document.getElementById('ins-val-base').innerText = FinUI.formatCurrency(basePremAnnual.div(12).toNumber(), currency);
+        
+        const smokerRow = document.getElementById('ins-row-smoker');
+        if (smokerRow) {
+            smokerRow.classList.toggle('hidden', !isTobacco);
+            document.getElementById('ins-val-smoker').innerText = `+${FinUI.formatCurrency(basePremAnnual.mul(smokerMult - 1).div(12).toNumber(), currency)}`;
+        }
+
+        const riderRow = document.getElementById('ins-row-riders');
+        if (riderRow) {
+            riderRow.classList.toggle('hidden', riderLoading === 0);
+            document.getElementById('ins-val-riders').innerText = `+${FinUI.formatCurrency(basePremAnnual.mul(smokerMult).mul(riderLoading).div(12).toNumber(), currency)}`;
+        }
+
+        const gstRow = document.getElementById('ins-row-gst');
+        if (gstRow) {
+            gstRow.classList.toggle('hidden', gstVal.eq(0));
+            document.getElementById('ins-val-gst').innerText = `+${FinUI.formatCurrency(gstVal.div(12).toNumber(), currency)}`;
+        }
+    }
+
+    if (caution) {
+        const cautionText = caution.querySelector('p');
+        if (age > 75 || age < 18) {
+            caution.classList.remove('hidden');
+            if (cautionText) cautionText.innerText = "Age outside standard coverage range.";
+        } else if (age > 50) {
+            caution.classList.remove('hidden');
+            if (cautionText) cautionText.innerText = "Premiums may vary significantly after medical underwriting.";
+        } else {
+            caution.classList.add('hidden');
+        }
+    }
+
+    // Safety Quotient
     const safety = document.getElementById('ins-safety');
     if (safety) {
-        if (cov.lt(500000) && type === 'term') {
-            safety.innerText = "Under-insured. Industry standard recommends at least 15x your annual income.";
-            safety.className = "text-sm font-bold text-red-500 tracking-tight";
-        } else if (isTobacco && !hasCI) {
-            safety.innerText = "High Risk. Smokers are 4x more likely to need Critical Illness cover.";
+        if (age > 60) {
+            safety.innerText = "Focus on Critical Illness and OPD riders.";
+            safety.className = "text-sm font-bold text-orange-500 tracking-tight";
+        } else if (cov.lt(5000000) && type === 'term') {
+            safety.innerText = "Lower than recommended coverage for most households.";
             safety.className = "text-sm font-bold text-orange-500 tracking-tight";
         } else {
-            safety.innerText = "Optimal coverage strategy detected for your risk profile.";
+            safety.innerText = "Robust strategy. Review riders as life stages change.";
             safety.className = "text-sm font-bold text-green-500 tracking-tight";
         }
     }
@@ -6096,44 +6331,6 @@ window.downloadBR = () => {
     a.href = img.src;
     a.download = `removed_bg_${Date.now()}.png`;
     a.click();
-};
-
-let convFile = null;
-window.handleConvInput = (input) => {
-    if (input.files && input.files[0]) {
-        convFile = input.files[0];
-        document.getElementById('conv-upload').classList.add('hidden');
-        document.getElementById('conv-controls').classList.remove('hidden');
-        lucide.createIcons();
-    }
-};
-
-window.runConvAction = () => {
-    if (!convFile) return;
-    const fmt = document.getElementById('conv-fmt').value;
-    const qual = document.getElementById('conv-qual').value / 100;
-    
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
-            
-            const mime = `image/${fmt}`;
-            const dataUrl = canvas.toDataURL(mime, qual);
-            const a = document.createElement('a');
-            a.href = dataUrl;
-            a.download = `converted_image.${fmt === 'jpeg' ? 'jpg' : fmt}`;
-            a.click();
-            toast("Conversion Success!");
-        };
-        img.src = e.target.result;
-    };
-    reader.readAsDataURL(convFile);
 };
 
 window.runUrlAction = (mode) => {

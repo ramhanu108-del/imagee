@@ -38,8 +38,8 @@
   line-height: 1.1;
   font-weight: 900;
   letter-spacing: -0.02em;
-  word-break: break-word;
-  overflow-wrap: anywhere;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .fin-label {
@@ -77,6 +77,8 @@
   padding: 1.5rem;
   height: 100%;
   transition: all 0.3s ease;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .fin-card:hover {
@@ -144,6 +146,8 @@ html {
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 html.dark {
@@ -339,4 +343,171 @@ canvas {
 #emi-smart-highlights > div:hover {
     transform: scale(1.05);
     filter: brightness(1.05);
+}
+
+/* Word Counter Toolbar Interactivity Fix */
+.word-counter button,
+[data-wc-action],
+.wc-upper,
+.wc-lower,
+.wc-cleanup {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  position: relative;
+  z-index: 10;
+}
+
+.word-counter-editor {
+  z-index: 5;
+  position: relative;
+}
+
+@media (max-width: 1023px) {
+    .tool-container {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Modal Container Adjustments */
+    #modal-container {
+        width: 95vw !important;
+        max-width: 95vw !important;
+        max-height: 90vh !important;
+        height: auto !important;
+        max-height: 90vh !important;
+        border-radius: 1.5rem !important;
+        top: 50% !important;
+        left: 50% !important;
+    }
+
+    #modal-container.scale-95 {
+        opacity: 0 !important;
+        transform: translate(-50%, -46%) scale(0.95) !important;
+    }
+
+    #modal-container.scale-100 {
+        opacity: 1 !important;
+        transform: translate(-50%, -50%) scale(1) !important;
+    }
+
+    /* Layout Collapsing */
+    .grid-cols-2, 
+    .grid-cols-3, 
+    .grid-cols-4, 
+    .md\:grid-cols-2, 
+    .md\:grid-cols-3 {
+        grid-template-columns: 1fr !important;
+    }
+
+    .fin-result-panel {
+        min-height: auto !important;
+    }
+
+    .fin-result-panel .grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Typography & Spacing */
+    .fin-value, 
+    .text-6xl, 
+    .text-5xl, 
+    .text-4xl, 
+    .text-3xl {
+        font-size: clamp(1.8rem, 10vw, 3rem) !important;
+        line-height: 1.1 !important;
+        letter-spacing: -0.03em !important;
+    }
+
+    .fin-label {
+        font-size: 0.6rem !important;
+        letter-spacing: 0.1em !important;
+        white-space: normal !important;
+        word-break: normal !important;
+    }
+
+    /* Card & Panel Density */
+    .fin-card {
+        padding: 1.25rem !important;
+    }
+
+    /* Ads ROI Specific Improvements */
+    #roi-table > div {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.25rem !important;
+        padding-bottom: 0.75rem !important;
+        border-bottom: 1px solid var(--border-1) !important;
+    }
+
+    #roi-table > div:last-child {
+        border-bottom: none !important;
+    }
+
+    #roi-table > div > span:last-child {
+        font-size: 1.1rem !important;
+        font-weight: 900 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #modal-container {
+        width: 96vw !important;
+    }
+
+    /* Reduce Modal Body Padding */
+    .px-6.py-8.sm\:px-10.sm\:py-10 {
+        padding: 1.25rem !important;
+    }
+
+    /* Smaller Main Metric for very small screens */
+    .text-6xl {
+        font-size: clamp(1.8rem, 12vw, 2.8rem) !important;
+    }
+
+    /* Vertical stack for buttons in modal */
+    .flex.gap-2 {
+        flex-direction: column !important;
+    }
+    
+    .flex.gap-2 > button {
+        width: 100% !important;
+    }
+}
+
+/* Tool Specific Polish */
+.loan-remove-btn,
+[data-remove-loan] {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  z-index: 20 !important;
+  position: relative;
+}
+
+/* Unit Converter Overflow Fixes */
+.unit-converter-input {
+  width: 100% !important;
+  min-width: 0 !important;
+  font-size: clamp(1.25rem, 4vw, 2rem) !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.unit-converter-result-value {
+  font-size: clamp(1.75rem, 8vw, 4rem) !important;
+  line-height: 1.1 !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  white-space: normal !important;
+  text-align: center !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  padding: 0 1rem !important;
+}
+
+.unit-converter-card {
+  overflow: hidden !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
 }
