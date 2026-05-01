@@ -22,7 +22,7 @@ Chart.register(...registerables, annotationPlugin);
 // --- TOOL DATABASE ---
 const TOOLS = [
     { id: 'image-compressor', nameKey: 'compress', icon: 'minimize', category: 'Image', desc: 'Reduce file size while keeping visual quality.' },
-    { id: 'background-remover', nameKey: 'bgremove', icon: 'scissors', category: 'Image', desc: 'Manually erase image backgrounds and export clean cutouts.' },
+    { id: 'background-remover', nameKey: 'bgremove', icon: 'scissors', category: 'Image', desc: 'Manually erase image backgrounds and export clean cutouts locally in your browser.' },
     { id: 'image-resizer', nameKey: 'resizer', icon: 'crop', category: 'Image', desc: 'Resize, crop, and export images in multiple formats.' },
     { id: 'pdf-merger', nameKey: 'pdfmerge', icon: 'file-text', category: 'PDF', desc: 'Combine multiple PDF files into one document.' },
     { id: 'pdf-splitter', nameKey: 'pdfsplit', icon: 'scissors', category: 'PDF', desc: 'Extract individual pages from your PDFs.' },
@@ -1195,6 +1195,74 @@ function trackRecentlyUsed(id) {
     localStorage.setItem('tool_recent', JSON.stringify(state.recent));
 }
 
+// --- TOOL STATE MANAGEMENT ---
+window.getToolStateKey = (toolId) => {
+    return `smarttools_state_${toolId}`;
+};
+
+window.saveToolState = (toolId, root) => {
+    if (!toolId || !root) return;
+
+    const fields = root.querySelectorAll('input, select, textarea');
+    const state = {};
+
+    fields.forEach((field) => {
+        if (field.type === 'file') return;
+        const key = field.name || field.id || field.dataset.stateKey;
+        if (!key) return;
+
+        if (field.type === 'checkbox') {
+            state[key] = field.checked;
+        } else if (field.type === 'radio') {
+            if (field.checked) state[key] = field.value;
+        } else {
+            state[key] = field.value;
+        }
+    });
+
+    localStorage.setItem(window.getToolStateKey(toolId), JSON.stringify(state));
+};
+
+window.restoreToolState = (toolId, root) => {
+    if (!toolId || !root) return false;
+    if (toolId === 'notes-app' || toolId === 'todo-list') return false;
+
+    const raw = localStorage.getItem(window.getToolStateKey(toolId));
+    if (!raw) return false;
+
+    let toolState = {}; // Rename local binding to toolState
+    try {
+        toolState = JSON.parse(raw);
+    } catch {
+        return false;
+    }
+
+    let hasRestored = false;
+    const fields = root.querySelectorAll('input, select, textarea');
+
+    fields.forEach((field) => {
+        if (field.type === 'file') return;
+        const key = field.name || field.id || field.dataset.stateKey;
+        if (!key || !(key in toolState)) return;
+
+        if (field.type === 'checkbox') {
+            field.checked = Boolean(toolState[key]);
+        } else if (field.type === 'radio') {
+            field.checked = field.value === toolState[key];
+        } else {
+            field.value = toolState[key];
+        }
+        
+        hasRestored = true;
+    });
+
+    return hasRestored;
+};
+
+window.clearToolState = (toolId) => {
+    localStorage.removeItem(window.getToolStateKey(toolId));
+};
+
 // --- TOOLS IMPLEMENTATION HUB ---
 function injectToolFunctionalHTML(id) {
     const normalizedId = (id || location.hash.replace('#', '') || '').toLowerCase().trim().replace('#', '').replace(/\s+/g, '-');
@@ -1390,7 +1458,7 @@ function injectToolFunctionalHTML(id) {
                                     <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest opacity-30">•</span>
                                     <span id="bg-dim-info" class="text-[8px] font-black text-gray-400 uppercase tracking-widest italic">---</span>
                                 </div>
-                                <button onclick="location.reload()" class="text-[8px] font-black text-red-500 uppercase tracking-widest hover:underline">Reset Session</button>
+                                <button onclick="window.clearToolState('background-remover'); location.reload();" class="text-[8px] font-black text-red-500 uppercase tracking-widest hover:underline">Reset Session</button>
                             </div>
                         </div>
                     </div>
@@ -3025,7 +3093,7 @@ function injectToolFunctionalHTML(id) {
                     <div id="pdf-controls" class="hidden animate-fade-in space-y-10">
                         <div class="flex items-center justify-between">
                             <h3 id="pdf-count" class="text-xs font-black text-blue-600 uppercase tracking-[0.2em]">0 Files Documented</h3>
-                            <button onclick="location.reload()" class="text-[10px] font-black text-gray-400 hover:text-red-500 transition-colors uppercase tracking-widest flex items-center gap-2">
+                            <button onclick="window.clearToolState(state.activeTool?.id || 'pdf-merger'); location.reload();" class="text-[10px] font-black text-gray-400 hover:text-red-500 transition-colors uppercase tracking-widest flex items-center gap-2">
                                 <i data-lucide="refresh-cw" class="w-3 h-3"></i> Clear Workspace
                             </button>
                         </div>
@@ -3268,6 +3336,9 @@ function injectToolFunctionalHTML(id) {
         'todo-list': () => { if(window.refreshTodoList) window.refreshTodoList(); }
     };
     
+    // Restore state
+    window.restoreToolState(normalizedId, c);
+
     if (runMap[normalizedId]) {
         try {
             // Use setTimeout to ensure DOM is fully ready
@@ -4458,6 +4529,7 @@ window.processWCText = (action) => {
         next = text.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
     } else if (action === 'clear') {
         next = '';
+        window.clearToolState('word-counter');
     }
 
     window.writeEditorText(editor, next);
@@ -6557,49 +6629,6 @@ window.setInsTobacco = (val) => {
     runInsCalc();
 };
 
-// --- PHASE 3 LOGIC ---
-let brFile = null;
-window.handleBRInput = (input) => {
-    if (input.files && input.files[0]) {
-        brFile = input.files[0];
-        document.getElementById('br-upload').classList.add('hidden');
-        document.getElementById('br-status').classList.remove('hidden');
-        
-        // AI Removal Logic
-        const removeFn = window.imglyRemoveBackground || window.removeBackground || (window.imgly && window.imgly.removeBackground);
-        
-        if (typeof removeFn === 'function') {
-            removeFn(brFile).then((blob) => {
-                const url = URL.createObjectURL(blob);
-                const img = document.getElementById('br-img');
-                img.src = url;
-                document.getElementById('br-status').classList.add('hidden');
-                document.getElementById('br-result').classList.remove('hidden');
-                lucide.createIcons();
-            }).catch((err) => {
-                console.error(err);
-                toast("AI Logic Error: " + err.message);
-                document.getElementById('br-status').classList.add('hidden');
-                document.getElementById('br-upload').classList.remove('hidden');
-            });
-        } else {
-            toast("AI Module Loading... Please retry in 3s");
-            setTimeout(() => {
-                document.getElementById('br-status').classList.add('hidden');
-                document.getElementById('br-upload').classList.remove('hidden');
-            }, 3000);
-        }
-    }
-};
-
-window.downloadBR = () => {
-    const img = document.getElementById('br-img');
-    const a = document.createElement('a');
-    a.href = img.src;
-    a.download = `removed_bg_${Date.now()}.png`;
-    a.click();
-};
-
 window.runUrlAction = (mode) => {
     const val = document.getElementById('url-in').value;
     if (!val) return;
@@ -7004,6 +7033,21 @@ function boot() {
     document.getElementById('modal-close').onclick = closeToolModal;
     document.getElementById('modal-overlay').onclick = closeToolModal;
     
+    // Auto-save tool states
+    const toolContent = document.getElementById('tool-content');
+    if (toolContent) {
+        toolContent.addEventListener('input', () => {
+            if (state.activeTool && state.activeTool.id) {
+                window.saveToolState(state.activeTool.id, toolContent);
+            }
+        });
+        toolContent.addEventListener('change', () => {
+            if (state.activeTool && state.activeTool.id) {
+                window.saveToolState(state.activeTool.id, toolContent);
+            }
+        });
+    }
+
     renderUI();
     startQuoteRotation();
     initLocalization();
