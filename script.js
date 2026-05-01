@@ -589,33 +589,67 @@ const GLOBAL_COUNTRY_CONFIG = {
     }
 };
 
-let quoteBag = [];
-let quoteLangConfigured = null;
-let quoteTimer = null;
+const QuoteCycleState = {
+    queue: [],
+    index: 0,
+    currentQuoteId: null,
+    lastQuoteId: null
+};
+
+function buildNewQuoteCycle() {
+    const library = typeof QUOTES_LIBRARY !== 'undefined' ? QUOTES_LIBRARY : {};
+    const enQuotes = library['en'] || [{ id: 'fallback', text: "Knowledge is power.", author: "Francis Bacon" }];
+    
+    // Create a list of unique quote IDs.
+    const uniqueIds = Array.from(new Set(enQuotes.map(q => q.id).filter(id => id)));
+    let queue = uniqueIds.length > 0 ? [...uniqueIds] : ['fallback'];
+    
+    // Fisher-Yates shuffle
+    for (let i = queue.length - 1; i > 0; i--) {
+        let j;
+        if (window.crypto && crypto.getRandomValues) {
+            const buffer = new Uint32Array(1);
+            crypto.getRandomValues(buffer);
+            j = Math.floor((buffer[0] / 4294967296) * (i + 1));
+        } else {
+            j = Math.floor(Math.random() * (i + 1));
+        }
+        [queue[i], queue[j]] = [queue[j], queue[i]];
+    }
+
+    if (QuoteCycleState.lastQuoteId && queue.length > 1 && queue[0] === QuoteCycleState.lastQuoteId) {
+        [queue[0], queue[1]] = [queue[1], queue[0]];
+    }
+
+    QuoteCycleState.queue = queue;
+    QuoteCycleState.index = 0;
+}
 
 function getNextRandomQuote() {
-    const library = typeof QUOTES_LIBRARY !== 'undefined' ? QUOTES_LIBRARY : {};
-    if (quoteBag.length === 0 || quoteLangConfigured !== state.lang) {
-        quoteLangConfigured = state.lang;
-        const quotesForLang = library[state.lang] || library['en'] || [{ text: "Knowledge is power.", author: "Francis Bacon" }];
-        
-        quoteBag = [...quotesForLang];
-        // Fisher-Yates Shuffle
-        for (let i = quoteBag.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [quoteBag[i], quoteBag[j]] = [quoteBag[j], quoteBag[i]];
-        }
+    if (!QuoteCycleState.queue.length || QuoteCycleState.index >= QuoteCycleState.queue.length) {
+        buildNewQuoteCycle();
     }
     
-    // Prevent same quote twice if possible
-    let next = quoteBag.pop();
-    if (state.currentQuote && next && next.text === state.currentQuote.text && quoteBag.length > 0) {
-        const fallback = next;
-        next = quoteBag.pop();
-        quoteBag.push(fallback);
+    const quoteId = QuoteCycleState.queue[QuoteCycleState.index];
+    QuoteCycleState.index += 1;
+    
+    QuoteCycleState.lastQuoteId = quoteId;
+    QuoteCycleState.currentQuoteId = quoteId;
+    
+    const library = typeof QUOTES_LIBRARY !== 'undefined' ? QUOTES_LIBRARY : {};
+    const langQuotes = library[state.lang] || library['en'] || [];
+    let quote = langQuotes.find(q => q.id === quoteId);
+    
+    if (!quote) {
+        // fallback if translation missing
+        const fallbackQuotes = library['en'] || [];
+        quote = fallbackQuotes.find(q => q.id === quoteId);
     }
-    return next || { text: "Wisdom awaits.", author: "Anonymous" };
+    
+    return quote || { text: "Wisdom awaits.", author: "Anonymous" };
 }
+
+let quoteTimer = null;
 
 function startQuoteRotation() {
     stopQuoteRotation();
@@ -662,8 +696,14 @@ function updateQuoteUIOnly() {
         if (q.tradition) {
             chipsHTML += `<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.tradition}</span>`;
         }
-        if (q.source) {
-            chipsHTML += `<span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.source}</span>`;
+        if (q.era) {
+            chipsHTML += `<span class="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.era}</span>`;
+        }
+        if (q.region) {
+            chipsHTML += `<span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.region}</span>`;
+        }
+        if (q.category) {
+            chipsHTML += `<span class="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.category}</span>`;
         }
         chipsContainer.innerHTML = chipsHTML;
     }
@@ -934,26 +974,10 @@ function updateText() {
     document.getElementById('quote-header').innerText = t.ui.quotesTitle;
     
     // Update active quote logic (refill tracking if necessary)
-    if (!state.currentQuote || quoteLangConfigured !== state.lang) {
+    if (!state.currentQuote) {
         state.currentQuote = getNextRandomQuote();
     }
-    const q = state.currentQuote;
-    document.getElementById('quote-text').innerText = `"${q.text}"`;
-    document.getElementById('quote-author').innerText = `— ${q.author || 'Unknown'}`;
-    
-    const chipsContainer = document.getElementById('quote-chips');
-    if (chipsContainer) {
-        chipsContainer.innerHTML = '';
-        if (q.tradition) {
-            chipsContainer.innerHTML += `<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.tradition}</span>`;
-        }
-        if (q.era) {
-            chipsContainer.innerHTML += `<span class="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.era}</span>`;
-        }
-        if (q.region) {
-            chipsContainer.innerHTML += `<span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.region}</span>`;
-        }
-    }
+    updateQuoteUIOnly();
 }
 
 function renderCategoryTabs() {
@@ -1059,8 +1083,19 @@ window.updateGlobalCurrency = (code) => {
 window.updateGlobalLanguage = (lang) => {
     state.lang = lang;
     localStorage.setItem('lang', lang);
-    quoteBag = []; 
-    state.currentQuote = getNextRandomQuote();
+    
+    if (QuoteCycleState.currentQuoteId) {
+        const library = typeof QUOTES_LIBRARY !== 'undefined' ? QUOTES_LIBRARY : {};
+        const langQuotes = library[lang] || library['en'] || [];
+        let quote = langQuotes.find(q => q.id === QuoteCycleState.currentQuoteId);
+        if (!quote) {
+            const fallbackQuotes = library['en'] || [];
+            quote = fallbackQuotes.find(q => q.id === QuoteCycleState.currentQuoteId);
+        }
+        state.currentQuote = quote || { text: "Wisdom awaits.", author: "Anonymous" };
+    } else {
+        state.currentQuote = getNextRandomQuote();
+    }
     
     const langSelect = document.getElementById('lang-select');
     if (langSelect) langSelect.value = lang;
@@ -2173,7 +2208,7 @@ function injectToolFunctionalHTML(id) {
                                         <tr>
                                             <th class="py-2 pr-4">Year</th>
                                             <th class="py-2 px-4 text-right">Invested</th>
-                                            <th class="py-2 px-4 text-right">Interest</th>
+                                            <th class="py-2 px-4 text-right">Estimated Gains</th>
                                             <th class="py-2 pl-4 text-right">Wealth</th>
                                         </tr>
                                     </thead>
@@ -3532,16 +3567,11 @@ function injectToolFunctionalHTML(id) {
                 const key = e.target.dataset.stateKey;
                 window.__syncingLinkedControls = true;
                 
-                // If a number/text input changes, instantly reflect it on paired range slider
-                if (e.target.type !== 'range') {
-                    const pairedRange = c.querySelector(`input[type="range"][data-state-key="${key}"]`);
-                    if (pairedRange && String(pairedRange.value) !== String(e.target.value)) {
-                        pairedRange.value = e.target.value;
-                    }
-                } else {
-                    // Range slider updates paired input
+                if (e.target.type === 'range') {
+                    // Range slider updates paired input instantly
                     const pairedInput = c.querySelector(`input[type="number"][data-state-key="${key}"], input[type="text"][data-state-key="${key}"]`);
-                    if (pairedInput && String(pairedInput.value) !== String(e.target.value)) {
+                    // IMPORTANT: only overwrite if the input isn't actively being typed in
+                    if (pairedInput && !FinUI.isActiveInput(pairedInput) && String(pairedInput.value) !== String(e.target.value)) {
                         pairedInput.value = e.target.value;
                     }
                 }
@@ -3556,7 +3586,33 @@ function injectToolFunctionalHTML(id) {
                 }
             }
         });
-        c.addEventListener('change', () => {
+        
+        c.addEventListener('change', (e) => {
+            if (e.target && e.target.classList && e.target.classList.contains('fin-input')) {
+                // Formatting active numeric inputs on blur only: normalize safely
+                // Do not apply commas, keep it as raw safe number strings so native fields process correctly.
+                const raw = String(e.target.value).trim();
+                if (raw !== "") {
+                    // Only normalize true format anomalies, don't kill 0s
+                    const clean = FinUI.safeNumber(raw);
+                    if(e.target.type !== "text" || !/^[\d\.\,]+$/.test(raw)) {
+                        /* safe fallback for non formatted fields */
+                        e.target.value = clean;
+                    } else if (e.target.type === "text") {
+                        e.target.value = clean;
+                    }
+                }
+            }
+
+            if (e.target && e.target.dataset && e.target.dataset.stateKey && e.target.type !== 'range') {
+                 // On blur/change, sync typed number to range slider
+                 const key = e.target.dataset.stateKey;
+                 const pairedRange = c.querySelector(`input[type="range"][data-state-key="${key}"]`);
+                 if (pairedRange && String(pairedRange.value) !== String(e.target.value)) {
+                     pairedRange.value = e.target.value;
+                 }
+            }
+
             if (state.activeTool && state.activeTool.id) {
                 window.scheduleToolStateSave(state.activeTool.id, c);
                 if (window.scheduleToolCalculation) {
@@ -3939,6 +3995,34 @@ const StabilityEngine = {
                     return res.finalTax.toNumber();
                 },
                 expected: 1214200
+            },
+            {
+                name: 'UI_Input_Format_Comma_Parse',
+                run: () => FinUI.safeNumber("1,250,500.5"),
+                expected: 1250500.5
+            },
+            {
+                name: 'UI_Input_Format_Blank_Zero',
+                run: () => FinUI.safeNumber(""),
+                expected: 0
+            },
+            {
+                name: 'UI_Input_ParseVisibleNumber',
+                run: () => {
+                    const el = document.createElement('input');
+                    el.value = "   15,000 ";
+                    return FinUI.parseVisibleNumber(el);
+                },
+                expected: 15000
+            },
+            {
+                name: 'UI_Input_ParseVisibleNumber_Blank',
+                run: () => {
+                    const el = document.createElement('input');
+                    el.value = "  "; // Trims to empty
+                    return FinUI.parseVisibleNumber(el, 50); // Fallback gets ignored, blanks equal 0 rule
+                },
+                expected: 0
             }
         ];
 
@@ -4016,10 +4100,20 @@ const FinUI = {
         }
     },
 
+    isActiveInput: (el) => document.activeElement === el,
+
+    readRawInputValue: (el) => el ? String(el.value) : '',
+
+    parseVisibleNumber: (el, fallback = 0) => {
+        if (!el) return fallback;
+        const raw = FinUI.readRawInputValue(el).trim();
+        if (raw === "") return 0;
+        return FinUI.safeNumber(raw);
+    },
+
     safeNumber: (val) => {
         if (val === null || val === undefined || val === '') return 0;
         if (typeof val === 'string') {
-            // Strip currency symbols and commas
             val = val.replace(/[^0-9.-]/g, '');
         }
         const n = parseFloat(val);
@@ -4029,7 +4123,15 @@ const FinUI = {
     getValidInput: (id, fallback = 0, { min = -Infinity, max = Infinity } = {}) => {
         const el = document.getElementById(id);
         if (!el) return D(fallback);
-        let val = el.value === "" ? fallback : FinUI.safeNumber(el.value);
+        
+        let val;
+        const raw = FinUI.readRawInputValue(el).trim();
+        if (raw === "") {
+            val = 0; // Blank fields act as 0
+        } else {
+            val = FinUI.parseVisibleNumber(el, fallback);
+        }
+
         if (val < min) val = min;
         if (val > max) val = max;
         return D(val);
@@ -5797,8 +5899,8 @@ window.runSIPCalc = () => {
     const inputRate = FinUI.getValidInput('sip-r', 12);
     const annualRate = new Decimal(inputRate || 0);
     const years = FinUI.getValidInput('sip-n', 10);
-    const stepUp = FinUI.getValidInput('sip-step', 10);
-    const inflation = FinUI.getValidInput('sip-inf', 6);
+    const stepUp = FinUI.getValidInput('sip-step', 0);
+    const inflation = FinUI.getValidInput('sip-inf', 0);
     const currency = state.currency;
 
     if (monthly.lte(0) || annualRate.lt(0) || years.lte(0)) return;
@@ -6962,9 +7064,13 @@ window.runUrlAction = (mode) => {
     if (!val) return;
     
     let res = "";
-    if (mode === 'encode') res = encodeURIComponent(val);
-    if (mode === 'decode') res = decodeURIComponent(val);
-    if (mode === 'slug') res = val.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
+    try {
+        if (mode === 'encode') res = encodeURIComponent(val);
+        if (mode === 'decode') res = decodeURIComponent(val);
+        if (mode === 'slug') res = val.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
+    } catch(e) {
+        return toast("Invalid format");
+    }
     
     document.getElementById('url-out').innerText = res;
     document.getElementById('url-box').classList.remove('hidden');
