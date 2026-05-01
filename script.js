@@ -581,21 +581,66 @@ const GLOBAL_COUNTRY_CONFIG = {
 
 let quoteBag = [];
 let quoteLangConfigured = null;
+let quoteTimer = null;
 
 function getNextRandomQuote() {
+    const library = typeof QUOTES_LIBRARY !== 'undefined' ? QUOTES_LIBRARY : {};
     if (quoteBag.length === 0 || quoteLangConfigured !== state.lang) {
         quoteLangConfigured = state.lang;
-        const library = typeof QUOTES_LIBRARY !== 'undefined' ? QUOTES_LIBRARY : {};
         const quotesForLang = library[state.lang] || library['en'] || [{ text: "Knowledge is power.", author: "Francis Bacon" }];
         
         quoteBag = [...quotesForLang];
+        // Fisher-Yates Shuffle
         for (let i = quoteBag.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [quoteBag[i], quoteBag[j]] = [quoteBag[j], quoteBag[i]];
         }
     }
-    return quoteBag.pop();
+    
+    // Prevent same quote twice if possible
+    let next = quoteBag.pop();
+    if (state.currentQuote && next && next.text === state.currentQuote.text && quoteBag.length > 0) {
+        const fallback = next;
+        next = quoteBag.pop();
+        quoteBag.push(fallback);
+    }
+    return next || { text: "Wisdom awaits.", author: "Anonymous" };
 }
+
+function startQuoteRotation() {
+    stopQuoteRotation();
+    quoteTimer = setInterval(() => {
+        if (!document.hidden) {
+            refreshQuote();
+        }
+    }, 12000); // Rotate every 12 seconds
+}
+
+function stopQuoteRotation() {
+    if (quoteTimer) clearInterval(quoteTimer);
+}
+
+window.refreshQuote = () => {
+    const container = document.getElementById('quote-content');
+    if (container) {
+        container.classList.add('opacity-0', 'scale-95');
+        setTimeout(() => {
+            state.currentQuote = getNextRandomQuote();
+            renderUI();
+            container.classList.remove('opacity-0', 'scale-95');
+            container.classList.add('opacity-100', 'scale-100');
+        }, 500);
+    } else {
+        state.currentQuote = getNextRandomQuote();
+        renderUI();
+    }
+};
+
+// Visibility management for rotation
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopQuoteRotation();
+    else startQuoteRotation();
+});
 
 // --- STATE MANAGER ---
 const CONFIG_VERSION = '1.2.0';
@@ -860,7 +905,21 @@ function updateText() {
     }
     const q = state.currentQuote;
     document.getElementById('quote-text').innerText = `"${q.text}"`;
-    document.getElementById('quote-author').innerText = `— ${q.author}`;
+    document.getElementById('quote-author').innerText = `— ${q.author || 'Unknown'}`;
+    
+    const chipsContainer = document.getElementById('quote-chips');
+    if (chipsContainer) {
+        chipsContainer.innerHTML = '';
+        if (q.tradition) {
+            chipsContainer.innerHTML += `<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.tradition}</span>`;
+        }
+        if (q.era) {
+            chipsContainer.innerHTML += `<span class="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.era}</span>`;
+        }
+        if (q.region) {
+            chipsContainer.innerHTML += `<span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.region}</span>`;
+        }
+    }
 }
 
 function renderCategoryTabs() {
@@ -945,20 +1004,8 @@ function createToolCard(t) {
 }
 
 // --- QUOTES SYSTEM ---
-function autoRotateQuotes() {
-    state.currentQuote = getNextRandomQuote();
-    const content = document.getElementById('quote-content');
-    content.style.opacity = '0';
-    content.style.transform = 'translateY(15px)';
-    
-    setTimeout(() => {
-        const q = state.currentQuote;
-        document.getElementById('quote-text').innerText = `"${q.text}"`;
-        document.getElementById('quote-author').innerText = `— ${q.author}`;
-        content.style.opacity = '1';
-        content.style.transform = 'translateY(0)';
-    }, 800);
-}
+// The quote system is now strictly philosopher-based and deduplicated via quotes.js.
+// Functionality is handled via getNextRandomQuote and startQuoteRotation.
 
 // --- GLOBAL ACTIONS ---
 window.updateGlobalCurrency = (code) => {
@@ -6953,13 +7000,7 @@ function boot() {
     document.getElementById('modal-overlay').onclick = closeToolModal;
     
     renderUI();
-    
-    // Initialize with the random quote from state
-    const firstQuote = state.currentQuote;
-    document.getElementById('quote-text').innerText = `"${firstQuote.text}"`;
-    document.getElementById('quote-author').innerText = `— ${firstQuote.author}`;
-    
-    setInterval(autoRotateQuotes, 8000);
+    startQuoteRotation();
     initLocalization();
     lucide.createIcons();
 

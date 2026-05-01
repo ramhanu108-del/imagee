@@ -181,15 +181,23 @@
                 Wisdom from Great Philosophers
             </h2>
             
-            <div class="relative h-48 md:h-32 flex items-center justify-center overflow-hidden" id="quote-container">
+            <div class="relative min-h-[16rem] md:min-h-[12rem] flex flex-col items-center justify-center overflow-hidden" id="quote-container">
                 <i data-lucide="quote" class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 text-blue-200/40 dark:text-blue-800/20 z-0"></i>
                 
-                <div id="quote-content" class="z-10 w-full transition-all duration-700">
-                    <blockquote class="text-xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 italic mb-6 leading-relaxed" id="quote-text">
-                        "The unexamined life is not worth living."
+                <div id="quote-content" class="z-10 w-full transition-all duration-700 opacity-100 scale-100">
+                    <blockquote class="text-lg md:text-2xl font-bold text-gray-800 dark:text-gray-100 italic mb-6 leading-relaxed px-4 md:px-12" id="quote-text">
+                        "The soul becomes dyed with the color of its thoughts."
                     </blockquote>
-                    <div class="text-blue-600 dark:text-blue-400 font-extrabold text-sm uppercase tracking-wider" id="quote-author">
-                        — Socrates
+                    <div class="flex flex-col items-center gap-4">
+                        <div id="quote-chips" class="flex flex-wrap justify-center gap-2 mb-2">
+                             <!-- Chips injected via JS -->
+                        </div>
+                        <div class="text-blue-600 dark:text-blue-400 font-extrabold text-xs uppercase tracking-wider" id="quote-author">
+                            — Marcus Aurelius
+                        </div>
+                        <button onclick="refreshQuote()" class="p-2 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-all group active:scale-90" title="Next Wisdom">
+                            <i data-lucide="rotate-cw" class="w-4 h-4 text-blue-400 group-hover:text-blue-600 group-hover:rotate-180 transition-all duration-500"></i>
+                        </button>
                     </div>
                 </div>
             </div>
