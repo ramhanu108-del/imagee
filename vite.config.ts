@@ -1,4 +1,4 @@
-import tailwindcss from '@tailwindcss/vite';
+import tailwindcss from 'tailwindcss';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import {defineConfig} from 'vite';
@@ -9,8 +9,8 @@ const __dirname = dirname(__filename);
 export default defineConfig(() => {
   return {
     base: '/',
-    plugins: [tailwindcss()],
     build: {
+
       outDir: 'dist',
       rollupOptions: {
         input: {
