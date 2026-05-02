@@ -7954,7 +7954,11 @@ function toast(msg) {
 }
 
 window.auditTools = function() {
-    if (window.location.hostname !== 'localhost' && !window.location.hostname.includes('ais-dev')) return;
+    const isDev = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV) || 
+                  window.location.hostname === 'localhost' || 
+                  window.location.hostname.includes('ais-dev');
+    if (!isDev) return;
+    
     console.warn('--- RUNNING DEV QA AUDIT ---');
     TOOLS.forEach(t => {
         if (!t.id) console.error('Missing id on tool:', t);
