@@ -515,3 +515,10 @@ canvas {
   max-width: 100% !important;
 }
 
+.tool-card-stable .required-card-content {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
+

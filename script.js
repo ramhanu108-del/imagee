@@ -4,7 +4,6 @@
  */
 
 const DEBUG_MODE = false;
-console.info("CARD_FIX_VERSION = 'card-fix-v2';");
 
 
 function debugLog(...args) {
@@ -1083,15 +1082,15 @@ function createToolCard(t) {
     const href = t.id && seoRoutes[t.id] ? seoRoutes[t.id] : `/#${t.id || ''}`;
     
     return `
-        <a href="${href}" onclick="handleToolLinkClick(event, '${t.id}', '${href}')" class="fin-card group cursor-pointer relative overflow-hidden backdrop-blur-sm block hover:border-blue-500/40 hover:shadow-2xl hover:shadow-blue-500/5 dark:hover:border-blue-500/40 dark:hover:shadow-blue-500/10 transition-all duration-300">
-            <div class="w-12 h-12 bg-blue-600/5 dark:bg-blue-400/5 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center mb-6 shadow-sm group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+        <a href="${href}" onclick="handleToolLinkClick(event, '${t.id}', '${href}')" class="tool-card-stable fin-card group cursor-pointer relative overflow-hidden backdrop-blur-sm block hover:border-blue-500/40 hover:shadow-2xl hover:shadow-blue-500/5 dark:hover:border-blue-500/40 dark:hover:shadow-blue-500/10 transition-colors duration-300">
+            <div class="required-card-content w-12 h-12 bg-blue-600/5 dark:bg-blue-400/5 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center mb-6 shadow-sm transition-transform duration-300 group-hover:scale-110">
                 <i data-lucide="${icon}" class="w-5 h-5"></i>
             </div>
-            <h3 class="text-lg font-black mb-2 tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">${name}</h3>
-            <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-2 uppercase font-bold tracking-tighter opacity-80">${desc}</p>
-            <div class="mt-6 flex items-center gap-2 text-[10px] font-black text-blue-600 dark:text-blue-400 opacity-100 group-hover:-translate-y-0.5 uppercase tracking-widest transition-all">
+            <h3 class="required-card-content text-lg font-black mb-2 tracking-tight text-gray-900 dark:text-white">${name}</h3>
+            <p class="required-card-content text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-2 uppercase font-bold tracking-tighter opacity-80">${desc}</p>
+            <div class="required-card-content mt-6 flex items-center gap-2 text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest">
                 <span>Launch Tool</span>
-                <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-1 transition-transform"></i>
+                <i data-lucide="arrow-right" class="w-3 h-3"></i>
             </div>
         </a>
     `;
