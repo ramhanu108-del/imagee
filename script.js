@@ -17,6 +17,10 @@ import QUOTES_LIBRARY from './quotes.js';
 import Decimal from 'decimal.js';
 import { Chart, registerables } from 'chart.js';
 import annotationPlugin from 'chartjs-plugin-annotation';
+import { jsPDF } from 'jspdf';
+import * as pdfjsLib from 'pdfjs-dist';
+import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 Chart.register(...registerables, annotationPlugin);
 
 // --- TOOL DATABASE ---
@@ -26,6 +30,8 @@ const TOOLS = [
     { id: 'image-resizer', nameKey: 'resizer', icon: 'crop', category: 'Image', desc: 'Resize, crop, and export images in multiple formats.' },
     { id: 'pdf-merger', nameKey: 'pdfmerge', icon: 'file-text', category: 'PDF', desc: 'Combine multiple PDF files into one document.' },
     { id: 'pdf-splitter', nameKey: 'pdfsplit', icon: 'scissors', category: 'PDF', desc: 'Extract individual pages from your PDFs.' },
+    { id: 'pdf-maker', nameKey: 'pdfmaker', icon: 'file-plus', category: 'PDF', desc: 'Create professional PDFs from text and images locally.' },
+    { id: 'pdf-compressor', nameKey: 'pdfcompressor', icon: 'minimize', category: 'PDF', desc: 'Reduce PDF file size locally for optimal sharing and uploading.', searchTags: 'Compress PDF, Reduce PDF Size, PDF Size Reducer, Government PDF Size, PDF Under 100 KB, PDF Under 200 KB, Online PDF Compressor' },
     { id: 'word-counter', nameKey: 'wordcount', icon: 'type', category: 'Text', desc: 'Professional utility for characters and words.' },
     { id: 'case-converter', nameKey: 'case', icon: 'type', category: 'Text', desc: 'Uppercase, lowercase, title case and more.' },
     { id: 'notes-app', nameKey: 'notes', icon: 'pen-tool', category: 'Text', desc: 'Secure, locally saved markdown notes.' },
@@ -255,7 +261,7 @@ const TRANSLATIONS = {
         ui: { all: "All Utility Tools", popular: "🔥 Popular Tools", recent: "🕒 Recently Used", trending: "📈 Trending Tools", about: "SmartTools Hub", rights: "All rights reserved.", related: "Related Utilities", search: "Search for tools...", quotesTitle: "Wisdom from Great Philosophers", categories: { ALL: "All", IMAGE: "Image", PDF: "PDF", FINANCE: "Finance", TEXT: "Text", INSTAGRAM: "Instagram", UTILITY: "Utility" } },
         tools: {
             compress: "Image Compressor", bgremove: "Background Removal",
-            pdfmerge: "PDF Merger", pdfsplit: "PDF Splitter", wordcount: "Word Counter", case: "Case Converter",
+            pdfmerge: "PDF Merger", pdfsplit: "PDF Splitter", pdfmaker: "PDF Maker", pdfcompressor: "PDF Compressor", wordcount: "Word Counter", case: "Case Converter",
             resizer: "Image Resizer",
             pass: "Password Generator", age: "Age Calculator", 
             qr: "QR Code Generator", color: "Color Picker", b64: "Base64 Converter", url: "URL Converter",
@@ -272,7 +278,7 @@ const TRANSLATIONS = {
         ui: { all: "सभी टूल्स", popular: "🔥 लोकप्रिय टूल्स", recent: "🕒 हाल ही में प्रयुक्त", trending: "📈 अभी ट्रेंड में", about: "स्मार्टटूल्स हब", rights: "सर्वाधिकार सुरक्षित।", related: "संबंधित टूल्स", search: "टूल्स खोजें...", quotesTitle: "महान दार्शनicों का ज्ञान", categories: { ALL: "सभी", IMAGE: "इमेज", PDF: "पीडीएफ", FINANCE: "वित्त", TEXT: "टेक्स्ट", INSTAGRAM: "इंस्टाग्राम", UTILITY: "उपयोगिता" } },
         tools: {
             compress: "इमेज कंप्रेशर", bgremove: "बैकग्राउंड रिमूवल",
-            pdfmerge: "PDF मर्जर", pdfsplit: "PDF स्प्लिटर", wordcount: "शब्द गणक", case: "केस कनवर्टर",
+            pdfmerge: "PDF मर्जर", pdfsplit: "PDF स्प्लिटर", pdfmaker: "PDF मेकर", pdfcompressor: "PDF कंप्रेसर", wordcount: "शब्द गणक", case: "केस कनवर्टर",
             pass: "पासवर्ड जनरेटर", age: "आयु गणक", 
             qr: "QR कोड जनरेटर", color: "कलर पिकर", b64: "Base64 कनवर्टर", url: "URL कनवर्टर",
             unit: "यूनिट कनवर्टर", stopwatch: "स्टॉपवॉच", todo: "टू-डू लिस्ट", notes: "नोट्स ऐप",
@@ -288,7 +294,7 @@ const TRANSLATIONS = {
         ui: { all: "Todas las Herramientas", popular: "🔥 Herramientas Populares", recent: "🕒 Usadas Recientemente", trending: "📈 Tendencias", about: "SmartTools Hub", rights: "Todos los derechos reservados.", related: "Utilidades Relacionadas", search: "Buscar herramientas...", quotesTitle: "Sabiduría de Grandes Filósofos", categories: { ALL: "Todo", IMAGE: "Imagen", PDF: "PDF", FINANCE: "Finanzas", TEXT: "Texto", INSTAGRAM: "Instagram", UTILITY: "Utilidad" } },
         tools: {
             compress: "Compresor de Imágenes", bgremove: "Eliminación de Fondo",
-            pdfmerge: "Fusionador PDF", pdfsplit: "Divisor PDF", wordcount: "Contador de Palabras", case: "Conversor de Mayúsculas/Minúsculas",
+            pdfmerge: "Fusionador PDF", pdfsplit: "Divisor PDF", pdfmaker: "Creador de PDF", pdfcompressor: "Compresor de PDF", wordcount: "Contador de Palabras", case: "Conversor de Mayúsculas/Minúsculas",
             pass: "Generador de Contraseñas", age: "Calculadora de Edad", 
             qr: "Generador de Códigos QR", color: "Selector de Color", b64: "Conversor Base64", url: "Conversor de URL",
             unit: "Conversor de Unidades", stopwatch: "Cronómetro", todo: "Lista de Tareas", notes: "App de Notas",
@@ -303,7 +309,7 @@ const TRANSLATIONS = {
         ui: { all: "Tous les Outils", popular: "🔥 Outils Populaires", recent: "🕒 Récemment Utilisé", trending: "📈 Tendances", about: "SmartTools Hub", rights: "Tous droits réservés.", related: "Utilitaires Associés", search: "Chercher des outils...", quotesTitle: "Sagesse des Grands Philosophe", categories: { ALL: "Tout", IMAGE: "Image", PDF: "PDF", FINANCE: "Finance", TEXT: "Texte", INSTAGRAM: "Instagram", UTILITY: "Utilitaire" } },
         tools: {
             compress: "Compresseur d'Images", bgremove: "Suppression de Fond",
-            pdfmerge: "Fusionneur PDF", pdfsplit: "Diviseur PDF", wordcount: "Compteur de Mots", case: "Convertisseur de Cas",
+            pdfmerge: "Fusionneur PDF", pdfsplit: "Diviseur PDF", pdfmaker: "Créateur PDF", pdfcompressor: "Compresseur PDF", wordcount: "Compteur de Mots", case: "Convertisseur de Cas",
             pass: "Générateur de Mots de Passe", age: "Calculateur d'Âge", 
             qr: "Générateur de Code QR", color: "Sélecteur de Couleur", b64: "Convertisseur Base64", url: "Convertisseur d'URL",
             unit: "Convertisseur d'Unités", stopwatch: "Chronomètre", todo: "Liste de Tâches", notes: "App de Notes",
@@ -318,7 +324,7 @@ const TRANSLATIONS = {
         ui: { all: "Alle Werkzeuge", popular: "🔥 Beliebte Werkzeuge", recent: "🕒 Kürzlich Verwendet", trending: "📈 Trends", about: "SmartTools Hub", rights: "Alle Rechte vorbehalten.", related: "Verwandte Utilities", search: "Nach Werkzeugen suchen...", quotesTitle: "Weisheit großer Philosophen", categories: { ALL: "Alle", IMAGE: "Bild", PDF: "PDF", FINANCE: "Finanzen", TEXT: "Text", INSTAGRAM: "Instagram", UTILITY: "Dienstprogramm" } },
         tools: {
             compress: "Bildkomprimierer", bgremove: "Hintergrundentferner",
-            pdfmerge: "PDF Zusammenführen", pdfsplit: "PDF Splitten", wordcount: "Wortzähler", case: "Groß-/Kleinschreibung",
+            pdfmerge: "PDF Zusammenführen", pdfsplit: "PDF Splitten", pdfmaker: "PDF Ersteller", pdfcompressor: "PDF Komprimierer", wordcount: "Wortzähler", case: "Groß-/Kleinschreibung",
             pass: "Passwortgenerator", age: "Altersrechner", 
             qr: "QR-Code-Generator", color: "Farbauswahl", b64: "Base64-Konverter", url: "URL-Konverter",
             unit: "Einheitenumrechner", stopwatch: "Stoppuhr", todo: "To-Do Liste", notes: "Notizen App",
@@ -333,7 +339,7 @@ const TRANSLATIONS = {
         ui: { all: "Todas as Ferramentas", popular: "🔥 Ferramentas Populares", recent: "🕒 Usado Recentemente", trending: "📈 Tendências", about: "SmartTools Hub", rights: "Todos os direitos reservados.", related: "Utilidades Relacionadas", search: "Procurar ferramentas...", quotesTitle: "Sabedoria de Grandes Filósofos", categories: { ALL: "Todas", IMAGE: "Imagem", PDF: "PDF", FINANCE: "Finanças", TEXT: "Texto", INSTAGRAM: "Instagram", UTILITY: "Utilidade" } },
         tools: {
             compress: "Compressor de Imagens", bgremove: "Removedor de Fundo",
-            pdfmerge: "Fusão de PDF", pdfsplit: "Divisor de PDF", wordcount: "Contador de Palavras", case: "Conversor de Letras",
+            pdfmerge: "Fusão de PDF", pdfsplit: "Divisor de PDF", pdfmaker: "Criador de PDF", pdfcompressor: "Compressor de PDF", wordcount: "Contador de Palavras", case: "Conversor de Letras",
             pass: "Gerador de Senhas", age: "Calculadora de Idade", 
             qr: "Gerador de Código QR", color: "Seletor de Cores", b64: "Conversor Base64", url: "Conversor de URL",
             unit: "Conversor de Unidades", stopwatch: "Cronômetro", todo: "Lista de Tarefas", notes: "App de Notas",
@@ -348,7 +354,7 @@ const TRANSLATIONS = {
         ui: { all: "すべてのツール", popular: "🔥 人気のツール", recent: "🕒 最近使ったツール", trending: "📈 トレンドのツール", about: "SmartTools Hub", rights: "全著作権所有。", related: "関連ユーティリティ", search: "ツールを検索...", quotesTitle: "偉大な哲学者の知恵", categories: { ALL: "すべて", IMAGE: "画像", PDF: "PDF", FINANCE: "金融", TEXT: "テキスト", INSTAGRAM: "インスタ", UTILITY: "ユーティリティ" } },
         tools: {
             compress: "画像圧縮", bgremove: "背景削除",
-            pdfmerge: "PDF結合", pdfsplit: "PDF分割", wordcount: "単語数カウント", case: "大文字小文字変換",
+            pdfmerge: "PDF結合", pdfsplit: "PDF分割", pdfmaker: "PDF作成", pdfcompressor: "PDF圧縮", wordcount: "単語数カウント", case: "大文字小文字変換",
             pass: "パスワード生成", age: "年齢計算", 
             qr: "QRコード生成", color: "カラーピッカー", b64: "Base64変換", url: "URL変換",
             unit: "単位変換", stopwatch: "ストップウォッチ", todo: "ToDoリスト", notes: "メモ帳アプリ",
@@ -1031,7 +1037,9 @@ function renderFullGrid() {
     const filtered = TOOLS.filter(t => {
         const name = TRANSLATIONS[state.lang].tools[t.nameKey].toLowerCase();
         const category = t.category;
-        const searchMatch = name.includes(state.search.toLowerCase()) || t.desc.toLowerCase().includes(state.search.toLowerCase());
+        const searchTerms = state.search.toLowerCase();
+        const hasTags = t.searchTags ? t.searchTags.toLowerCase().includes(searchTerms) : false;
+        const searchMatch = name.includes(searchTerms) || t.desc.toLowerCase().includes(searchTerms) || hasTags;
         const categoryMatch = state.category === 'All' || category === state.category;
         return searchMatch && categoryMatch;
     });
@@ -3418,6 +3426,159 @@ function injectToolFunctionalHTML(id) {
                 </div>
              `;
              lucide.createIcons();
+             break;
+
+        case 'pdf-maker':
+             c.innerHTML = `
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Document Title</label>
+                            <input type="text" id="pdf-maker-title" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-bold outline-none" placeholder="My Document (Optional)">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Add Images</label>
+                            <input type="file" id="pdf-maker-images" multiple accept="image/png, image/jpeg, image/webp" class="w-full p-3 bg-gray-50 dark:bg-gray-900 border rounded-2xl dark:border-gray-700 font-medium text-sm file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-400 transition-all">
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label class="text-xs font-black text-gray-400 uppercase tracking-widest">Document Content (Text)</label>
+                        <textarea id="pdf-maker-text" class="w-full h-48 p-6 bg-gray-50 dark:bg-gray-900 border rounded-[2rem] dark:border-gray-700 outline-none focus:ring-4 focus:ring-blue-500/5 font-medium leading-relaxed resize-y" placeholder="Type or paste the text content here..."></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 p-6 bg-gray-50 dark:bg-gray-900 rounded-[2rem] border dark:border-gray-800">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Page Size</label>
+                            <select id="pdf-maker-size" class="w-full p-3 bg-white dark:bg-gray-800 rounded-xl font-bold text-sm outline-none border border-transparent dark:border-gray-700">
+                                <option value="a4">A4</option>
+                                <option value="letter">Letter</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Orientation</label>
+                            <select id="pdf-maker-orient" class="w-full p-3 bg-white dark:bg-gray-800 rounded-xl font-bold text-sm outline-none border border-transparent dark:border-gray-700">
+                                <option value="p">Portrait</option>
+                                <option value="l">Landscape</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Font Size</label>
+                            <select id="pdf-maker-font" class="w-full p-3 bg-white dark:bg-gray-800 rounded-xl font-bold text-sm outline-none border border-transparent dark:border-gray-700">
+                                <option value="10">10 pt</option>
+                                <option value="12" selected>12 pt</option>
+                                <option value="14">14 pt</option>
+                                <option value="16">16 pt</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Margin</label>
+                            <select id="pdf-maker-margin" class="w-full p-3 bg-white dark:bg-gray-800 rounded-xl font-bold text-sm outline-none border border-transparent dark:border-gray-700">
+                                <option value="10">Small</option>
+                                <option value="20" selected>Normal</option>
+                                <option value="30">Large</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Alignment</label>
+                            <select id="pdf-maker-align" class="w-full p-3 bg-white dark:bg-gray-800 rounded-xl font-bold text-sm outline-none border border-transparent dark:border-gray-700">
+                                <option value="left">Left</option>
+                                <option value="center">Center</option>
+                                <option value="right">Right</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="pdf-maker-summary" class="hidden p-6 bg-blue-50 dark:bg-blue-900/10 border-2 border-blue-100 dark:border-blue-900/20 rounded-[2rem] text-center space-y-2 animate-fade-in">
+                        <div class="font-black text-blue-600 uppercase tracking-widest text-[10px]">PDF Generated Locally</div>
+                        <div id="pdf-maker-summary-text" class="text-xs font-bold text-gray-600 dark:text-gray-400"></div>
+                        <button onclick="window.downloadPdfMaker()" class="px-6 py-3 mt-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-black text-xs uppercase tracking-widest transition-all shadow-lg active:scale-95"><i data-lucide="download" class="w-4 h-4 inline-block mr-2 -mt-1 text-white"></i>Download PDF</button>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="window.generatePdfMaker()" class="py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs transition-all shadow-xl active:scale-95">Generate PDF</button>
+                        <button onclick="window.clearPdfMaker()" class="py-4 bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-[2rem] font-black uppercase tracking-widest text-xs transition-all active:scale-95">Clear All</button>
+                    </div>
+                    <p class="text-[9px] text-center text-gray-400 font-bold uppercase tracking-widest italic mt-4">100% Client-Side. Your text and images never leave your device.</p>
+                </div>
+             `;
+             lucide.createIcons();
+             break;
+
+        case 'pdf-compressor':
+             c.innerHTML = `
+                <div class="space-y-6">
+                    <div id="pdf-comp-upload" class="w-full h-48 border-4 border-dashed border-gray-100 dark:border-gray-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center group hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all cursor-pointer relative" onclick="document.getElementById('pdf-comp-in').click()">
+                        <input type="file" id="pdf-comp-in" accept="application/pdf" class="hidden" onchange="window.handlePdfCompressorSelect(this)">
+                        <div class="p-4 bg-white dark:bg-gray-800 rounded-full shadow-lg mb-4 group-hover:scale-110 transition-transform dark:border dark:border-gray-700">
+                            <i data-lucide="file-down" class="w-8 h-8 text-blue-500"></i>
+                        </div>
+                        <h3 class="font-black text-gray-800 dark:text-gray-200 mb-1">Drop PDF here or click to browse</h3>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest" id="pdf-comp-status">Max size depends on browser memory</p>
+                    </div>
+
+                    <div id="pdf-comp-info" class="hidden p-6 bg-gray-50 dark:bg-gray-900 rounded-[2rem] border dark:border-gray-800 space-y-4 shadow-inner">
+                         <div class="flex items-center justify-between">
+                            <div class="font-black text-xs uppercase tracking-widest text-gray-500 line-clamp-1" id="pdf-comp-name">filename.pdf</div>
+                            <div class="font-bold text-xs bg-gray-200 dark:bg-gray-800 px-3 py-1 rounded-full text-gray-600 dark:text-gray-400" id="pdf-comp-orig-size">0 KB</div>
+                         </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-6 bg-gray-50 dark:bg-gray-900 rounded-[2rem] border dark:border-gray-800">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Target Size</label>
+                            <select id="pdf-comp-target" class="w-full p-3 bg-white dark:bg-gray-800 rounded-xl font-bold text-sm outline-none border border-transparent dark:border-gray-700">
+                                <option value="100">100 KB (Govt Limit)</option>
+                                <option value="200">200 KB</option>
+                                <option value="300">300 KB</option>
+                                <option value="500">500 KB</option>
+                                <option value="1024" selected>1 MB</option>
+                                <option value="custom">Custom (KB)</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Quality Preset</label>
+                            <select id="pdf-comp-quality" class="w-full p-3 bg-white dark:bg-gray-800 rounded-xl font-bold text-sm outline-none border border-transparent dark:border-gray-700">
+                                <option value="high">High Quality (Less Shrink)</option>
+                                <option value="balanced" selected>Balanced</option>
+                                <option value="max">Max Compression</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="pdf-comp-custom-wrap" class="hidden space-y-2 p-6 bg-gray-50 dark:bg-gray-900 rounded-[2rem] border dark:border-gray-800">
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Custom Target (KB)</label>
+                        <input type="number" id="pdf-comp-custom-kb" class="w-full p-4 bg-white dark:bg-gray-800 rounded-xl font-bold outline-none border border-transparent dark:border-gray-700" placeholder="e.g. 150">
+                    </div>
+
+                    <div id="pdf-comp-summary" class="hidden p-6 bg-blue-50 dark:bg-blue-900/10 border-2 border-blue-100 dark:border-blue-900/20 rounded-[2rem] text-center space-y-2 animate-fade-in">
+                        <div id="pdf-comp-summary-title" class="font-black text-blue-600 uppercase tracking-widest text-[10px]">Processing...</div>
+                        <div id="pdf-comp-summary-text" class="text-xs font-bold text-gray-600 dark:text-gray-400">Please wait.</div>
+                        <div class="mt-4 hidden" id="pdf-comp-download-wrap">
+                            <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-2 mb-2" id="pdf-comp-note"></div>
+                            <button onclick="window.downloadCompressedPdf()" class="px-6 py-3 mt-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-black text-xs uppercase tracking-widest transition-all shadow-lg active:scale-95"><i data-lucide="download" class="w-4 h-4 inline-block mr-2 -mt-1 text-white"></i>Download Compressed</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <button id="btn-compress-pdf" onclick="window.runPdfCompressor()" class="py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs transition-all shadow-xl active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">Compress PDF</button>
+                        <button onclick="window.clearPdfCompressor()" class="py-4 bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-[2rem] font-black uppercase tracking-widest text-xs transition-all active:scale-95">Clear File</button>
+                    </div>
+                    <div class="flex flex-col items-center mt-4">
+                        <p class="text-[10px] font-bold text-gray-500 italic mb-2">Common government upload limits: 100 KB, 200 KB, 500 KB, 1 MB</p>
+                        <p class="text-[9px] text-center text-gray-400 font-bold uppercase tracking-widest">100% Client-Side. Your PDF never leaves your device.</p>
+                    </div>
+                </div>
+             `;
+             lucide.createIcons();
+             
+             document.getElementById('pdf-comp-target').addEventListener('change', (e) => {
+                 if(e.target.value === 'custom') {
+                     document.getElementById('pdf-comp-custom-wrap').classList.remove('hidden');
+                 } else {
+                     document.getElementById('pdf-comp-custom-wrap').classList.add('hidden');
+                 }
+             });
              break;
 
         case 'case-converter':
@@ -7075,6 +7236,314 @@ window.runUrlAction = (mode) => {
     document.getElementById('url-out').innerText = res;
     document.getElementById('url-box').classList.remove('hidden');
     lucide.createIcons();
+};
+
+window.generatePdfMaker = async () => {
+    const titleObj = document.getElementById('pdf-maker-title');
+    const textObj = document.getElementById('pdf-maker-text');
+    const imgObj = document.getElementById('pdf-maker-images');
+    
+    if (!titleObj || !textObj || !imgObj) return;
+
+    let title = titleObj.value.trim() || "smarttools-pdf-maker";
+    let text = textObj.value.trim();
+    let files = imgObj.files;
+
+    if (!text && files.length === 0) {
+        return toast("Please add some text or images to create a PDF.");
+    }
+
+    const format = document.getElementById('pdf-maker-size').value;
+    const orientation = document.getElementById('pdf-maker-orient').value;
+    const fontSize = parseInt(document.getElementById('pdf-maker-font').value, 10);
+    const margin = parseInt(document.getElementById('pdf-maker-margin').value, 10);
+    const alignment = document.getElementById('pdf-maker-align').value;
+
+    try {
+        const doc = new jsPDF({
+            orientation: orientation,
+            unit: 'mm',
+            format: format
+        });
+        
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        let yPos = margin;
+
+        let xAnchor = margin;
+        if (alignment === 'center') xAnchor = pageWidth / 2;
+        if (alignment === 'right') xAnchor = pageWidth - margin;
+
+        if (titleObj.value.trim()) {
+            doc.setFontSize(fontSize + 4);
+            doc.setFont("helvetica", "bold");
+            const titleWrapped = doc.splitTextToSize(title, pageWidth - (margin * 2));
+            doc.text(titleWrapped, xAnchor, yPos, { align: alignment });
+            yPos += (titleWrapped.length * (fontSize + 4) * 0.4) + 10;
+        }
+
+        if (text) {
+            doc.setFontSize(fontSize);
+            doc.setFont("helvetica", "normal");
+            const lines = doc.splitTextToSize(text, pageWidth - (margin * 2));
+            
+            for (let i = 0; i < lines.length; i++) {
+                if (yPos > pageHeight - margin) {
+                    doc.addPage();
+                    yPos = margin;
+                }
+                doc.text(lines[i], xAnchor, yPos, { align: alignment });
+                yPos += (fontSize * 0.4); 
+            }
+            yPos += 10; 
+        }
+
+        if (files.length > 0) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!file.type.startsWith('image/')) {
+                    toast(`Skipping non-image file: ${file.name}`);
+                    continue;
+                }
+                
+                const imgData = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(file);
+                });
+
+                const img = new Image();
+                img.src = imgData;
+                await new Promise(r => {
+                    img.onload = r;
+                    img.onerror = r;
+                });
+                
+                if (!img.width) continue; // skip bad images
+
+                const imgAspect = img.width / img.height;
+                let renderWidth = pageWidth - (margin * 2);
+                let renderHeight = renderWidth / imgAspect;
+
+                if (renderHeight > (pageHeight - (margin * 2))) {
+                    renderHeight = pageHeight - (margin * 2);
+                    renderWidth = renderHeight * imgAspect;
+                }
+
+                if (yPos + renderHeight > pageHeight - margin) {
+                    if (yPos > margin) {
+                        doc.addPage();
+                        yPos = margin;
+                    }
+                }
+
+                let fileType = 'JPEG';
+                if (file.type === 'image/png') fileType = 'PNG';
+                if (file.type === 'image/webp') fileType = 'WEBP';
+                
+                doc.addImage(imgData, fileType, margin, yPos, renderWidth, renderHeight);
+                yPos += renderHeight + 10;
+            }
+        }
+
+        window._generatedPdfBlob = doc.output('blob');
+        window._generatedPdfName = title.endsWith('.pdf') ? title : `${title}.pdf`;
+        
+        const pageCount = doc.getNumberOfPages();
+        
+        document.getElementById('pdf-maker-summary-text').innerText = 
+            `Format: ${format.toUpperCase()} | Orientation: ${orientation === 'p' ? 'Portrait' : 'Landscape'} | Pages: ${pageCount} | Images: ${files.length}`;
+            
+        document.getElementById('pdf-maker-summary').classList.remove('hidden');
+        if (window.lucide) window.lucide.createIcons();
+        toast("PDF generated successfully!");
+
+    } catch (err) {
+        console.error(err);
+        toast("Failed to generate PDF. Please check your format or images.");
+    }
+};
+
+window.downloadPdfMaker = () => {
+    if (!window._generatedPdfBlob) return toast("No generated PDF found.");
+    const url = URL.createObjectURL(window._generatedPdfBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = window._generatedPdfName || "smarttools-pdf.pdf";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 100);
+};
+
+window.clearPdfMaker = () => {
+    document.getElementById('pdf-maker-title').value = '';
+    document.getElementById('pdf-maker-text').value = '';
+    document.getElementById('pdf-maker-images').value = '';
+    document.getElementById('pdf-maker-size').value = 'a4';
+    document.getElementById('pdf-maker-orient').value = 'p';
+    document.getElementById('pdf-maker-font').value = '12';
+    document.getElementById('pdf-maker-margin').value = '20';
+    document.getElementById('pdf-maker-summary').classList.add('hidden');
+    window._generatedPdfBlob = null;
+    window._generatedPdfName = null;
+    toast("Cleared PDF Maker");
+};
+
+window.handlePdfCompressorSelect = (input) => {
+    if (!input.files || input.files.length === 0) return;
+    const file = input.files[0];
+    if (file.type !== 'application/pdf') {
+        input.value = '';
+        return toast("Please select a PDF file.");
+    }
+    window._pdfCompressorFile = file;
+    document.getElementById('pdf-comp-name').innerText = file.name;
+    document.getElementById('pdf-comp-orig-size').innerText = (file.size / 1024).toFixed(1) + " KB";
+    document.getElementById('pdf-comp-info').classList.remove('hidden');
+    document.getElementById('pdf-comp-summary').classList.add('hidden');
+};
+
+window.clearPdfCompressor = () => {
+    document.getElementById('pdf-comp-in').value = '';
+    window._pdfCompressorFile = null;
+    window._pdfCompressedBlob = null;
+    window._pdfCompressedName = null;
+    document.getElementById('pdf-comp-info').classList.add('hidden');
+    document.getElementById('pdf-comp-summary').classList.add('hidden');
+    const btn = document.getElementById('btn-compress-pdf');
+    if(btn) { btn.disabled = false; btn.innerText = "Compress PDF"; }
+    toast("Cleared file");
+};
+
+window.downloadCompressedPdf = () => {
+    if (!window._pdfCompressedBlob) return toast("No compressed PDF available.");
+    const url = URL.createObjectURL(window._pdfCompressedBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = window._pdfCompressedName || "compressed.pdf";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 100);
+};
+
+window.runPdfCompressor = async () => {
+    const file = window._pdfCompressorFile;
+    if (!file) return toast("Please select a PDF file first.");
+    
+    let targetKb = document.getElementById('pdf-comp-target').value;
+    if (targetKb === 'custom') {
+        targetKb = parseFloat(document.getElementById('pdf-comp-custom-kb').value);
+    } else {
+        targetKb = parseFloat(targetKb);
+    }
+    
+    if (!targetKb || isNaN(targetKb) || targetKb <= 0) return toast("Invalid target size.");
+    
+    const qualityStr = document.getElementById('pdf-comp-quality').value;
+    let scaleFactor = 1.5;
+    let jpegQuality = 0.8;
+    if (qualityStr === 'balanced') { scaleFactor = 1.0; jpegQuality = 0.6; }
+    if (qualityStr === 'max') { scaleFactor = 0.8; jpegQuality = 0.4; }
+
+    const summary = document.getElementById('pdf-comp-summary');
+    const summaryTitle = document.getElementById('pdf-comp-summary-title');
+    const summaryText = document.getElementById('pdf-comp-summary-text');
+    const downloadWrap = document.getElementById('pdf-comp-download-wrap');
+    const btnCompress = document.getElementById('btn-compress-pdf');
+    const noteEl = document.getElementById('pdf-comp-note');
+
+    summary.classList.remove('hidden');
+    downloadWrap.classList.add('hidden');
+    summaryTitle.innerText = "Processing...";
+    summaryText.innerText = "Reading PDF...";
+    btnCompress.disabled = true;
+    btnCompress.innerText = "Compressing...";
+
+    try {
+        const fileBuffer = await file.arrayBuffer();
+        const pdfDoc = await pdfjsLib.getDocument({ data: fileBuffer }).promise;
+        const totalPages = pdfDoc.numPages;
+
+        const outPdf = new jsPDF({
+            orientation: 'p',
+            unit: 'pt',
+            format: 'a4'
+        });
+
+        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+            summaryText.innerText = `Compressing page ${pageNum} of ${totalPages}...`;
+            const page = await pdfDoc.getPage(pageNum);
+            const viewport = page.getViewport({ scale: scaleFactor });
+            
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            
+            await page.render({ canvasContext: context, viewport: viewport }).promise;
+            
+            const imgData = canvas.toDataURL('image/jpeg', jpegQuality);
+            
+            const pageAspect = viewport.width / viewport.height;
+            let outWidth = outPdf.internal.pageSize.getWidth();
+            let outHeight = outWidth / pageAspect;
+            
+            if (outHeight > outPdf.internal.pageSize.getHeight()) {
+                outHeight = outPdf.internal.pageSize.getHeight();
+                outWidth = outHeight * pageAspect;
+            }
+            
+            if (pageNum > 1) outPdf.addPage();
+            outPdf.addImage(imgData, 'JPEG', 0, 0, outWidth, outHeight);
+            
+            // free memory
+            canvas.width = 0;
+            canvas.height = 0;
+            page.cleanup();
+        }
+
+        const outBlob = outPdf.output('blob');
+        const outSizeKb = outBlob.size / 1024;
+        const origSizeKb = file.size / 1024;
+        
+        window._pdfCompressedBlob = outBlob;
+        let pName = file.name;
+        if(pName.toLowerCase().endsWith('.pdf')) pName = pName.slice(0,-4);
+        window._pdfCompressedName = pName + "-compressed.pdf";
+
+        summaryTitle.innerText = "Compression Done";
+        let statusMsg = `Original: ${origSizeKb.toFixed(1)} KB | New: ${outSizeKb.toFixed(1)} KB | Target: ${targetKb} KB`;
+        summaryText.innerText = statusMsg;
+        
+        noteEl.innerText = "";
+        if (outSizeKb > targetKb) {
+             noteEl.innerText = "Note: Target size was not reached. Text-heavy or already optimized PDFs may not compress much further without losing readability.";
+             noteEl.classList.add("text-orange-500");
+             noteEl.classList.remove("text-gray-400");
+        } else {
+             noteEl.innerText = "Success! PDF is below target size.";
+             noteEl.classList.add("text-gray-400");
+             noteEl.classList.remove("text-orange-500");
+        }
+        
+        if(outSizeKb >= origSizeKb) {
+            noteEl.innerText = "File size increased. The original PDF is already highly optimized. Uploading the compressed version is not recommended.";
+            noteEl.classList.add("text-orange-500");
+        }
+
+        downloadWrap.classList.remove('hidden');
+        toast("Compression finished!");
+    } catch (err) {
+        console.error("PDF Compression Error:", err);
+        summaryTitle.innerText = "Error";
+        summaryText.innerText = "Could not compress this PDF. It may be corrupt or encrypted.";
+        toast("Compression failed.");
+    }
+
+    btnCompress.disabled = false;
+    btnCompress.innerText = "Compress PDF";
 };
 
 window.handleResizerInput = (input) => {
