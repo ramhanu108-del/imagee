@@ -1021,7 +1021,7 @@ function renderToolShelves() {
     const trending = TOOLS.filter(t => ['caption-generator', 'qr-code-generator', 'word-counter', 'notes-app'].includes(t.id));
     container.appendChild(createShelfMarkup(uiTrans.trending || 'Trending Tools', trending));
 
-    lucide.createIcons();
+    hydrateToolCardIcons();
 }
 
 function createShelfMarkup(title, data) {
@@ -1029,11 +1029,19 @@ function createShelfMarkup(title, data) {
     section.className = "animate-slide-up";
     section.innerHTML = `
         <h3 class="text-xl font-black mb-8 text-gray-800 dark:text-gray-100">${title}</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7">
             ${data.map(t => createToolCard(t)).join('')}
         </div>
     `;
     return section;
+}
+
+function hydrateToolCardIcons() {
+    requestAnimationFrame(() => {
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons();
+        }
+    });
 }
 
 function renderFullGrid() {
@@ -1053,14 +1061,39 @@ function renderFullGrid() {
 
     container.innerHTML = filtered.map(t => createToolCard(t)).join('');
     document.getElementById('no-results').classList.toggle('hidden', filtered.length > 0);
-    lucide.createIcons();
+    hydrateToolCardIcons();
+}
+
+function getToolIconSvg(tool) {
+    const category = String(tool.category || '').toLowerCase();
+    const id = String(tool.id || '').toLowerCase();
+    
+    if (category.includes('pdf') || id.includes('pdf')) {
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`;
+    }
+    
+    if (category.includes('finance') || id.includes('calculator') || id.includes('roi') || id.includes('profit')) {
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="14.01"></line><line x1="12" y1="14" x2="12" y2="14.01"></line><line x1="8" y1="14" x2="8" y2="14.01"></line><line x1="16" y1="10" x2="16" y2="10.01"></line><line x1="12" y1="10" x2="12" y2="10.01"></line><line x1="8" y1="10" x2="8" y2="10.01"></line><line x1="16" y1="18" x2="16" y2="18.01"></line><line x1="12" y1="18" x2="12" y2="18.01"></line><line x1="8" y1="18" x2="8" y2="18.01"></line></svg>`;
+    }
+    
+    if (category.includes('image') || id.includes('image') || id.includes('color') || id.includes('qr-code')) {
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`;
+    }
+
+    if (category.includes('text') || id.includes('text') || id.includes('word') || id.includes('bio') || id.includes('case') || id.includes('caption') || id.includes('username')) {
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`;
+    }
+    
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>`;
 }
 
 function createToolCard(t) {
     const langObj = TRANSLATIONS[state.lang] || TRANSLATIONS['en'];
     const name = langObj.tools[t.nameKey] || TRANSLATIONS['en'].tools[t.nameKey] || t.nameKey || (t.id ? t.id.replace(/-/g, ' ') : 'Tool');
     const desc = t.desc || 'Open this free online tool.';
-    const icon = t.icon || 'wrench';
+    
+    const svgIcon = getToolIconSvg(t);
+    const arrowSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`;
     
     const seoRoutes = {
         'pdf-compressor': '/pdf-compressor-online',
@@ -1082,15 +1115,17 @@ function createToolCard(t) {
     const href = t.id && seoRoutes[t.id] ? seoRoutes[t.id] : `/#${t.id || ''}`;
     
     return `
-        <a href="${href}" onclick="handleToolLinkClick(event, '${t.id}', '${href}')" class="tool-card-stable fin-card group cursor-pointer relative overflow-hidden backdrop-blur-sm block hover:border-blue-500/40 hover:shadow-2xl hover:shadow-blue-500/5 dark:hover:border-blue-500/40 dark:hover:shadow-blue-500/10 transition-colors duration-300">
-            <div class="required-card-content w-12 h-12 bg-blue-600/5 dark:bg-blue-400/5 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center mb-6 shadow-sm transition-transform duration-300 group-hover:scale-110">
-                <i data-lucide="${icon}" class="w-5 h-5"></i>
+        <a href="${href}" onclick="handleToolLinkClick(event, '${t.id}', '${href}')" class="group cursor-pointer flex flex-col justify-between p-6 sm:p-7 rounded-3xl border border-gray-200 dark:border-slate-700/50 bg-gradient-to-br from-white to-gray-50/50 dark:from-slate-800 dark:to-slate-800/80 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-500/40 dark:hover:border-blue-500/50 hover:-translate-y-1 transition-all duration-300 min-h-[220px]">
+            <div>
+                <div class="w-12 h-12 sm:w-[52px] sm:h-[52px] bg-blue-500/10 text-blue-500 rounded-2xl flex items-center justify-center mb-5 shrink-0 transition-transform duration-300 group-hover:scale-105">
+                    ${svgIcon}
+                </div>
+                <h3 class="text-lg font-bold mb-2 tracking-tight text-gray-900 dark:text-white leading-tight">${name}</h3>
+                <p class="text-[13px] text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-2">${desc}</p>
             </div>
-            <h3 class="required-card-content text-lg font-black mb-2 tracking-tight text-gray-900 dark:text-white">${name}</h3>
-            <p class="required-card-content text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-2 uppercase font-bold tracking-tighter opacity-80">${desc}</p>
-            <div class="required-card-content mt-6 flex items-center gap-2 text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest">
+            <div class="mt-6 flex items-center gap-2 text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest shrink-0 transition-colors group-hover:text-blue-500 group-hover:dark:text-blue-300">
                 <span>Launch Tool</span>
-                <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                ${arrowSvg}
             </div>
         </a>
     `;
