@@ -17,10 +17,6 @@ import QUOTES_LIBRARY from './quotes.js';
 import Decimal from 'decimal.js';
 import { Chart, registerables } from 'chart.js';
 import annotationPlugin from 'chartjs-plugin-annotation';
-import { jsPDF } from 'jspdf';
-import * as pdfjsLib from 'pdfjs-dist';
-import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 Chart.register(...registerables, annotationPlugin);
 
 // --- TOOL DATABASE ---
@@ -1051,8 +1047,28 @@ function renderFullGrid() {
 
 function createToolCard(t) {
     const name = TRANSLATIONS[state.lang].tools[t.nameKey];
+    
+    const seoRoutes = {
+        'pdf-compressor': '/pdf-compressor-online',
+        'pdf-maker': '/pdf-maker-online',
+        'sip-calculator': '/sip-calculator',
+        'emi-calculator': '/emi-calculator',
+        'fd-calculator': '/fd-calculator',
+        'credit-card-interest': '/credit-card-payoff-calculator',
+        'roi-calculator': '/ads-roi-calculator',
+        'crypto-profit': '/crypto-profit-calculator',
+        'image-compressor': '/image-compressor',
+        'word-counter': '/word-counter',
+        'qr-code-generator': '/qr-code-generator',
+        'password-generator': '/password-generator',
+        'age-calculator': '/age-calculator',
+        'unit-converter': '/unit-converter'
+    };
+    
+    const href = seoRoutes[t.id] ? seoRoutes[t.id] : `/#${t.id}`;
+    
     return `
-        <div onclick="openToolModal('${t.id}')" class="fin-card group cursor-pointer relative overflow-hidden backdrop-blur-sm">
+        <a href="${href}" onclick="handleToolLinkClick(event, '${t.id}', '${href}')" class="fin-card group cursor-pointer relative overflow-hidden backdrop-blur-sm block">
             <div class="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-5 transition-opacity">
                 <i data-lucide="${t.icon}" class="w-24 h-24 stroke-1"></i>
             </div>
@@ -1065,9 +1081,19 @@ function createToolCard(t) {
                 <span>Launch Tool</span>
                 <i data-lucide="arrow-right" class="w-3 h-3"></i>
             </div>
-        </div>
+        </a>
     `;
 }
+
+window.handleToolLinkClick = (event, id, href) => {
+    event.preventDefault();
+    openToolModal(id);
+    if (href.startsWith('/')) {
+        history.pushState(null, '', href);
+    } else {
+        history.pushState(null, '', href);
+    }
+};
 
 // --- QUOTES SYSTEM ---
 // The quote system is now strictly philosopher-based and deduplicated via quotes.js.
@@ -1257,7 +1283,7 @@ function closeToolModal() {
     }
 
     // 2. Clear UI State
-    history.pushState(null, null, ' ');
+    history.pushState(null, '', '/');
     
     const modal = document.getElementById('modal-container');
     const overlay = document.getElementById('modal-overlay');
@@ -7260,6 +7286,7 @@ window.generatePdfMaker = async () => {
     const alignment = document.getElementById('pdf-maker-align').value;
 
     try {
+        const { jsPDF } = await import('jspdf');
         const doc = new jsPDF({
             orientation: orientation,
             unit: 'mm',
@@ -7462,6 +7489,11 @@ window.runPdfCompressor = async () => {
     btnCompress.innerText = "Compressing...";
 
     try {
+        const { jsPDF } = await import('jspdf');
+        const pdfjsLib = await import('pdfjs-dist');
+        const pdfWorkerUrl = (await import('pdfjs-dist/build/pdf.worker.mjs?url')).default;
+        pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+
         const fileBuffer = await file.arrayBuffer();
         const pdfDoc = await pdfjsLib.getDocument({ data: fileBuffer }).promise;
         const totalPages = pdfDoc.numPages;
@@ -7945,6 +7977,14 @@ function boot() {
 
     // Direct routing handler
     const handleRoute = () => {
+        if (window.__PRELOADED_TOOL__) {
+            setTimeout(() => {
+                const tool = TOOLS.find(t => t.id === window.__PRELOADED_TOOL__);
+                if (tool) openToolModal(window.__PRELOADED_TOOL__);
+            }, 100);
+            return;
+        }
+        
         const id = location.hash.replace('#', '');
         if (id) {
             // Short delay to ensure DOM is ready

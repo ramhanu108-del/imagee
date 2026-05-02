@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ads ROI Calculator - Marketing Spend Analyzer | SmartTools Hub</title>
+    
+    <!-- Premium Head & SEO Optimization -->
+    <meta name="description" content="Evaluate your advertising campaigns. Calculate Return on Investment (ROI) and Return on Ad Spend (ROAS).">
+    <meta name="keywords" content="free online tools, image compressor, pdf merger, background remover, emi calculator, sip calculator, instagram tools, browser based tools, smarttools hub">
+    <meta name="author" content="SmartTools Hub">
+    <link rel="canonical" href="https://smarttoolshub.com/ads-roi-calculator">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://smarttoolshub.com/ads-roi-calculator">
+    <meta property="og:title" content="Ads ROI Calculator - Marketing Spend Analyzer">
+    <meta property="og:description" content="Evaluate your advertising campaigns. Calculate Return on Investment (ROI) and Return on Ad Spend (ROAS).">
+    <meta property="og:image" content="https://smarttools-hub.com/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://smarttools-hub.com/">
+    <meta property="twitter:title" content="SmartTools Hub | Professional Online Utilities">
+    <meta property="twitter:description" content="Fast, secure, and browsers-based tools. No data processing on servers. Privacy-focused tool suite.">
+    <meta property="twitter:image" content="https://smarttools-hub.com/og-image.png">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "SmartTools Hub",
+      "url": "https://smarttools-hub.com/",
+      "description": "All-in-one suite of professional online tools for image processing, PDF management, financial calculations, and text tools.",
+      "applicationCategory": "UtilityApplication",
+      "genre": "Professional Utilities",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "SmartTools Hub",
+      "url": "https://smarttools-hub.com/",
+      "logo": "https://smarttools-hub.com/logo.png",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "email": "support@smarttools-hub.com"
+      }
+    }
+    </script>
+    
+    <!-- UI Essentials -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 font-sans selection:bg-blue-200 dark:selection:bg-blue-900 transition-colors duration-200">
+
+    <!-- Sticky Navbar -->
+    <nav class="sticky top-0 z-50 glass border-b border-gray-100 dark:border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between py-3">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+                    <i data-lucide="wrench" class="w-5 h-5"></i>
+                </div>
+                <span class="text-xl font-black tracking-tight hidden sm:block" id="nav-hub-name">SmartTools Hub</span>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-6 mr-4 font-semibold text-sm">
+                    <a href="#" class="hover:text-blue-600 transition-colors" id="nav-home">Home</a>
+                    <a href="#tools-section" class="hover:text-blue-600 transition-colors" id="nav-tools">Utilities</a>
+                    <a href="#about-section" class="hover:text-blue-600 transition-colors" id="nav-about">Privacy Shield</a>
+                </div>
+
+                <div class="flex items-center gap-3 border-l border-gray-200 dark:border-gray-700 pl-6 h-8">
+                    <div class="flex items-center bg-gray-100 dark:bg-gray-800/50 rounded-full px-2 gap-1.5 border border-transparent focus-within:border-blue-400 transition-all">
+                        <i data-lucide="globe" class="w-3 h-3 text-gray-400"></i>
+                        <select id="lang-select" aria-label="Select Language" class="bg-transparent text-[10px] font-black uppercase outline-none cursor-pointer hover:text-blue-600 transition-colors py-1.5 pr-2">
+                            <option value="en">EN</option>
+                            <option value="hi">HI</option>
+                            <option value="es">ES</option>
+                            <option value="fr">FR</option>
+                            <option value="de">DE</option>
+                            <option value="pt">PT</option>
+                            <option value="ja">JA</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center bg-gray-100 dark:bg-gray-800/50 rounded-full px-2 gap-1.5 border border-transparent focus-within:border-blue-400 transition-all">
+                        <i data-lucide="banknote" class="w-3 h-3 text-gray-400"></i>
+                        <select id="currency-select" aria-label="Select Currency" class="bg-transparent text-[10px] font-black uppercase outline-none cursor-pointer hover:text-blue-600 transition-colors py-1.5 pr-2">
+                            <option value="USD">USD</option>
+                            <option value="INR">INR</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="JPY">JPY</option>
+                            <option value="CAD">CAD</option>
+                            <option value="AUD">AUD</option>
+                            <option value="AED">AED</option>
+                            <option value="SAR">SAR</option>
+                            <option value="SGD">SGD</option>
+                            <option value="CNY">CNY</option>
+                        </select>
+                    </div>
+
+                    <button id="theme-toggle" class="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-all group" aria-label="Toggle Theme">
+                        <i data-lucide="sun" class="w-4 h-4 hidden dark:block group-hover:rotate-45 transition-transform"></i>
+                        <i data-lucide="moon" class="w-4 h-4 block dark:hidden group-hover:-rotate-12 transition-transform"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Top Advertisement Placeholder -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+        <div class="w-full h-24 bg-gray-100 dark:bg-gray-800/30 border border-dashed border-gray-300 dark:border-gray-700 rounded-2xl flex items-center justify-center text-gray-400 text-[10px] font-bold uppercase tracking-widest overflow-hidden">
+            <span class="p-4 text-center">Sponsored Content Section</span>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <header class="pt-20 pb-12 px-4 text-center max-w-4xl mx-auto">
+        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-6 leading-tight" id="hero-title">
+            Swiss Knife for <span class="text-blue-600 dark:text-blue-400">All Your Work</span>
+        </h1>
+        <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-10 max-w-2xl mx-auto" id="hero-subtitle">
+            Fast, secure, and works entirely in your browser. No data leaves your device.
+        </p>
+
+        <div class="relative max-w-2xl mx-auto group">
+            <div class="absolute inset-y-0 left-6 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
+                <i data-lucide="search" class="w-5 h-5"></i>
+            </div>
+            <input
+                type="text"
+                id="tool-search"
+                placeholder="Search for tools..."
+                class="w-full pl-14 pr-6 py-5 rounded-3xl bg-white dark:bg-gray-900 border-2 border-gray-100 dark:border-gray-800 focus:border-blue-500 outline-none shadow-sm dark:shadow-none transition-all placeholder:text-gray-400 font-medium"
+            >
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="flex flex-wrap justify-center gap-2 mb-16 px-4" id="category-tabs">
+        <!-- JS Injection -->
+    </div>
+
+    <!-- Features Shelves -->
+    <div id="tool-shelves" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 mb-24">
+        <!-- JS Injection -->
+    </div>
+
+    <!-- Philosophy Quote Area -->
+    <section id="quotes" class="py-24 bg-blue-50 dark:bg-blue-900/10 mb-24 border-y border-blue-100/50 dark:border-blue-900/20">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+            <h2 class="text-sm font-bold uppercase tracking-widest text-blue-600/60 dark:text-blue-400/60 mb-12" id="quote-header">
+                Wisdom from Great Philosophers
+            </h2>
+            
+            <div class="relative min-h-[16rem] md:min-h-[12rem] flex flex-col items-center justify-center overflow-hidden" id="quote-container">
+                <i data-lucide="quote" class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 text-blue-200/40 dark:text-blue-800/20 z-0"></i>
+                
+                <div id="quote-content" class="z-10 w-full transition-all duration-700 opacity-100 scale-100">
+                    <blockquote class="text-lg md:text-2xl font-bold text-gray-800 dark:text-gray-100 italic mb-6 leading-relaxed px-4 md:px-12" id="quote-text">
+                        "The soul becomes dyed with the color of its thoughts."
+                    </blockquote>
+                    <div class="flex flex-col items-center gap-4">
+                        <div id="quote-chips" class="flex flex-wrap justify-center gap-2 mb-2">
+                             <!-- Chips injected via JS -->
+                        </div>
+                        <div class="text-blue-600 dark:text-blue-400 font-extrabold text-xs uppercase tracking-wider" id="quote-author">
+                            — Marcus Aurelius
+                        </div>
+                        <button onclick="refreshQuote()" class="p-2 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-all group active:scale-90" title="Next Wisdom">
+                            <i data-lucide="rotate-cw" class="w-4 h-4 text-blue-400 group-hover:text-blue-600 group-hover:rotate-180 transition-all duration-500"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- In-Feed Native Ad Unit -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
+        <div class="w-full h-32 bg-gray-100 dark:bg-gray-800/30 border border-dashed border-gray-300 dark:border-gray-700 rounded-[2.5rem] flex items-center justify-center text-gray-400 text-[10px] font-bold uppercase tracking-widest overflow-hidden">
+            <span class="p-4 text-center">In-Feed Native Ad Unit Hook</span>
+        </div>
+    </div>
+
+    <!-- All Tools Full Grid -->
+    <div id="tools-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-32 pt-4">
+        <div class="flex items-center justify-between mb-10">
+            <h2 class="text-lg font-black uppercase tracking-widest text-gray-400" id="all-tools-header">All Utility Tools</h2>
+            <div class="h-px bg-gray-200 dark:bg-gray-800 flex-grow ml-6"></div>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7" id="tool-grid">
+            <!-- Tool cards injected here -->
+        </div>
+        
+        <div id="no-results" class="hidden text-center py-24 opacity-50">
+            <i data-lucide="search-x" class="w-16 h-16 mx-auto text-gray-300 mb-6"></i>
+            <p class="text-gray-500 font-bold text-xl" id="no-results-text">No tools found matching your search.</p>
+        </div>
+    </div>
+
+    <!-- About Content Section -->
+    <div id="about-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 border-t border-gray-100 dark:border-gray-800">
+        <div class="max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                <div>
+                     <h2 class="text-3xl md:text-4xl font-black mb-8 leading-tight" id="about-title">Why SmartTools Hub?</h2>
+                     <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-6" id="about-desc">
+                        Our platform offers a comprehensive suite of digital utilities designed for productivity, finance, and creative projects. Built with a "Privacy First" mindset, every calculation and file process happens directly in your browser.
+                     </p>
+                     <div class="flex gap-4">
+                         <div class="p-3 bg-blue-100 dark:bg-blue-900/40 rounded-xl text-blue-600"><i data-lucide="shield-check"></i></div>
+                         <div class="p-3 bg-blue-100 dark:bg-blue-900/40 rounded-xl text-blue-600"><i data-lucide="zap"></i></div>
+                         <div class="p-3 bg-blue-100 dark:bg-blue-900/40 rounded-xl text-blue-600"><i data-lucide="lock"></i></div>
+                     </div>
+                </div>
+                <div class="bg-white dark:bg-black/30 p-8 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-xl shadow-gray-200/20 dark:shadow-none">
+                     <div class="space-y-6">
+                        <div class="flex items-center gap-4">
+                             <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                             <span class="font-bold">100% Free Forever</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                             <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                             <span class="font-bold">Lightning Fast Response</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                             <div class="w-3 h-3 rounded-full bg-purple-500"></div>
+                             <span class="font-bold">No Mandatory Signup</span>
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Contextual Ads Area -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
+        <div class="w-full h-40 bg-gray-100 dark:bg-gray-800/30 border border-dashed border-gray-300 dark:border-gray-700 rounded-3xl flex items-center justify-center text-gray-400 text-[10px] font-bold uppercase tracking-widest overflow-hidden">
+            <span class="p-4 text-center">Contextual Recommendation Widget</span>
+        </div>
+    </div>
+
+    
+    <script>window.__PRELOADED_TOOL__ = 'roi-calculator';</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Ads ROI Calculator - Marketing Spend Analyzer","description":"Evaluate your advertising campaigns. Calculate Return on Investment (ROI) and Return on Ad Spend (ROAS).","applicationCategory":"BrowserApplication","operatingSystem":"All","offers":{"@type":"Offer","price":"0"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this tool free?","acceptedAnswer":{"@type":"Answer","text":"Yes, all tools on SmartTools Hub are completely free to use."}},{"@type":"Question","name":"Do I need to create an account?","acceptedAnswer":{"@type":"Answer","text":"No, there is no signup required to use our utilities."}}]}</script>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 prose prose-blue dark:prose-invert" id="seo-content-block">
+      <h1>Ads ROI Calculator - Marketing Spend Analyzer</h1>
+      <p>Evaluate your advertising campaigns. Calculate Return on Investment (ROI) and Return on Ad Spend (ROAS).</p>
+      <h2>What this tool does</h2>
+      <p>This Ads ROI Calculator - Marketing Spend Analyzer helps you achieve your tasks quickly and securely. All processing is done locally in your browser to maintain 100% privacy.</p>
+      <h2>How to use it</h2>
+      <ul>
+        <li>Open the tool.</li>
+        <li>Follow the intuitive instructions on the screen.</li>
+        <li>Get your results instantly.</li>
+      </ul>
+      <h2>Why it is useful</h2>
+      <p>Using an online utility saves time compared to installing dedicated applications. With no server uploads, your work remains confidential.</p>
+      <h2>Privacy Note</h2>
+      <p>Your data never leaves your device. We use client-side processing to ensure absolute security and privacy.</p>
+      <h2>FAQs</h2>
+      <h3>Is this tool free?</h3>
+      <p>Yes, all tools on SmartTools Hub are completely free to use.</p>
+      <h3>Do I need to create an account?</h3>
+      <p>No, there is no signup required to use our utilities.</p>
+    </div>
+  
+<!-- SEO Content Section (1000+ Words) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-32 border-t border-gray-100 dark:border-gray-800 pt-24 pb-12">
+        <div class="prose prose-blue dark:prose-invert max-w-none">
+            <h2 class="text-4xl font-black mb-12 tracking-tight text-gray-900 dark:text-white">SmartTools Hub: The Ultimate Digital Swiss Knife for Your Every Need</h2>
+            
+            <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-10">
+                In today's fast-paced digital world, efficiency is no longer just a luxury—it's a necessity. Whether you're a student, a professional developer, a digital marketer, or a casual internet user, you likely encounter tasks every day that require specialized tools. Maybe you need to compress a large image for a presentation, merge several PDF documents for a school project, or generate a secure password for a new account. Traditionally, these tasks required downloading bulky software or navigating through ad-riddled websites that compromise your privacy. <strong>SmartTools Hub</strong> was born to solve these problems by providing a comprehensive, fast, and 100% secure platform that lives entirely within your browser.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 mb-20">
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-blue-600">Why Choose SmartTools Hub?</h3>
+                    <p class="mb-4">Our platform is designed with three core pillars in mind: <strong>Simplicity</strong>, <strong>Security</strong>, and <strong>Speed</strong>. We understand that time is money, and privacy is paramount. That's why every tool in our "Swiss Knife" collection is optimized to run client-side. This means your data—whether it's an image, a PDF, or a sensitive password—never leaves your computer. We don't utilize cloud servers to process your files, eliminating the risk of data breaches and unauthorized access. This "Privacy-First" approach is what sets us apart in a crowded market of online utility providers.</p>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-blue-600">A Versatile Ecosystem of Utilities</h3>
+                    <p class="mb-4">From image manipulation to financial calculations, SmartTools Hub covers a vast spectrum of needs. Our <strong>Image Tools</strong> like the Image Compressor and Background Remover allow you to prep visual content for the web in seconds. Our <strong>Finance Tools</strong>, including the EMI and SIP calculators, provide precision insights for your personal wealth management. Meanwhile, our <strong>Text Utilities</strong> empower content creators to optimize their written work through word counting and case conversion. It's truly a multi-purpose ecosystem built for the modern internet user.</p>
+                </div>
+            </div>
+
+            <h3 class="text-3xl font-black mb-8 tracking-tight text-gray-900 dark:text-white">Deep Dive: Our Core Tool Categories</h3>
+            
+            <h4 class="text-xl font-bold mt-12 mb-4">1. High-Performance Image Optimization</h4>
+            <p class="mb-6">Visual content is the king of the modern web, but unoptimized images can slow down websites and consume excessive bandwidth. Our <strong>Image Compressor</strong> uses advanced algorithms to reduce file size without sacrificing noticeable quality. Pairing this with our <strong>Background Remover</strong> and <strong>Image Resizer</strong>, you have a complete studio for prepping assets for social media, blogs, or eCommerce platforms. Convert JPG to PNG with our seamless converter to ensure your transparency requirements are met without any software installation.</p>
+
+            <h4 class="text-xl font-bold mt-10 mb-4">2. Professional PDF Management</h4>
+            <p class="mb-6">Handling paperwork in the digital age often means dealing with the Portable Document Format (PDF). Whether you're assembling reports or extracting specific pages for a client, our <strong>PDF Merger</strong> and <strong>PDF Splitter</strong> offer the precision you need. Most online PDF tools send your documents to a server, but SmartTools Hub processes them in your browser's RAM, ensuring that your confidential documents remain strictly under your control. This is the cornerstone of our "Privacy Shield" philosophy.</p>
+
+            <h4 class="text-xl font-bold mt-10 mb-4">3. Precision Finance and Wealth Planning</h4>
+            <p class="mb-6">Personal finance is a journey, and every journey needs a map. Our <strong>EMI Calculator</strong> helps you plan your loans, while the <strong>SIP Calculator</strong> and <strong>Tax Calculator</strong> are essential for long-term wealth accumulation. We also provide specialized tools like the <strong>Credit Card Interest Calculator</strong> and <strong>Website Cost Estimator</strong> to help businesses and individuals make data-driven decisions. By providing these tools for free, we aim to democratize financial planning for everyone, regardless of their background.</p>
+
+            <h4 class="text-xl font-bold mt-10 mb-4">4. Advanced Text and Coding Utilities</h4>
+            <p class="mb-6">For writers and developers, text is the core medium. Our <strong>Word Counter</strong> provides meta-data insights for SEO, while our <strong>Case Converter</strong> and <strong>Base64 Converter</strong> automate repetitive formatting tasks. Our <strong>Notes App</strong> and <strong>To-Do List</strong> further enhance your productivity by providing locally-saved organization right within the site.</p>
+
+            <h3 class="text-3xl font-black mt-20 mb-8 tracking-tight text-gray-900 dark:text-white">Security by Design: The Privacy Shield Difference</h3>
+            <p class="mb-10 text-gray-600 dark:text-gray-400">
+                The "Privacy Shield" is not just a marketing term; it's a technical architecture. By leveraging the latest in WebAssembly and browser-side JavaScript, we've moved the processing power from the "Cloud" to the "Edge"—your actual device. This means your private photos, legal PDFs, and secure passwords never cross the network. In an era where big tech companies are constantly data-mining their users, SmartTools Hub offers a refreshing alternative: a tool that works for you, and only you. No accounts needed, no data tracked, just pure utility.
+            </p>
+
+            <div class="bg-gray-50 dark:bg-gray-800/50 p-12 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 mb-20 text-center">
+                <h3 class="text-2xl font-bold mb-6">Building the Future of Productivity</h3>
+                <p class="max-w-3xl mx-auto mb-8">
+                    SmartTools Hub started as a small internal project to solve everyday digital frustrations. Today, it has grown into a global utility hub used by thousands of professionals daily. Our commitment remains the same: to keep adding more powerful, free tools that make your digital life easier. From Instagram caption generators to technical URL encoders, we are constantly expanding our "Swiss Knife" to ensure it stays relevant in the ever-changing landscape of the internet. Join us on this journey to a more efficient, secure, and open web.
+                </p>
+                <div class="flex justify-center gap-8 font-black text-xs uppercase tracking-[0.2em] text-blue-600">
+                    <span>Safe</span>
+                    <span>•</span>
+                    <span>Free</span>
+                    <span>•</span>
+                    <span>Private</span>
+                </div>
+            </div>
+
+            <h3 class="text-3xl font-black mb-8 tracking-tight text-gray-900 dark:text-white">Optimizing Your Workflow for 2026 and Beyond</h3>
+            <p class="mb-6">As we look toward the future, the boundary between "apps" and "websites" continues to blur. SmartTools Hub is leading this transition by providing an app-like experience without the friction of installation. Our responsive design ensures that whether you're on a high-end desktop or a budget smartphone, the tools remain perfectly accessible and lightning-fast. The clean, <strong>SmartTools Hub</strong> interface is designed to reduce cognitive load, allowing you to focus on the task at hand rather than wrestling with a confusing UI. Experience the difference today—your productivity deserves nothing less.</p>
+
+            <p class="text-sm font-bold text-gray-400 mt-20">SEO Keywords Index: SmartTools Hub, Online Utilities, Productivity Suite, Swiss Knife Web App, Private PDF Merger, Secure Image Compression, Financial Planning Tools, Instagram Growth Utilities, Browser-Safe Word Counter, Digital Toolkit, 2026 Productivity Guide.</p>
+        </div>
+    </section>
+
+    <!-- Final Footer -->
+    <footer class="bg-white dark:bg-black/20 border-t border-gray-100 dark:border-gray-800 py-16">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div class="md:col-span-2">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                        <i data-lucide="wrench" class="w-5 h-5"></i>
+                    </div>
+                    <span class="text-2xl font-black" id="footer-hub-name">SmartTools Hub</span>
+                </div>
+                <p class="text-gray-500 dark:text-gray-400 leading-relaxed max-w-sm mb-8" id="footer-about">
+                    The ultimate digital toolbox. We simplify everyday tasks for creators, developers, and learners worldwide with safe, open-access browser tools.
+                </p>
+                <div class="flex gap-4">
+                    <button class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-blue-600 hover:text-white transition-all">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-blue-600 hover:text-white transition-all">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-blue-600 hover:text-white transition-all">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="font-black text-xs uppercase tracking-[0.2em] text-gray-400 mb-8" id="footer-quick-links">Quick Discovery</h3>
+                <ul class="space-y-4 font-bold text-sm">
+                    <li><a href="index.html" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 transition-colors">Home</a></li>
+                    <li><a href="blog.html" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 transition-colors">Expert Blog</a></li>
+                    <li><a href="#tools-section" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 transition-colors">Utilities</a></li>
+                    <li><a href="#about-section" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 transition-colors">Privacy Shield</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="font-black text-xs uppercase tracking-[0.2em] text-gray-400 mb-8" id="footer-contact">Collaborate</h3>
+                <p class="text-gray-500 dark:text-gray-400 text-sm mb-6 font-medium" id="footer-contact-desc">
+                    Spot a bug or have a tool idea? We'd love to hear from you.
+                </p>
+                <a href="mailto:support@smarttoolshub.com" class="text-blue-600 font-extrabold hover:text-blue-700 underline decoration-2 underline-offset-4">support@smarttoolshub.com</a>
+
+                <h3 class="font-black text-xs uppercase tracking-[0.2em] text-gray-400 mt-10 mb-8">Legal & Privacy</h3>
+                <ul class="space-y-4 font-bold text-sm">
+                    <li><a href="privacy-policy.html" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 transition-colors">Privacy Policy</a></li>
+                    <li><a href="terms-of-service.html" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 transition-colors">Terms of Service</a></li>
+                    <li><a href="disclaimer.html" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 transition-colors">Disclaimer</a></li>
+                    <li><a href="contact-us.html" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 transition-colors">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-20 pt-10 border-t border-gray-100 dark:border-gray-800 text-center px-4">
+            <p class="text-gray-400 text-xs font-bold uppercase tracking-widest" id="footer-rights">
+                &copy; 2026 SmartTools Hub Engine. Registered Trademarks Apply.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Fullscreen Progressive Modal -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/60 z-[60] backdrop-blur-sm hidden animate-in fade-in duration-300"></div>
+    <div id="modal-container" class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] max-w-[1100px] bg-white dark:bg-gray-800 rounded-[2.5rem] shadow-2xl z-[70] overflow-hidden hidden flex flex-col h-fit max-h-[92vh] animate-in slide-in-from-bottom-5 fade-in duration-300 scale-95 transition-all">
+        
+        <!-- Modal Head: Sticky & High Contrast -->
+        <div class="flex items-center justify-between px-6 py-5 sm:px-10 sm:py-8 border-b border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 sticky top-0 z-10">
+            <div class="flex items-center gap-4">
+                <div id="modalIcon" class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 dark:bg-blue-900/10 text-blue-600 rounded-2xl flex items-center justify-center"></div>
+                <h1 class="text-xl sm:text-2xl font-black truncate max-w-[200px] sm:max-w-md text-gray-900 dark:text-white" id="modal-title">Tool Name</h1>
+            </div>
+            <button id="modal-close" class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 rounded-2xl transition-all">
+                <i data-lucide="x" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body Content -->
+        <div class="px-6 py-8 sm:px-10 sm:py-10 overflow-y-auto custom-scrollbar flex-grow bg-gray-50/30 dark:bg-gray-900/20">
+            <!-- Dynamic Content -->
+            <div id="tool-content" class="mb-12">
+                <!-- Injected via JS -->
+            </div>
+
+            <!-- Contextual Banner Inside Modal -->
+            <div class="mb-12 w-full h-32 bg-gray-50 dark:bg-gray-900/50 border border-dashed border-gray-200 dark:border-gray-700 rounded-3xl flex items-center justify-center text-gray-400 text-[10px] font-bold uppercase tracking-widest overflow-hidden">
+                <span class="p-6 text-center">Sponsor Content Area</span>
+            </div>
+
+            <!-- Educational / SEO Block -->
+            <div id="modal-seo" class="pt-10 border-t border-gray-100 dark:border-gray-700">
+                <article class="prose prose-sm dark:prose-invert max-w-none text-gray-500 dark:text-gray-400 text-sm leading-relaxed" id="tool-seo-text">
+                    <!-- Dynamic Text -->
+                </article>
+            </div>
+
+            <!-- Similar Selection Grid -->
+            <div id="modal-related" class="mt-16 pt-10 border-t border-gray-100 dark:border-gray-700">
+                <h3 class="text-xs font-black text-gray-400 uppercase tracking-[0.2em] mb-8" id="related-tools-header">Related Utilities</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5" id="related-grid">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 px-6 py-3 bg-gray-900 text-white rounded-2xl text-sm font-bold shadow-2xl z-[100] translate-y-20 opacity-0 transition-all duration-300">
+        Copied!
+    </div>
+
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+    <!-- Removed @imgly for local background removal -->
+
+    <!-- App Scripts -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>
