@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://smarttoolshub.com/sitemap.xml
+Sitemap: https://imagee-kappa.vercel.app/sitemap.xml
