@@ -935,10 +935,10 @@ function renderUI() {
     renderFullGrid();
     
     // Auto-update open tool content on currency/lang switch
-    if (state.activeTool) {
+    if (state.activeTool && state.activeTool.id) {
         injectToolFunctionalHTML(state.activeTool.id);
         
-        const tid = state.activeTool.id.replace('#', '').toLowerCase();
+        const tid = String(state.activeTool.id || '').replace('#', '').toLowerCase();
         const runMap = {
             'emi-calculator': 'runEMICalc',
             'sip-calculator': 'runSIPCalc',
@@ -962,18 +962,21 @@ function applyTheme() {
 }
 
 function updateText() {
-    const t = TRANSLATIONS[state.lang];
-    document.getElementById('nav-hub-name').innerText = t.nav.logo;
-    document.getElementById('nav-home').innerText = t.nav.home;
-    document.getElementById('nav-tools').innerText = t.nav.tools;
-    document.getElementById('nav-about').innerText = t.nav.about;
-    document.getElementById('hero-title').innerHTML = `${t.hero.title1}<span class="text-blue-600 dark:text-blue-400">${t.hero.title2}</span>`;
-    document.getElementById('hero-subtitle').innerText = t.hero.sub;
-    document.getElementById('tool-search').placeholder = t.ui.search;
-    document.getElementById('all-tools-header').innerText = t.ui.all;
-    document.getElementById('footer-hub-name').innerText = t.nav.logo;
-    document.getElementById('footer-rights').innerText = `© 2026 ${t.nav.logo}. ${t.ui.rights}`;
-    document.getElementById('quote-header').innerText = t.ui.quotesTitle;
+    const langObj = TRANSLATIONS[state.lang] || TRANSLATIONS['en'];
+    const t = langObj || TRANSLATIONS['en'];
+    const en = TRANSLATIONS['en'];
+
+    if (document.getElementById('nav-hub-name')) document.getElementById('nav-hub-name').innerText = t.nav?.logo || en.nav.logo;
+    if (document.getElementById('nav-home')) document.getElementById('nav-home').innerText = t.nav?.home || en.nav.home;
+    if (document.getElementById('nav-tools')) document.getElementById('nav-tools').innerText = t.nav?.tools || en.nav.tools;
+    if (document.getElementById('nav-about')) document.getElementById('nav-about').innerText = t.nav?.about || en.nav.about;
+    if (document.getElementById('hero-title')) document.getElementById('hero-title').innerHTML = `${t.hero?.title1 || en.hero.title1}<span class="text-blue-600 dark:text-blue-400">${t.hero?.title2 || en.hero.title2}</span>`;
+    if (document.getElementById('hero-subtitle')) document.getElementById('hero-subtitle').innerText = t.hero?.sub || en.hero.sub;
+    if (document.getElementById('tool-search')) document.getElementById('tool-search').placeholder = t.ui?.search || en.ui.search;
+    if (document.getElementById('all-tools-header')) document.getElementById('all-tools-header').innerText = t.ui?.all || en.ui.all;
+    if (document.getElementById('footer-hub-name')) document.getElementById('footer-hub-name').innerText = t.nav?.logo || en.nav.logo;
+    if (document.getElementById('footer-rights')) document.getElementById('footer-rights').innerText = `© 2026 ${t.nav?.logo || en.nav.logo}. ${t.ui?.rights || en.ui.rights}`;
+    if (document.getElementById('quote-header')) document.getElementById('quote-header').innerText = t.ui?.quotesTitle || en.ui.quotesTitle;
     
     // Update active quote logic (refill tracking if necessary)
     if (!state.currentQuote) {
@@ -985,10 +988,11 @@ function updateText() {
 function renderCategoryTabs() {
     const categories = ['All', 'Image', 'PDF', 'Finance', 'Text', 'Instagram', 'Utility'];
     const container = document.getElementById('category-tabs');
-    const t = TRANSLATIONS[state.lang].ui.categories;
+    const langObj = TRANSLATIONS[state.lang] || TRANSLATIONS['en'];
+    const tabs = langObj.ui?.categories || TRANSLATIONS['en'].ui.categories;
     container.innerHTML = categories.map(c => `
         <button onclick="setGlobalCategory('${c}')" class="px-8 py-3 rounded-full text-sm font-bold transition-all ${state.category === c ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:shadow-md'}">
-            ${t[c.toUpperCase()]}
+            ${tabs[c.toUpperCase()] || c}
         </button>
     `).join('');
 }
@@ -1002,16 +1006,19 @@ function renderToolShelves() {
     container.style.display = 'block';
     container.innerHTML = '';
 
+    const langObj = TRANSLATIONS[state.lang] || TRANSLATIONS['en'];
+    const uiTrans = langObj.ui || TRANSLATIONS['en'].ui;
+
     if (state.recent.length > 0) {
         const recentTools = state.recent.map(id => TOOLS.find(t => t.id === id)).filter(Boolean);
-        container.appendChild(createShelfMarkup(TRANSLATIONS[state.lang].ui.recent, recentTools));
+        container.appendChild(createShelfMarkup(uiTrans.recent || 'Recently Used', recentTools));
     }
 
     const popular = TOOLS.filter(t => ['emi-calculator', 'image-compressor', 'pdf-merger', 'password-generator'].includes(t.id));
-    container.appendChild(createShelfMarkup(TRANSLATIONS[state.lang].ui.popular, popular));
+    container.appendChild(createShelfMarkup(uiTrans.popular || 'Popular Tools', popular));
 
     const trending = TOOLS.filter(t => ['caption-generator', 'qr-code-generator', 'word-counter', 'notes-app'].includes(t.id));
-    container.appendChild(createShelfMarkup(TRANSLATIONS[state.lang].ui.trending, trending));
+    container.appendChild(createShelfMarkup(uiTrans.trending || 'Trending Tools', trending));
 
     lucide.createIcons();
 }
@@ -1031,11 +1038,14 @@ function createShelfMarkup(title, data) {
 function renderFullGrid() {
     const container = document.getElementById('tool-grid');
     const filtered = TOOLS.filter(t => {
-        const name = TRANSLATIONS[state.lang].tools[t.nameKey].toLowerCase();
-        const category = t.category;
-        const searchTerms = state.search.toLowerCase();
-        const hasTags = t.searchTags ? t.searchTags.toLowerCase().includes(searchTerms) : false;
-        const searchMatch = name.includes(searchTerms) || t.desc.toLowerCase().includes(searchTerms) || hasTags;
+        const langObj = TRANSLATIONS[state.lang] || TRANSLATIONS['en'];
+        const nameTrans = langObj.tools[t.nameKey] || TRANSLATIONS['en'].tools[t.nameKey] || t.nameKey;
+        const name = String(nameTrans || '').toLowerCase();
+        const category = String(t.category || '');
+        const searchTerms = String(state.search || '').toLowerCase();
+        const hasTags = t.searchTags ? String(t.searchTags).toLowerCase().includes(searchTerms) : false;
+        const descText = String(t.desc || '').toLowerCase();
+        const searchMatch = name.includes(searchTerms) || descText.includes(searchTerms) || hasTags;
         const categoryMatch = state.category === 'All' || category === state.category;
         return searchMatch && categoryMatch;
     });
@@ -1046,7 +1056,8 @@ function renderFullGrid() {
 }
 
 function createToolCard(t) {
-    const name = TRANSLATIONS[state.lang].tools[t.nameKey];
+    const langObj = TRANSLATIONS[state.lang] || TRANSLATIONS['en'];
+    const name = langObj.tools[t.nameKey] || TRANSLATIONS['en'].tools[t.nameKey] || t.nameKey;
     
     const seoRoutes = {
         'pdf-compressor': '/pdf-compressor-online',
@@ -7942,8 +7953,21 @@ function toast(msg) {
     }, 2500);
 }
 
+window.auditTools = function() {
+    if (window.location.hostname !== 'localhost' && !window.location.hostname.includes('ais-dev')) return;
+    console.warn('--- RUNNING DEV QA AUDIT ---');
+    TOOLS.forEach(t => {
+        if (!t.id) console.error('Missing id on tool:', t);
+        if (!t.nameKey) console.error('Missing nameKey on tool:', t.id);
+        if (!t.category) console.error('Missing category on tool:', t.id);
+        if (!t.desc) console.error('Missing desc on tool:', t.id);
+    });
+    console.warn('--- QA AUDIT COMPLETE ---');
+};
+
 // --- BOOT ENGINE ---
 function boot() {
+    window.auditTools();
     StabilityEngine.init(); // Start regression testing and error monitoring
 
     const langSelect = document.getElementById('lang-select');
@@ -7978,9 +8002,11 @@ function boot() {
     // Direct routing handler
     const handleRoute = () => {
         if (window.__PRELOADED_TOOL__) {
+            const preloaded = window.__PRELOADED_TOOL__;
+            window.__PRELOADED_TOOL__ = null;
             setTimeout(() => {
-                const tool = TOOLS.find(t => t.id === window.__PRELOADED_TOOL__);
-                if (tool) openToolModal(window.__PRELOADED_TOOL__);
+                const tool = TOOLS.find(t => t.id === preloaded);
+                if (tool) openToolModal(preloaded);
             }, 100);
             return;
         }
@@ -8022,7 +8048,7 @@ const runFunctionMap = {
 };
 
 window.scheduleToolCalculation = (toolId) => {
-    const tid = toolId.replace('#', '').toLowerCase();
+    const tid = String(toolId || '').replace('#', '').toLowerCase();
     const fnName = runFunctionMap[tid];
     if (fnName && typeof window[fnName] === 'function') {
         window[fnName](); // It will be intercepted by our debounce wrapper
