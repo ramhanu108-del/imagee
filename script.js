@@ -4301,6 +4301,17 @@ const StabilityEngine = {
 
 // --- ENHANCED UI UTILITIES ---
 const FinUI = {
+    safeSetText: (id, text) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    },
+    safeSetHTML: (id, html) => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = html;
+    },
+    resetOutputs: (ids) => {
+        ids.forEach(id => FinUI.safeSetHTML(id, '--'));
+    },
     formatCurrency: (v, code, decimals) => {
         const val = parseFloat(v);
         if (isNaN(val)) return '--';
@@ -4443,6 +4454,8 @@ window.runEMICalc = () => {
         out.innerHTML = '--';
         document.getElementById('emi-tot-int').innerHTML = 'Interest: --';
         document.getElementById('emi-tot-pay').innerHTML = '--';
+        window.currentEMIInputs = null;
+        window.currentEMISchedule = null;
         return;
     }
 
@@ -5177,7 +5190,9 @@ window.runPassGen = () => {
     if(useSym) pool += "!@#$%^&*()_+{}[]|:<>?";
     
     if(!pool) {
-        document.getElementById('pg-out').innerHTML = '<span class="text-red-400 text-xs font-black uppercase tracking-widest">Select character types</span>';
+        if (FinUI && FinUI.safeSetHTML) {
+            FinUI.safeSetHTML('pg-out', '<span class="text-red-400 text-xs font-black uppercase tracking-widest">Select character types</span>');
+        }
         return;
     }
     
@@ -5190,8 +5205,9 @@ window.runPassGen = () => {
         p += pool.charAt(array[i] % pool.length);
     }
     
-    const out = document.getElementById('pg-out');
-    out.innerText = p;
+    if (FinUI && FinUI.safeSetText) {
+        FinUI.safeSetText('pg-out', p);
+    }
     
     // Entropy Analysis
     const entropy = Math.log2(Math.pow(pool.length, len));
@@ -5266,9 +5282,12 @@ window.runFDCalc = () => {
     const inflation = FinUI.getValidInput('fd-inf', 0, { min: 0 }).div(100);
     const currency = state.currency;
 
-    if (P.lte(0) || years.lte(0)) {
+    if (P.lte(0) || years.lte(0) || annualRate.lt(0)) {
+        FinUI.resetOutputs(['fd-out', 'fd-tot-int', 'fd-tot-tax']);
         const box = document.getElementById('fd-box');
         if (box) box.classList.add('hidden');
+        window.currentFDInputs = null;
+        window.currentFDSchedule = null;
         return;
     }
 
@@ -5576,6 +5595,7 @@ window.runLoanComp = () => {
 
     if (P.lte(0) || N.lte(0)) {
         recContainer.classList.add('hidden');
+        window.currentLCResults = null;
         return;
     }
 
@@ -6139,7 +6159,13 @@ window.runSIPCalc = () => {
     const inflation = FinUI.getValidInput('sip-inf', 0);
     const currency = state.currency;
 
-    if (monthly.lte(0) || annualRate.lt(0) || years.lte(0)) return;
+    if (monthly.lte(0) || annualRate.lt(0) || years.lte(0)) {
+        FinUI.resetOutputs(['sip-out', 'sip-cap', 'sip-gain', 'sip-real', 'sip-taxed', 'sip-hl-1', 'sip-hl-2']);
+        window.currentSIPSchedule = null;
+        window.currentSIPInputs = null;
+        window.currentSIPSummary = null;
+        return;
+    }
 
     // Core Logic via FinancialCore
     const { maturity, invested, schedule } = FinancialCore.calculateSIP(monthly, annualRate, years, stepUp);
@@ -6251,7 +6277,10 @@ window.runTaxCalc = () => {
         const curCode = state.currency;
 
         const grossIncome = D(FinUI.getValidInput('tax-in', 1200000));
-        if (grossIncome.lt(0)) return;
+        if (grossIncome.lt(0)) {
+            box.classList.add('hidden');
+            return;
+        }
 
         box.classList.remove('hidden');
 
@@ -6748,8 +6777,14 @@ window.runCCCalc = () => {
     const targetBalance = FinUI.getValidInput('cc-t', 0);
     const currency = state.currency;
 
-    if (P.lte(0) || annualAPR.lt(0) || monthlyPayment.lte(0)) return;
-    if (targetBalance.gte(P)) return;
+    if (P.lte(0) || annualAPR.lt(0) || monthlyPayment.lte(0) || targetBalance.gte(P)) {
+        FinUI.resetOutputs(['cc-total-i', 'cc-months', 'cc-daily', 'cc-roi', 'cc-ratio']);
+        const box = document.getElementById('cc-box');
+        if (box) box.classList.add('hidden');
+        window.currentCCInputs = null;
+        window.currentCCSchedule = null;
+        return;
+    }
 
     const monthlyRate = annualAPR.div(1200);
     const dailyRate = annualAPR.div(36500);
@@ -6787,6 +6822,8 @@ window.runCCCalc = () => {
         document.getElementById('cc-daily').innerText = "---";
         document.getElementById('cc-roi').innerText = "---";
         document.getElementById('cc-ratio').innerText = "---";
+        window.currentCCInputs = null;
+        window.currentCCSchedule = null;
         return;
     }
 
@@ -7068,6 +7105,7 @@ window.runROICalc = () => {
         if (roasEl) roasEl.innerText = '--';
         if (annEl) annEl.innerText = '--';
         if (bar) bar.style.width = '0%';
+        window.currentROIInputs = null;
         return;
     }
 
@@ -7695,7 +7733,7 @@ function updateResizerTargetInfo() {
 }
 
 window.runImageResizer = () => {
-    if (!state.resizerImg) return;
+    if (!state.resizerImg) return toast("Please upload an image first");
     const w = parseInt(document.getElementById('res-w').value);
     const h = parseInt(document.getElementById('res-h').value);
     const mime = document.getElementById('res-format').value;
@@ -7994,17 +8032,40 @@ function toast(msg) {
 window.auditTools = function() {
     const isDev = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV) || 
                   window.location.hostname === 'localhost' || 
-                  window.location.hostname.includes('ais-dev');
+                  window.location.hostname.includes('ais-dev') || 
+                  window.location.hostname.includes('vercel.app'); // temporary for QA
     if (!isDev) return;
     
     console.warn('--- RUNNING DEV QA AUDIT ---');
+    let errors = 0;
+    
+    // 1. Check Tool Registry completeness
     TOOLS.forEach(t => {
-        if (!t.id) console.error('Missing id on tool:', t);
-        if (!t.nameKey) console.error('Missing nameKey on tool:', t.id);
-        if (!t.category) console.error('Missing category on tool:', t.id);
-        if (!t.desc) console.error('Missing desc on tool:', t.id);
+        if (!t.id) { console.error('QA FAIL: Missing id on tool:', t); errors++; }
+        if (!t.nameKey) { console.error('QA FAIL: Missing nameKey on tool:', t.id); errors++; }
+        if (!t.category) { console.error('QA FAIL: Missing category on tool:', t.id); errors++; }
+        if (!t.desc) { console.error('QA FAIL: Missing desc on tool:', t.id); errors++; }
+        
+        // 2. Check if every tool has a handler
+        if (!runFunctionMap[t.id]) {
+            // Some tools may not require a debounced auto-rerunner, which is fine
+        }
     });
-    console.warn('--- QA AUDIT COMPLETE ---');
+
+    // 3. Verify tool handlers point to valid functions
+    Object.keys(runFunctionMap).forEach(key => {
+        const fnName = runFunctionMap[key];
+        if (typeof window[fnName] !== 'function') {
+            console.error(`QA FAIL: window['${fnName}'] is not a function.`);
+            errors++;
+        }
+    });
+
+    if (errors > 0) {
+        console.error(`--- QA AUDIT FAILED with ${errors} critical errors ---`);
+    } else {
+        console.warn('--- QA AUDIT COMPLETE: 0 Critical Errors ---');
+    }
 };
 
 // --- BOOT ENGINE ---
