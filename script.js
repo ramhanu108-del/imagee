@@ -3354,12 +3354,12 @@ function injectToolFunctionalHTML(id) {
                                 </div>
                             </div>
                             
-                            <div class="tool-result flex flex-col items-center justify-center py-12 bg-blue-600 text-white rounded-[3rem] shadow-2xl shadow-blue-600/30 overflow-hidden relative group unit-converter-card">
-                                <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                                <span class="text-[10px] font-black uppercase tracking-[0.4em] mb-4 text-blue-100 opacity-90">Standard Metric Result</span>
+                            <div class="tool-result flex flex-col items-center justify-center py-12 bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-800/40 rounded-[3rem] shadow-xl overflow-hidden relative group unit-converter-card">
+                                <div class="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                                <span class="text-[10px] text-blue-700 dark:text-blue-200 font-bold tracking-[0.25em] uppercase mb-4">Standard Metric Result</span>
                                 <div class="flex flex-col items-center gap-1 w-full px-4">
-                                    <div class="unit-converter-result-value font-black tracking-tighter" id="uc-out">0.00</div>
-                                    <div id="uc-unit-name" class="text-xs font-black uppercase tracking-[0.2em] text-blue-100 opacity-80 mt-2">---</div>
+                                    <div class="unit-converter-result-value text-slate-900 dark:text-white font-black tracking-tighter" id="uc-out">0.00</div>
+                                    <div id="uc-unit-name" class="text-xs text-blue-800 dark:text-blue-100 font-bold uppercase tracking-[0.2em] mt-2">---</div>
                                 </div>
                             </div>
                         </div>
