@@ -4424,6 +4424,7 @@ window.runEMICalc = () => {
     const annualRate = new Decimal(inputRate || 0); 
     const tenureVal = FinUI.getValidInput('emi-n', 15);
     const tenureUnit = document.getElementById('emi-tenure-unit')?.value || 'years';
+    const tenureYears = tenureUnit === 'years' ? tenureVal.toNumber() : tenureVal.div(12).toNumber();
     const feeRate = FinUI.getValidInput('emi-fee', 0).div(100);
     
     const extraMonthly = FinUI.getValidInput('emi-prep-m', 0);
@@ -4439,7 +4440,9 @@ window.runEMICalc = () => {
     if (!box) return;
 
     if (P.lte(0) || annualRate.lt(0) || tenureVal.lte(0)) {
-        if (!box.classList.contains('hidden')) out.innerText = 'Error';
+        out.innerHTML = '--';
+        document.getElementById('emi-tot-int').innerHTML = 'Interest: --';
+        document.getElementById('emi-tot-pay').innerHTML = '--';
         return;
     }
 
