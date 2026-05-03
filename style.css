@@ -50,10 +50,13 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.15em;
+}
+
+.fin-label:not([class*="text-"]) {
   color: #64748b;
 }
 
-.dark .fin-label {
+.dark .fin-label:not([class*="text-"]) {
   color: #94a3b8;
 }
 

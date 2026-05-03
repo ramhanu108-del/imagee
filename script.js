@@ -1841,7 +1841,7 @@ function injectToolFunctionalHTML(id) {
                                 <div class="fin-value text-blue-600" id="emi-out">--</div>
                                 <div class="mt-4 flex items-center gap-2">
                                     <div class="w-1.5 h-1.5 rounded-full bg-blue-600" id="emi-burden-dot"></div>
-                                    <span class="text-[10px] font-black opacity-50 uppercase tracking-widest" id="emi-burden-label">Interest: 0%</span>
+                                    <span class="text-[10px] font-black opacity-80 text-blue-600 dark:text-blue-400 uppercase tracking-widest" id="emi-burden-label">Interest: 0%</span>
                                 </div>
                             </div>
 
@@ -2249,15 +2249,15 @@ function injectToolFunctionalHTML(id) {
                     <div class="fin-result-panel">
                         <div class="fin-card bg-gray-900 text-white border-none min-h-[240px] flex flex-col justify-between overflow-hidden relative">
                             <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-600/20 blur-3xl rounded-full"></div>
-                            <span class="fin-label opacity-60 relative z-10">Wealth at Maturity</span>
+                            <span class="fin-label text-slate-300 opacity-90 relative z-10">Wealth at Maturity</span>
                             <div id="sip-out" class="fin-value text-blue-400 relative z-10">0</div>
                             <div class="grid grid-cols-2 gap-6 pt-6 border-t border-white/10 mt-6 relative z-10">
                                 <div>
-                                    <p class="fin-label opacity-40 mb-1">Invested</p>
+                                    <p class="fin-label text-slate-300 opacity-80 mb-1">Invested</p>
                                     <span id="sip-cap" class="text-lg font-black tracking-tight">0</span>
                                 </div>
                                 <div>
-                                    <p class="fin-label opacity-40 mb-1">Gains</p>
+                                    <p class="fin-label text-slate-300 opacity-80 mb-1">Gains</p>
                                     <span id="sip-gain" class="text-lg font-black text-green-400 tracking-tight">0</span>
                                 </div>
                             </div>
@@ -2351,7 +2351,7 @@ function injectToolFunctionalHTML(id) {
                         <div class="fin-card border-l-4 border-l-red-500 bg-red-50/10 dark:bg-red-900/5">
                             <span class="fin-label text-red-600">Total Tax Liability</span>
                             <div id="tax-out" class="fin-value text-red-600">--</div>
-                            <div class="mt-4 fin-label opacity-50" id="tax-rate">Effective Rate: 0%</div>
+                            <div class="mt-4 fin-label opacity-80" id="tax-rate">Effective Rate: 0%</div>
                         </div>
 
                         <div class="fin-card border-l-4 border-l-green-500 bg-green-50/10 dark:bg-green-900/5">
@@ -2528,7 +2528,7 @@ function injectToolFunctionalHTML(id) {
                     </div>
                     <div class="p-10 bg-gray-900 text-white rounded-[2.5rem] text-center shadow-2xl relative overflow-hidden">
                         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
-                        <span class="text-[10px] font-black text-gray-500 uppercase tracking-[0.4em] mb-4 block">Estimated Market Quote</span>
+                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-4 block">Estimated Market Quote</span>
                         <div class="text-6xl font-black mb-2" id="web-total">---</div>
                         <p class="text-[10px] font-black text-blue-400 uppercase tracking-widest">Pricing model: Global Flat-Rate Basis</p>
                     </div>
@@ -2647,11 +2647,11 @@ function injectToolFunctionalHTML(id) {
                             </div>
                             <div class="grid grid-cols-2 gap-4 pt-6 border-t border-white/5 relative z-10">
                                  <div class="text-center border-r border-white/5">
-                                    <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest block mb-1">Tokens Received</span>
+                                    <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">Tokens Received</span>
                                     <span id="cry-tokens" class="text-sm font-bold">---</span>
                                  </div>
                                  <div class="text-center">
-                                    <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest block mb-1">Total Balance</span>
+                                    <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">Total Balance</span>
                                     <span id="cry-bal" class="text-sm font-bold">---</span>
                                  </div>
                             </div>
@@ -2757,19 +2757,19 @@ function injectToolFunctionalHTML(id) {
 
                         <div class="grid grid-cols-3 gap-4">
                             <div class="fin-card group hover:shadow-lg transition-all">
-                                <span class="fin-label opacity-60">Net Profit</span>
+                                <span class="fin-label">Net Profit</span>
                                 <div id="roi-p" class="text-lg font-black mt-1">--</div>
                             </div>
                             <div class="fin-card group hover:shadow-lg transition-all">
                                 <div class="flex items-center justify-between mb-1">
-                                    <span class="fin-label opacity-60">ROAS</span>
+                                    <span class="fin-label">ROAS</span>
                                     <div class="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-[8px] font-bold group-hover:bg-indigo-600 group-hover:text-white transition-colors" title="Revenue divided by spend">?</div>
                                 </div>
                                 <div id="roi-a" class="text-lg font-black mt-1">--</div>
                             </div>
                             <div class="fin-card group hover:shadow-lg transition-all">
                                 <div class="flex items-center justify-between mb-1">
-                                    <span class="fin-label opacity-60">Annualized</span>
+                                    <span class="fin-label">Annualized</span>
                                     <div class="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-[8px] font-bold group-hover:bg-indigo-600 group-hover:text-white transition-colors" title="ROI adjusted to 365-day period">?</div>
                                 </div>
                                 <div id="roi-ann" class="text-lg font-black mt-1">--</div>
@@ -2862,15 +2862,15 @@ function injectToolFunctionalHTML(id) {
                     <div class="fin-result-panel">
                         <div class="fin-card bg-gray-900 text-white border-none min-h-[220px] flex flex-col justify-between overflow-hidden relative">
                             <div class="absolute -right-10 -top-10 w-40 h-40 bg-emerald-600/20 blur-3xl rounded-full"></div>
-                            <span class="fin-label opacity-60 relative z-10">Maturity Value (Net)</span>
+                            <span class="fin-label text-slate-300 opacity-90 relative z-10">Maturity Value (Net)</span>
                             <div id="fd-out" class="fin-value text-emerald-400 relative z-10">0</div>
                             <div class="grid grid-cols-2 gap-6 pt-6 border-t border-white/10 mt-6 relative z-10">
                                 <div>
-                                    <p class="fin-label opacity-40 mb-1">Interest Earned</p>
+                                    <p class="fin-label text-slate-300 opacity-80 mb-1">Interest Earned</p>
                                     <span id="fd-tot-int" class="text-lg font-black text-emerald-400 tracking-tight">0</span>
                                 </div>
                                 <div>
-                                    <p class="fin-label opacity-40 mb-1" id="fd-extra-label">Tax & Infl. Loss</p>
+                                    <p class="fin-label text-slate-300 opacity-80 mb-1" id="fd-extra-label">Tax & Infl. Loss</p>
                                     <span id="fd-tot-tax" class="text-lg font-black text-red-400 tracking-tight">0</span>
                                 </div>
                             </div>
@@ -3356,10 +3356,10 @@ function injectToolFunctionalHTML(id) {
                             
                             <div class="tool-result flex flex-col items-center justify-center py-12 bg-blue-600 text-white rounded-[3rem] shadow-2xl shadow-blue-600/30 overflow-hidden relative group unit-converter-card">
                                 <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                                <span class="text-[10px] font-black uppercase tracking-[0.4em] mb-4 opacity-60">Standard Metric Result</span>
+                                <span class="text-[10px] font-black uppercase tracking-[0.4em] mb-4 text-blue-100 opacity-90">Standard Metric Result</span>
                                 <div class="flex flex-col items-center gap-1 w-full px-4">
                                     <div class="unit-converter-result-value font-black tracking-tighter" id="uc-out">0.00</div>
-                                    <div id="uc-unit-name" class="text-xs font-black uppercase tracking-[0.2em] opacity-40 mt-2">---</div>
+                                    <div id="uc-unit-name" class="text-xs font-black uppercase tracking-[0.2em] text-blue-100 opacity-80 mt-2">---</div>
                                 </div>
                             </div>
                         </div>
@@ -3744,7 +3744,7 @@ function injectToolFunctionalHTML(id) {
                         <button onclick="runUrlAction('slug')" class="p-4 bg-blue-50 dark:bg-blue-900/40 text-blue-600 rounded-2xl font-bold text-[10px] uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all">Slugify</button>
                     </div>
                     <div id="url-box" class="hidden p-6 bg-blue-600 text-white rounded-[2.5rem] shadow-xl relative group animate-fade-in">
-                        <span class="text-[8px] font-black uppercase tracking-widest opacity-60 mb-2 block">Sanitized Output</span>
+                        <span class="text-[8px] font-black uppercase tracking-widest text-blue-100 opacity-90 mb-2 block">Sanitized Output</span>
                         <div id="url-out" class="font-mono text-sm break-all font-bold"></div>
                         <button onclick="copyToolVal('url-out')" class="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all"><i data-lucide="copy" class="w-3 h-3"></i></button>
                     </div>
