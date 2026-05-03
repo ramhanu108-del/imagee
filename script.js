@@ -8032,8 +8032,7 @@ function toast(msg) {
 window.auditTools = function() {
     const isDev = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV) || 
                   window.location.hostname === 'localhost' || 
-                  window.location.hostname.includes('ais-dev') || 
-                  window.location.hostname.includes('vercel.app'); // temporary for QA
+                  window.location.hostname.includes('ais-dev');
     if (!isDev) return;
     
     console.warn('--- RUNNING DEV QA AUDIT ---');
