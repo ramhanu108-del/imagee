@@ -44,10 +44,10 @@ processedTools.forEach(tool => {
   let html = indexHtml;
   html = html.replace(/<title>.*?<\/title>/, `<title>${tool.title} | SmartTools Hub</title>`);
   html = html.replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${tool.desc}">`);
-  html = html.replace(/<link rel="canonical" href="[^"]*">/, `<link rel="canonical" href="https://imagee-kappa.vercel.app/${tool.path}">`);
+  html = html.replace(/<link rel="canonical" href="[^"]*">/, `<link rel="canonical" href="https://www.smarttoolshub.cc/${tool.path}">`);
   html = html.replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${tool.title}">`);
   html = html.replace(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${tool.desc}">`);
-  html = html.replace(/<meta property="og:url" content="[^"]*">/, `<meta property="og:url" content="https://imagee-kappa.vercel.app/${tool.path}">`);
+  html = html.replace(/<meta property="og:url" content="[^"]*">/, `<meta property="og:url" content="https://www.smarttoolshub.cc/${tool.path}">`);
   
   const schema = {
     "@context": "https://schema.org",
@@ -123,7 +123,7 @@ processedTools.forEach(tool => {
 const sitemapUrls = processedTools.map(tool => {
     return `
   <url>
-    <loc>https://imagee-kappa.vercel.app/${tool.path}</loc>
+    <loc>https://www.smarttoolshub.cc/${tool.path}</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
   </url>`;
@@ -139,7 +139,7 @@ const staticPages = [
 
 const staticSitemapUrls = staticPages.map(page => `
   <url>
-    <loc>https://imagee-kappa.vercel.app/${page.path}</loc>
+    <loc>https://www.smarttoolshub.cc/${page.path}</loc>
     <priority>${page.path === '' ? '1.0' : '0.5'}</priority>
     <changefreq>${page.path === '' ? 'weekly' : 'yearly'}</changefreq>
   </url>`).join('');
