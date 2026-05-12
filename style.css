@@ -482,6 +482,20 @@ canvas {
     }
 }
 
+/* Quote Transition Engine */
+#quote-text,
+#quote-author,
+#quote-chips {
+  transition: opacity 420ms ease, transform 420ms ease;
+}
+
+.quote-changing #quote-text,
+.quote-changing #quote-author,
+.quote-changing #quote-chips {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
 /* Tool Specific Polish */
 .loan-remove-btn,
 [data-remove-loan] {

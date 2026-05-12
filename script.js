@@ -668,49 +668,21 @@ function stopQuoteRotation() {
 }
 
 window.refreshQuote = () => {
-    const container = document.getElementById('quote-content');
+    const container = document.getElementById('quote-container');
     if (container) {
-        container.classList.add('opacity-0', 'scale-95');
+        if (container.classList.contains('quote-changing')) return;
+        container.classList.add('quote-changing');
         setTimeout(() => {
             state.currentQuote = getNextRandomQuote();
             updateQuoteUIOnly();
-            container.classList.remove('opacity-0', 'scale-95');
-            container.classList.add('opacity-100', 'scale-100');
-        }, 500);
+            container.classList.remove('quote-changing');
+        }, 420);
     } else {
         state.currentQuote = getNextRandomQuote();
         updateQuoteUIOnly();
     }
 };
 
-function updateQuoteUIOnly() {
-    const q = state.currentQuote;
-    if (!q) return;
-    
-    const textEl = document.getElementById('quote-text');
-    const authorEl = document.getElementById('quote-author');
-    
-    if (textEl) textEl.innerText = `"${q.text}"`;
-    if (authorEl) authorEl.innerText = `— ${q.author || 'Unknown'}`;
-    
-    const chipsContainer = document.getElementById('quote-chips');
-    if (chipsContainer) {
-        let chipsHTML = '';
-        if (q.tradition) {
-            chipsHTML += `<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.tradition}</span>`;
-        }
-        if (q.era) {
-            chipsHTML += `<span class="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.era}</span>`;
-        }
-        if (q.region) {
-            chipsHTML += `<span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.region}</span>`;
-        }
-        if (q.category) {
-            chipsHTML += `<span class="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.category}</span>`;
-        }
-        chipsContainer.innerHTML = chipsHTML;
-    }
-}
 
 // Visibility management for rotation
 document.addEventListener('visibilitychange', () => {
@@ -983,9 +955,51 @@ function updateText() {
     if (!state.currentQuote) {
         state.currentQuote = getNextRandomQuote();
     }
-    updateQuoteUIOnly();
+    
+    const q = state.currentQuote;
+    if (q) {
+        const textEl = document.getElementById('quote-text');
+        const authorEl = document.getElementById('quote-author');
+        if (textEl) textEl.innerText = `"${q.text}"`;
+        if (authorEl) authorEl.innerText = `— ${q.author || 'Unknown'}`;
+        updateQuoteChipsOnly();
+    }
 }
 
+function updateQuoteChipsOnly() {
+    const q = state.currentQuote;
+    if (!q) return;
+    const chipsContainer = document.getElementById('quote-chips');
+    if (chipsContainer) {
+        let chipsHTML = '';
+        if (q.tradition) {
+            chipsHTML += `<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.tradition}</span>`;
+        }
+        if (q.era) {
+            chipsHTML += `<span class="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.era}</span>`;
+        }
+        if (q.region) {
+            chipsHTML += `<span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.region}</span>`;
+        }
+        if (q.category) {
+            chipsHTML += `<span class="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-[8px] font-black uppercase tracking-widest rounded-full">${q.category}</span>`;
+        }
+        chipsContainer.innerHTML = chipsHTML;
+    }
+}
+
+function updateQuoteUIOnly() {
+    const q = state.currentQuote;
+    if (!q) return;
+    
+    const textEl = document.getElementById('quote-text');
+    const authorEl = document.getElementById('quote-author');
+    
+    if (textEl) textEl.innerText = `"${q.text}"`;
+    if (authorEl) authorEl.innerText = `— ${q.author || 'Unknown'}`;
+    
+    updateQuoteChipsOnly();
+}
 function renderCategoryTabs() {
     const categories = ['All', 'Image', 'PDF', 'Finance', 'Text', 'Instagram', 'Utility'];
     const container = document.getElementById('category-tabs');
