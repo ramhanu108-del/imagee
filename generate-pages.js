@@ -120,10 +120,12 @@ processedTools.forEach(tool => {
 });
 
 // Generate Sitemap
+const today = new Date().toISOString().split('T')[0];
 const sitemapUrls = processedTools.map(tool => {
     return `
   <url>
     <loc>https://www.smarttoolshub.cc/${tool.path}</loc>
+    <lastmod>${today}</lastmod>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
   </url>`;
@@ -140,6 +142,7 @@ const staticPages = [
 const staticSitemapUrls = staticPages.map(page => `
   <url>
     <loc>https://www.smarttoolshub.cc/${page.path}</loc>
+    <lastmod>${today}</lastmod>
     <priority>${page.path === '' ? '1.0' : '0.5'}</priority>
     <changefreq>${page.path === '' ? 'weekly' : 'yearly'}</changefreq>
   </url>`).join('');

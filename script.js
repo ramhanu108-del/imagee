@@ -951,19 +951,7 @@ function updateText() {
     if (document.getElementById('footer-rights')) document.getElementById('footer-rights').innerText = `© 2026 ${t.nav?.logo || en.nav.logo}. ${t.ui?.rights || en.ui.rights}`;
     if (document.getElementById('quote-header')) document.getElementById('quote-header').innerText = t.ui?.quotesTitle || en.ui.quotesTitle;
     
-    // Update active quote logic (refill tracking if necessary)
-    if (!state.currentQuote) {
-        state.currentQuote = getNextRandomQuote();
-    }
-    
-    const q = state.currentQuote;
-    if (q) {
-        const textEl = document.getElementById('quote-text');
-        const authorEl = document.getElementById('quote-author');
-        if (textEl) textEl.innerText = `"${q.text}"`;
-        if (authorEl) authorEl.innerText = `— ${q.author || 'Unknown'}`;
-        updateQuoteChipsOnly();
-    }
+    updateQuoteUIOnly();
 }
 
 function updateQuoteChipsOnly() {
@@ -989,8 +977,20 @@ function updateQuoteChipsOnly() {
 }
 
 function updateQuoteUIOnly() {
-    const q = state.currentQuote;
+    const quoteId = QuoteCycleState.currentQuoteId;
+    if (!quoteId) return;
+
+    const library = typeof QUOTES_LIBRARY !== 'undefined' ? QUOTES_LIBRARY : {};
+    const langQuotes = library[state.lang] || library['en'] || [];
+    let q = langQuotes.find(item => item.id === quoteId);
+    
+    if (!q) {
+        const fallbacks = library['en'] || [];
+        q = fallbacks.find(item => item.id === quoteId);
+    }
+
     if (!q) return;
+    state.currentQuote = q; // Sync state
     
     const textEl = document.getElementById('quote-text');
     const authorEl = document.getElementById('quote-author');
