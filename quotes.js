@@ -61,13 +61,13 @@ const RAW_PHILOSOPHER_QUOTES = [
         category: "Mind",
         region: "India",
         translations: {
-            en: "What you think, you become.",
-            hi: "जैसा आप सोचते हैं, वैसे ही आप बन जाते हैं।",
-            es: "Lo que piensas, lo serás.",
-            fr: "Ce que tu penses, tu le deviens.",
-            de: "Was du denkst, das wirst du.",
-            pt: "O que você pensa, você se torna.",
-            ja: "あなたが考えたことが、あなたになる。"
+            en: "All that we are is the result of what we have thought.",
+            hi: "हम जो कुछ भी हैं, वह हमारे विचारों का ही परिणाम है।",
+            es: "Todo lo que somos es el resultado de lo que hemos pensado.",
+            fr: "Tout ce que nous sommes est le résultat de ce que nous avons pensé.",
+            de: "Alles, was wir sind, ist das Ergebnis dessen, was wir gedacht haben.",
+            pt: "Tudo o que somos é o resultado do que pensamos.",
+            ja: "我々のすべては、我々が考えたことの結果である。"
         }
     },
     {
@@ -112,13 +112,13 @@ const RAW_PHILOSOPHER_QUOTES = [
         category: "Compassion",
         region: "India",
         translations: {
-            en: "Live and let live.",
-            hi: "जियो और जीने दो।",
-            es: "Vive y deja vivir.",
-            fr: "Vive et laisse vivre.",
-            de: "Leben und leben lassen.",
-            pt: "Viva e deixe viver.",
-            ja: "生きなさい、そして他を生かしなさい。"
+            en: "Non-violence is the highest duty.",
+            hi: "अहिंसा परमो धर्मः।",
+            es: "La no violencia es el deber supremo.",
+            fr: "La non-violence est le devoir suprême.",
+            de: "Gewaltlosigkeit ist die höchste Pflicht.",
+            pt: "A não violência é o dever supremo.",
+            ja: "非暴力は最高の義務である。"
         }
     },
     {
@@ -497,19 +497,19 @@ const RAW_PHILOSOPHER_QUOTES = [
     },
     {
         id: "phil_in_030",
-        author: "Buddha",
+        author: "Gautama Buddha",
         era: "Ancient",
         tradition: "Buddhism",
         category: "Peace",
         region: "India",
         translations: {
-            en: "Peace comes from within.",
-            hi: "शांति भीतर से आती है।",
-            es: "La paz viene del interior.",
-            fr: "La paix vient de l'intérieur.",
-            de: "Frieden kommt von innen.",
-            pt: "A paz vem de dentro.",
-            ja: "平和は内から来る。"
+            en: "Better than a thousand hollow words, is one word that brings peace.",
+            hi: "हजारों खोखले शब्दों से बेहतर वह एक शब्द है जो शांति लाता है।",
+            es: "Mejor que mil palabras huecas, es una palabra que trae paz.",
+            fr: "Mieux vaut un seul mot qui apporte la paix que mille mots vides.",
+            de: "Besser als tausend hohle Worte ist ein einziges Wort, das Frieden bringt.",
+            pt: "Melhor do que mil palavras vazias, é uma palavra que traz paz.",
+            ja: "千の空虚な言葉よりも、平安をもたらす一言のほうが優れている。"
         }
     },
     {
@@ -786,19 +786,19 @@ const RAW_PHILOSOPHER_QUOTES = [
     },
     {
         id: "phil_in_047",
-        author: "Buddha",
+        author: "Gautama Buddha",
         era: "Ancient",
         tradition: "Buddhism",
         category: "Suffering",
         region: "India",
         translations: {
-            en: "Pain is certain, suffering is optional.",
-            hi: "दर्द निश्चित है, दुख वैकल्पिक है।",
-            es: "El dolor es seguro, el sufrimiento es opcional.",
-            fr: "La douleur est certaine, la souffrance est optionnelle.",
-            de: "Schmerz ist unvermeidlich, Leiden ist freiwillig.",
-            pt: "A dor é certa, o sofrimento é opcional.",
-            ja: "痛みは避けられないが、苦しみは自分次第である。"
+            en: "The root of suffering is attachment.",
+            hi: "दुख की जड़ मोह (आसक्ति) है।",
+            es: "La raíz del sufrimiento es el apego.",
+            fr: "La racine de la souffrance est l'attachement.",
+            de: "Die Wurzel des Leidens ist die Verhaftung.",
+            pt: "A raiz do sofrimento é o apego.",
+            ja: "苦しみの根源は執着である。"
         }
     },
     {
@@ -856,17 +856,17 @@ const RAW_PHILOSOPHER_QUOTES = [
         id: "phil_we_011",
         author: "Arthur Schopenhauer",
         era: "19th Century",
-        tradition: "Western Philosophy",
-        category: "Will",
+        tradition: "Pessimism",
+        category: "Wealth",
         region: "Germany",
         translations: {
-            en: "Happiness consists in the frequent repetition of pleasure.",
-            hi: "सृष्टि की इच्छा ही समस्त दुख की जड़ है।",
-            es: "La felicidad consiste en la frecuente repetición del placer.",
-            fr: "Le bonheur consiste en la répétition fréquente du plaisir.",
-            de: "Das Glück besteht in der häufigen Wiederholung des Vergnügens.",
-            pt: "A felicidade consiste na repetição frequente do prazer.",
-            ja: "幸福とは、快楽を頻繁に繰り返すことにある。"
+            en: "Wealth is like sea-water; the more we drink, the thirstier we become.",
+            hi: "धन समुद्र के पानी की तरह है; जितना अधिक हम पीते हैं, उतने ही प्यासे होते जाते हैं।",
+            es: "La riqueza es como el agua de mar; cuanto más bebemos, más sedientos nos volvemos.",
+            fr: "La richesse est comme l'eau de mer ; plus on en boit, plus on a soif.",
+            de: "Der Reichtum gleicht dem Seewasser: Je mehr man davon trinkt, desto durstiger wird man.",
+            pt: "A riqueza é como a água do mar; quanto mais bebemos, mais sede temos.",
+            ja: "富は海水のようなものだ。飲めば飲むほど、喉が渇く。"
         }
     },
     {
@@ -1007,11 +1007,11 @@ const RAW_PHILOSOPHER_QUOTES = [
     },
     {
         id: "phil_we_020",
-        author: "Voltaire",
-        era: "18th Century",
-        tradition: "Enlightenment",
+        author: "Evelyn Beatrice Hall",
+        era: "20th Century",
+        tradition: "Biography",
         category: "Liberty",
-        region: "France",
+        region: "UK",
         translations: {
             en: "I detest what you write, but I would give my life to make it possible for you to continue to write.",
             hi: "मैं जो तुम लिखते हो उससे नफरत करता हूं, लेकिन मैं तुम्हें लिखना जारी रखने देने के लिए अपनी जान दे दूंगा।",
@@ -1248,16 +1248,16 @@ const RAW_PHILOSOPHER_QUOTES = [
         author: "Seneca",
         era: "Ancient",
         tradition: "Stoicism",
-        category: "Luck",
+        category: "Greatness",
         region: "Rome",
         translations: {
-            en: "Luck is what happens when preparation meets opportunity.",
-            hi: "भाग्य वह है जो तब होता है जब तैयारी अवसर से मिलती है।",
-            es: "La suerte es lo que sucede cuando la preparación se encuentra con la oportunidad.",
-            fr: "La chance, c'est ce qui arrive quand la préparation rencontre l'opportunité.",
-            de: "Glück ist das, was passiert, wenn Vorbereitung auf Gelegenheit trifft.",
-            pt: "Sorte é o que acontece quando a preparação encontra a oportunidade.",
-            ja: "運とは、準備が機会に出会ったときに起こるものである。"
+            en: "It is a rough road that leads to the heights of greatness.",
+            hi: "महानता की ऊंचाइयों तक जाने वाला मार्ग कठिन होता है।",
+            es: "Es un camino áspero el que lleva a las cumbres de la grandeza.",
+            fr: "C'est un chemin rude qui mène aux sommets de la grandeur.",
+            de: "Es ist ein rauer Weg, der zu den Höhen der Größe führt.",
+            pt: "É um caminho difícil o que leva às alturas da grandeza.",
+            ja: "偉大さの頂点へと続く道は、険しいものである。"
         }
     },
     {
@@ -1384,16 +1384,16 @@ const RAW_PHILOSOPHER_QUOTES = [
         author: "Aristotle",
         era: "Ancient",
         tradition: "Peripatetic",
-        category: "Habit",
+        category: "Wisdom",
         region: "Greece",
         translations: {
-            en: "Knowing yourself is the beginning of all wisdom.",
-            hi: "खुद को जानना ही समस्त ज्ञान की शुरुआत है।",
-            es: "Conocerse a uno mismo es el principio de toda sabiduría.",
-            fr: "Se connaître soi-même est le début de toute sagesse.",
-            de: "Sich selbst zu kennen ist der Anfang aller Weisheit.",
-            pt: "Conhecer a si mesmo é o começo de toda sabedoria.",
-            ja: "汝自身を知ることは、すべての知恵の始まりである。"
+            en: "Practical wisdom is only to be found in a mind that is well-informed and well-balanced.",
+            hi: "व्यावहारिक बुद्धिमत्ता केवल उसी मस्तिष्क में पाई जाती है जो अच्छी तरह से सूचित और संतुलित हो।",
+            es: "La sabiduría práctica solo se encuentra en una mente bien informada y equilibrada.",
+            fr: "La sagesse pratique ne se trouve que dans un esprit bien informé et équilibré.",
+            de: "Praktische Weisheit findet sich nur in einem Geist, der gut informiert und ausgeglichen ist.",
+            pt: "A sabedoria prática só é encontrada em uma mente bem informada e equilibrada.",
+            ja: "実践的な知恵は、十分な知識を持ち、バランスの取れた心にのみ宿る。"
         }
     },
     {
@@ -1503,16 +1503,16 @@ const RAW_PHILOSOPHER_QUOTES = [
         author: "Socrates",
         era: "Ancient",
         tradition: "Western Philosophy",
-        category: "Action",
+        category: "Reputation",
         region: "Greece",
         translations: {
-            en: "To do is to be.",
-            hi: "करना ही होना है।",
-            es: "Hacer es ser.",
-            fr: "Faire, c'est être.",
-            de: "Tun ist sein.",
-            pt: "Fazer é ser.",
-            ja: "行うことは存在するということである。"
+            en: "The way to gain a good reputation is to endeavor to be what you desire to appear.",
+            hi: "अच्छी प्रतिष्ठा पाने का तरीका यह है कि आप वैसा ही बनने का प्रयास करें जैसा आप दिखना चाहते हैं।",
+            es: "La forma de ganar una buena reputación es esforzarse por ser lo que deseas parecer.",
+            fr: "Le moyen de gagner une bonne réputation est de s'efforcer d'être ce que l'on désire paraître.",
+            de: "Der Weg zu einem guten Ruf besteht darin, danach zu streben, das zu sein, was man zu sein scheint.",
+            pt: "A maneira de ganhar uma boa reputação é esforçar-se para ser o que você deseja parecer.",
+            ja: "良い評判を得る方法は、自分がそう見られたいと思う通りの人間になるよう努めることである。"
         }
     },
     {
@@ -1523,13 +1523,13 @@ const RAW_PHILOSOPHER_QUOTES = [
         category: "Action",
         region: "China",
         translations: {
-            en: "It does not matter how slowly you go as long as you do not stop.",
-            hi: "इससे कोई फर्क नहीं पड़ता कि आप कितनी धीरे चलते हैं जब तक आप रुकते नहीं।",
-            es: "No importa lo lento que vayas, siempre y cuando no te detengas.",
-            fr: "Peu importe la lenteur avec laquelle vous avancez, pourvu que vous ne vous arrêtiez pas.",
-            de: "Es ist egal, wie langsam du gehst, solange du nicht stehen bleibst.",
-            pt: "Não importa o quão devagar você vá, desde que você não pare.",
-            ja: "止まりさえしなければ、どんなにゆっくりでも進めばよい。"
+            en: "Wheresoever you go, go with all your heart.",
+            hi: "आप जहाँ भी जाएँ, पूरे दिल से जाएँ।",
+            es: "Donde quiera que vayas, ve con todo tu corazón.",
+            fr: "Où que tu ailles, vas-y avec tout ton cœur.",
+            de: "Wohin du auch gehst, geh mit deinem ganzen Herzen.",
+            pt: "Aonde quer que você vá, vá com todo o seu coração.",
+            ja: "いかなる場所に行く時も、全精力を傾けて行きなさい。"
         }
     },
     {
@@ -1806,9 +1806,9 @@ const RAW_PHILOSOPHER_QUOTES = [
     },
     {
         id: "phil_ch_018",
-        author: "Confucius",
+        author: "Unknown (Proverb)",
         era: "Ancient",
-        tradition: "Confucianism",
+        tradition: "Chinese Wisdom",
         category: "Wisdom",
         region: "China",
         translations: {
@@ -1891,9 +1891,9 @@ const RAW_PHILOSOPHER_QUOTES = [
     },
     {
         id: "phil_ch_024",
-        author: "Xunzi",
+        author: "Unknown (Proverb)",
         era: "Ancient",
-        tradition: "Confucianism",
+        tradition: "Chinese Wisdom",
         category: "Practice",
         region: "China",
         translations: {
@@ -2537,11 +2537,11 @@ const RAW_PHILOSOPHER_QUOTES = [
     },
     {
         id: "phil_we_002",
-        author: "Aristotle",
-        era: "Ancient",
-        tradition: "Peripatetic",
-        category: "Character",
-        region: "Greece",
+        author: "Will Durant (Summing Aristotle)",
+        era: "20th Century",
+        tradition: "Philosophy",
+        category: "Habit",
+        region: "USA",
         translations: {
             en: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.",
             hi: "हम वही हैं जो हम बार-बार करते हैं। इसलिए, उत्कृष्टता कोई कार्य नहीं, बल्कि एक आदत है।",
@@ -2713,30 +2713,30 @@ const RAW_PHILOSOPHER_QUOTES = [
         category: "Freedom",
         region: "France",
         translations: {
-            en: "Man is born free, and everywhere he is in chains.",
-            hi: "मनुष्य स्वतंत्र पैदा होता है, और हर जगह वह बेड़ियों में जकड़ा होता है।",
-            es: "El hombre nace libre, pero en todas partes está encadenado.",
-            fr: "L'homme est né libre, et partout il est dans les fers.",
-            de: "Der Mensch ist frei geboren, und überall liegt er in Ketten.",
-            pt: "O homem nasce livre, e em todos os lugares está acorrentado.",
-            ja: "人間は自由に生まれたが、いたるところで鎖につながれている。"
+            en: "Patience is bitter, but its fruit is sweet.",
+            hi: "धैर्य कड़वा है, लेकिन इसका फल मीठा है।",
+            es: "La paciencia es amarga, pero su fruto es dulce.",
+            fr: "La patience est amère, mais son fruit est doux.",
+            de: "Geduld ist bitter, aber ihre Frucht ist süß.",
+            pt: "A paciência é amarga, mas seu fruto é doce.",
+            ja: "忍耐は苦いが、その実は甘い。"
         }
     },
     {
         id: "phil_bs_001",
         author: "Gautama Buddha",
-        era: "5th Century BC",
+        era: "Ancient",
         tradition: "Buddhism",
-        category: "Mindfulness",
-        region: "Ancient India",
+        category: "Happiness",
+        region: "India",
         translations: {
-            en: "The mind is everything. What you think you become.",
-            hi: "मन ही सब कुछ है। आप जो सोचते हैं वही बन जाते हैं।",
-            es: "La mente lo es todo. Te conviertes en lo que piensas.",
-            fr: "L'esprit est tout. Ce que vous pensez, vous le devenez.",
-            de: "Der Geist ist alles. Was du denkst, das wirst du.",
-            pt: "A mente é tudo. O que você pensa, você se torna.",
-            ja: "心こそがすべてである。あなたは自分の考えたものになる。"
+            en: "Happiness never decreases by being shared.",
+            hi: "बांटने से खुशी कभी कम नहीं होती।",
+            es: "La felicidad nunca disminuye al ser compartida.",
+            fr: "Le bonheur ne diminue jamais en étant partagé.",
+            de: "Glück nimmt niemals ab, wenn man es teilt.",
+            pt: "A felicidade nunca diminui ao ser compartilhada.",
+            ja: "幸福は分かち合うことで決して減ることはない。"
         }
     },
     {
@@ -2795,16 +2795,16 @@ const RAW_PHILOSOPHER_QUOTES = [
         author: "Mahavira",
         era: "6th Century BC",
         tradition: "Jainism",
-        category: "Non-violence",
+        category: "Ahimsa",
         region: "Ancient India",
         translations: {
-            en: "Live and let live. Love all, serve all.",
-            hi: "जियो और जीने दो। सभी से प्रेम करो, सभी की सेवा करो।",
-            es: "Vive y deja vivir. Ama a todos, sirve a todos.",
-            fr: "Vivez et laissez vivre. Aimez tout le monde, servez tout le monde.",
-            de: "Leben und leben lassen. Liebe alle, diene allen.",
-            pt: "viva e deixe viver. Ame a todos, sirva a todos.",
-            ja: "生き、そして生かせ。すべてを愛し、すべてに仕えよ。"
+            en: "Do not injure, abuse, oppress, enslave, insult, torment, torture, or kill any creature or living being.",
+            hi: "किसी भी प्राणी या जीवित प्राणी को चोट न पहुँचाएँ, दुर्व्यवहार न करें, अत्याचार न करें, गुलाम न बनाएँ, अपमान न करें, प्रताड़ित न करें, प्रताड़ित न करें, या मारें नहीं।",
+            es: "No dañes, abuses, oprimas, esclavices, insultes, atormentes, tortures ni mates a ninguna criatura o ser vivo.",
+            fr: "Ne blessez pas, n'abusez pas, n'opprimez pas, ne réduisez pas en esclavage, n'insultez pas, ne tourmentez pas, ne torturez pas et ne tuez pas de créature ou d'être vivant.",
+            de: "Verletze, misshandle, unterdrücke, versklave, beleidige, quäle, foltere oder töte kein Geschöpf oder Lebewesen.",
+            pt: "Não fira, abuse, oprima, escravize, insulte, atormente, torture ou mate qualquer criatura ou ser vivo.",
+            ja: "いかなる生き物も傷つけず、虐待せず、抑圧せず、奴隷にせず、侮辱せず、苦しめず、拷問せず、殺してはならない。"
         }
     },
     {
@@ -2996,19 +2996,19 @@ const RAW_PHILOSOPHER_QUOTES = [
     },
     {
         id: "phil_bs_017",
-        author: "Dogen",
+        author: "Dogen Zenji",
         era: "13th Century",
         tradition: "Zen Buddhism",
-        category: "Time",
+        category: "Nature",
         region: "Japan",
         translations: {
-            en: "To study the self is to forget the self.",
-            hi: "स्वयं का अध्ययन करना स्वयं को भूल जाना है।",
-            es: "Estudiar el yo es olvidar el yo.",
-            fr: "Étudier le soi, c'est oublier le soi.",
-            de: "Sich selbst zu studieren bedeutet, sich selbst zu vergessen.",
-            pt: "Estudar a si mesmo é esquecer a si mesmo.",
-            ja: "自己を習うというは、自己を忘るるなり。"
+            en: "Flowers fall though we love them, and weeds grow though we do not love them.",
+            hi: "फूल गिरते हैं चाहे हम उनसे प्यार करें, और खरपतवार उगते हैं चाहे हम उनसे प्यार न करें।",
+            es: "Las flores caen aunque las amemos, y las malas hierbas crecen aunque no las amemos.",
+            fr: "Les fleurs tombent bien que nous les aimions, et les mauvaises herbes poussent bien que nous ne les aimions pas.",
+            de: "Blumen fallen, obwohl wir sie lieben, und Unkraut wächst, obwohl wir es nicht lieben.",
+            pt: "As flores caem embora as amemos, e as ervas daninhas crescem embora não as amemos.",
+            ja: "惜しめども花は散り、憎めども草は生い茂る。"
         }
     },
     {
@@ -3149,19 +3149,19 @@ const RAW_PHILOSOPHER_QUOTES = [
     },
     {
         id: "phil_gl_001",
-        author: "Socrates",
-        era: "5th Century BC",
-        tradition: "Greek Philosophy",
+        author: "Original Wisdom",
+        era: "Various",
+        tradition: "Universal Wisdom",
         category: "Wisdom",
-        region: "Greece",
+        region: "Global",
         translations: {
-            en: "The only true wisdom is in knowing you know nothing.",
-            hi: "एकमात्र सच्ची बुद्धिमानी यह जानने में है कि आप कुछ नहीं जानते।",
-            es: "La única sabiduría verdadera es saber que no sabes nada.",
-            fr: "La seule vraie sagesse est de savoir que vous ne savez rien.",
-            de: "Die einzige wahre Weisheit besteht darin zu wissen, dass man nichts weiß.",
-            pt: "A única verdadeira sabedoria está em saber que você nada sabe.",
-            ja: "唯一の真の知恵は、自分が何も知らないと知ることである。"
+            en: "Strong minds discuss ideas, average minds discuss events, weak minds discuss people.",
+            hi: "मजबूत दिमाग विचारों पर चर्चा करते हैं, औसत दिमाग घटनाओं पर और कमजोर दिमाग लोगों पर।",
+            es: "Las mentes fuertes discuten ideas, las mentes promedio discuten eventos, las mentes débiles discuten personas.",
+            fr: "Les esprits forts discutent des idées, les esprits moyens discutent des événements, les esprits faibles discutent des gens.",
+            de: "Starke Köpfe diskutieren über Ideen, durchschnittliche Köpfe über Ereignisse, schwache Köpfe über Menschen.",
+            pt: "Mentes fortes discutem ideias, mentes médias discutem eventos, mentes fracas discutem pessoas.",
+            ja: "強い心はアイデアを話し合い、普通の心は出来事を話し合い、弱い心は人々を話し合う。"
         }
     },
     {

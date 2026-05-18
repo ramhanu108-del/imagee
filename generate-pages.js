@@ -136,7 +136,8 @@ const staticPages = [
     { path: 'privacy-policy' },
     { path: 'terms-of-service' },
     { path: 'disclaimer' },
-    { path: 'contact-us' }
+    { path: 'contact-us' },
+    { path: 'blog' }
 ];
 
 const staticSitemapUrls = staticPages.map(page => `
