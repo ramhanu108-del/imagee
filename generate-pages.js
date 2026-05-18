@@ -158,11 +158,12 @@ if (!fs.existsSync('public')) {
     fs.mkdirSync('public');
 }
 fs.writeFileSync('public/sitemap.xml', fullSitemap, 'utf-8');
+fs.writeFileSync('public/sitemap-main.xml', fullSitemap, 'utf-8');
 
 console.log('--- GENERATION REPORT ---');
 console.log('Total tools found in registry: ' + ALL_TOOLS.length);
 console.log('Total URLs written to sitemap: ' + (ALL_TOOLS.length + staticPages.length));
 console.log('Missing tools that were added: ' + (addedTools.length > 0 ? addedTools.join(', ') : 'None'));
 console.log('Static pages generated for missing tools: Yes');
-console.log('Final sitemap path: public/sitemap.xml');
+console.log('Final sitemap path: public/sitemap-main.xml');
 
