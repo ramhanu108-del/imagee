@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.smarttoolshub.cc/sitemap-main.xml
+Sitemap: https://www.smarttoolshub.cc/sitemap-index.xml
