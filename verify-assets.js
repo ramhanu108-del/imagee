@@ -5,6 +5,7 @@ console.log('=== STARTING POSTBUILD SEO FILE CHECK ===');
 
 // Check paths
 const distSitemapPath = path.resolve('dist/sitemap.xml');
+const distSitemapV2Path = path.resolve('dist/sitemap-v2.xml');
 const distRobotsPath = path.resolve('dist/robots.txt');
 
 let allChecksPass = true;
@@ -17,6 +18,13 @@ if (!fs.existsSync(distSitemapPath)) {
   console.log('[PASS] dist/sitemap.xml exists.');
 }
 
+if (!fs.existsSync(distSitemapV2Path)) {
+  console.error('[FAIL] dist/sitemap-v2.xml does not exist.');
+  allChecksPass = false;
+} else {
+  console.log('[PASS] dist/sitemap-v2.xml exists.');
+}
+
 if (!fs.existsSync(distRobotsPath)) {
   console.error('[FAIL] dist/robots.txt does not exist.');
   allChecksPass = false;
@@ -25,62 +33,72 @@ if (!fs.existsSync(distRobotsPath)) {
 }
 
 // 3. Sitemap XML declaration & first-line check
-if (fs.existsSync(distSitemapPath)) {
-  const sitemapContent = fs.readFileSync(distSitemapPath, 'utf8').trim();
-  if (sitemapContent.startsWith('<?xml version="1.0" encoding="UTF-8"?>')) {
-    console.log('[PASS] sitemap.xml starts exactly with correct XML declaration.');
-  } else {
-    console.error('[FAIL] sitemap.xml does not start with correct XML declaration.');
-    allChecksPass = false;
-  }
-
-  // 4. Check domain-specific constraints in sitemap
-  // Extract all <loc> values
-  const locRegex = /<loc>([\s\S]*?)<\/loc>/g;
-  let locMatch;
-  let invalidUrls = [];
-  let sitemapWebsites = [];
-
-  while ((locMatch = locRegex.exec(sitemapContent)) !== null) {
-    const url = locMatch[1].trim();
-    sitemapWebsites.push(url);
-    if (!url.startsWith('https://www.smarttoolshub.cc')) {
-      invalidUrls.push(url);
+function verifySitemapContent(filePath, name) {
+  if (fs.existsSync(filePath)) {
+    const sitemapContent = fs.readFileSync(filePath, 'utf8').trim();
+    if (sitemapContent.startsWith('<?xml version="1.0" encoding="UTF-8"?>')) {
+      console.log(`[PASS] ${name} starts exactly with correct XML declaration.`);
+    } else {
+      console.error(`[FAIL] ${name} does not start with correct XML declaration.`);
+      allChecksPass = false;
     }
-    if (url.includes('localhost') || url.includes('vercel.app') || url.includes('github.io') || (url.includes('smarttoolshub.cc') && !url.includes('www.smarttoolshub.cc'))) {
-      if (!invalidUrls.includes(url)) {
+
+    // 4. Check domain-specific constraints in sitemap
+    const locRegex = /<loc>([\s\S]*?)<\/loc>/g;
+    let locMatch;
+    let invalidUrls = [];
+    let sitemapWebsites = [];
+
+    while ((locMatch = locRegex.exec(sitemapContent)) !== null) {
+      const url = locMatch[1].trim();
+      sitemapWebsites.push(url);
+      if (!url.startsWith('https://www.smarttoolshub.cc')) {
         invalidUrls.push(url);
       }
+      if (
+        url.includes('localhost') || 
+        url.includes('vercel.app') || 
+        url.includes('github.io') || 
+        url.startsWith('http://') ||
+        (url.includes('smarttoolshub.cc') && !url.includes('www.smarttoolshub.cc'))
+      ) {
+        if (!invalidUrls.includes(url)) {
+          invalidUrls.push(url);
+        }
+      }
     }
-  }
 
-  if (invalidUrls.length > 0) {
-    console.error('[FAIL] Found invalid or non-custom/non-www/stuck domain URLs in sitemap:', invalidUrls);
-    allChecksPass = false;
-  } else if (sitemapWebsites.length === 0) {
-    console.error('[FAIL] No URLs found in sitemap.');
-    allChecksPass = false;
-  } else {
-    console.log(`[PASS] All ${sitemapWebsites.length} URLs in sitemap use the secure custom domain 'https://www.smarttoolshub.cc' and are strictly clean.`);
-  }
+    if (invalidUrls.length > 0) {
+      console.error(`[FAIL] ${name} found invalid or non-custom/non-www/stuck domain URLs:`, invalidUrls);
+      allChecksPass = false;
+    } else if (sitemapWebsites.length === 0) {
+      console.error(`[FAIL] No URLs found in ${name}.`);
+      allChecksPass = false;
+    } else {
+      console.log(`[PASS] All ${sitemapWebsites.length} URLs in ${name} use the secure custom domain 'https://www.smarttoolshub.cc' and are strictly clean.`);
+    }
 
-  // Check XML root element is correct
-  if (sitemapContent.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')) {
-    console.log('[PASS] sitemap.xml uses correct urlset root element with expected schema attribute.');
-  } else {
-    console.error('[FAIL] sitemap.xml is missing correct urlset header.');
-    allChecksPass = false;
+    // Check XML root element is correct
+    if (sitemapContent.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')) {
+      console.log(`[PASS] ${name} uses correct urlset root element with expected schema attribute.`);
+    } else {
+      console.error(`[FAIL] ${name} is missing correct urlset header.`);
+      allChecksPass = false;
+    }
   }
 }
 
-// 5. robots.txt points precisely to sitemap.xml
+verifySitemapContent(distSitemapPath, 'sitemap.xml');
+verifySitemapContent(distSitemapV2Path, 'sitemap-v2.xml');
+
+// 5. robots.txt points precisely to sitemap-v2.xml
 if (fs.existsSync(distRobotsPath)) {
   const robotsContent = fs.readFileSync(distRobotsPath, 'utf8').trim();
-  const expectSitemapLine = 'Sitemap: https://www.smarttoolshub.cc/sitemap.xml';
+  const expectSitemapLine = 'Sitemap: https://www.smarttoolshub.cc/sitemap-v2.xml';
   if (robotsContent.includes(expectSitemapLine)) {
-    console.log(`[PASS] robots.txt points correctly to standard sitemap: "${expectSitemapLine}"`);
+    console.log(`[PASS] robots.txt points correctly to standard sitemap-v2: "${expectSitemapLine}"`);
   } else {
-    console.error('[FAIL] robots.txt does not point correctly to custom domain sitemap. Content matches:\n', robotsContent);
+    console.error('[FAIL] robots.txt does not point correctly to sitemap-v2. Content matches:\n', robotsContent);
     allChecksPass = false;
   }
 
